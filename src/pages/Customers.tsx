@@ -76,10 +76,19 @@ export default function Customers() {
         .from('companies')
         .select('id')
         .eq('owner_id', user?.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      setUserCompanyId(data?.id);
+      
+      if (!data) {
+        // User has no company yet, redirect to company setup
+        console.log('No company found for user, redirecting to setup');
+        toast.error('Bitte erstellen Sie zuerst Ihre Firma');
+        // You might want to redirect to company setup here
+        return;
+      }
+      
+      setUserCompanyId(data.id);
     } catch (error) {
       console.error('Error fetching user company:', error);
       toast.error('Fehler beim Laden der Firmendaten');
