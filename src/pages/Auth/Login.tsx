@@ -11,7 +11,6 @@ import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { GoogleIcon } from '@/components/ui/google-icon';
 
 // CleanFlow Login Component
-
 export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
