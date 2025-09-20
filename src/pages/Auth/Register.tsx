@@ -38,7 +38,9 @@ export default function Register() {
   const handleCheckboxChange = (field: string) => (checked: boolean) => {
     setFormData(prev => ({
       ...prev,
-      [field]: checked
+      [field]: checked,
+      // Reset reCAPTCHA token if terms are unchecked
+      ...(field === 'acceptTerms' && !checked && { recaptchaToken: '' })
     }));
   };
 
@@ -218,14 +220,6 @@ export default function Register() {
             </div>
 
             <div className="space-y-3">
-              <ReCAPTCHA
-                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key - ersetzen Sie dies mit Ihrem echten Site Key
-                onChange={handleRecaptchaChange}
-                theme="light"
-              />
-            </div>
-
-            <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="terms"
@@ -243,6 +237,14 @@ export default function Register() {
                   </Link>
                 </Label>
               </div>
+
+              {formData.acceptTerms && (
+                <ReCAPTCHA
+                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key - ersetzen Sie dies mit Ihrem echten Site Key
+                  onChange={handleRecaptchaChange}
+                  theme="light"
+                />
+              )}
             </div>
 
             <Button
