@@ -78,10 +78,10 @@ const navigationItems = [
 ];
 
 export function AppSidebar() {
-  const { open } = useSidebar();
+  const { open, openMobile, isMobile } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
-  const collapsed = !open;
+  const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Hauptbereich": true,
     "Projektmanagement": true,
