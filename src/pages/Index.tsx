@@ -78,7 +78,7 @@ const Index = () => {
             </p>
           </div>
           <div className="flex gap-2 flex-shrink-0">
-            <Button className="bg-gradient-elegant hover:opacity-90" size="sm">
+            <Button className="bg-gradient-primary hover:opacity-90" size="sm">
               <Plus className="mr-1 md:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Neues Projekt</span>
               <span className="sm:hidden">Neu</span>
