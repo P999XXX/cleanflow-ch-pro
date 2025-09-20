@@ -7,10 +7,75 @@ import { ThemeProvider } from "next-themes";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Layout/AppSidebar";
 import { AppHeader } from "@/components/Layout/AppHeader";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import Register from "./pages/Auth/Register";
+import Login from "./pages/Auth/Login";
+import VerifyEmail from "./pages/Auth/VerifyEmail";
+import CompanySetup from "./pages/Auth/CompanySetup";
 
 const queryClient = new QueryClient();
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  
+  if (!user) {
+    return <Login />;
+  }
+  
+  return <>{children}</>;
+}
+
+function AuthLayout() {
+  const { user, loading } = useAuth();
+  
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  
+  if (user) {
+    return (
+      <SidebarProvider defaultOpen={true}>
+        <div className="min-h-screen flex w-full bg-background">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col">
+            <AppHeader />
+            <main className="flex-1">
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/company-setup" element={<CompanySetup />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </main>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+  
+  return (
+    <Routes>
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/verify-email" element={<VerifyEmail />} />
+      <Route path="/company-setup" element={<CompanySetup />} />
+      <Route path="*" element={<Login />} />
+    </Routes>
+  );
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -19,21 +84,9 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <SidebarProvider defaultOpen={true}>
-            <div className="min-h-screen flex w-full bg-background">
-              <AppSidebar />
-              <div className="flex-1 flex flex-col">
-                <AppHeader />
-                <main className="flex-1">
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </main>
-              </div>
-            </div>
-          </SidebarProvider>
+          <AuthProvider>
+            <AuthLayout />
+          </AuthProvider>
         </BrowserRouter>
       </TooltipProvider>
     </ThemeProvider>

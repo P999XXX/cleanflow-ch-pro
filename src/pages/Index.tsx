@@ -8,15 +8,20 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  DollarSign
+  DollarSign,
+  Plus,
+  LogOut
 } from "lucide-react";
 import { StatsCard } from "@/components/Dashboard/StatsCard";
 import { ActivityCard } from "@/components/Dashboard/ActivityCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
+  const { user, signOut } = useAuth();
   const stats = [
     {
       title: "Aktive Projekte",
@@ -63,13 +68,25 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-bg">
       <div className="p-6 space-y-6">
         {/* Header */}
-        <div className="space-y-2">
-          <h1 className="text-3xl font-bold text-foreground">
-            Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Willkommen zurück! Hier ist eine Übersicht Ihrer Reinigungsfirma.
-          </p>
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-foreground">
+              Dashboard
+            </h1>
+            <p className="text-muted-foreground">
+              Willkommen zurück, {user?.email}! Hier ist eine Übersicht Ihrer Reinigungsfirma.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button className="bg-gradient-elegant hover:opacity-90">
+              <Plus className="mr-2 h-4 w-4" />
+              Neues Projekt
+            </Button>
+            <Button variant="outline" onClick={signOut}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Abmelden
+            </Button>
+          </div>
         </div>
 
         {/* Stats Cards */}
