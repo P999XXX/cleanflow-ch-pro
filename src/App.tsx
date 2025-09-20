@@ -14,7 +14,6 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import CompanySetup from "./pages/Auth/CompanySetup";
-import Customers from "./pages/Customers";
 
 const queryClient = new QueryClient();
 
@@ -58,7 +57,6 @@ function AuthLayout() {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/company-setup" element={<CompanySetup />} />
-                <Route path="/kunden" element={<Customers />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
