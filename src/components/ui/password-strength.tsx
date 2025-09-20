@@ -26,17 +26,14 @@ const calculatePasswordStrength = (password: string): {
   if (score === 0) {
     text = "";
     color = "bg-transparent";
-  } else if (score <= 25) {
+  } else if (score <= 33) {
     text = "Schwach";
     color = "bg-destructive";
-  } else if (score <= 50) {
+  } else if (score <= 66) {
     text = "Mittel";
     color = "bg-warning";
-  } else if (score <= 75) {
-    text = "Gut";
-    color = "bg-secondary";  
   } else {
-    text = "Sehr stark";
+    text = "Stark";
     color = "bg-success";
   }
 
@@ -53,19 +50,29 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
       <div ref={ref} className={cn("space-y-2", className)}>
         <div className="flex justify-between items-center">
           <span className="text-sm text-muted-foreground">Passwort-Stärke:</span>
-          <span className={cn("text-sm font-medium", {
-            "text-destructive": strength.score <= 25,
-            "text-warning": strength.score > 25 && strength.score <= 50,
-            "text-secondary": strength.score > 50 && strength.score <= 75,
-            "text-success": strength.score > 75,
-          })}>
+          <span
+            className={cn("text-sm font-medium", {
+              "text-destructive": strength.score > 0 && strength.score <= 33,
+              "text-warning": strength.score > 33 && strength.score <= 66,
+              "text-success": strength.score > 66,
+            })}
+          >
             {strength.text}
           </span>
         </div>
-        <Progress 
-          value={strength.score} 
-          className={cn("h-2", `[&>div]:${strength.color}`)}
+        <Progress
+          value={strength.score}
+          className={cn(
+            "h-2 bg-muted",
+            {
+              "[&>div]:bg-transparent": strength.score === 0,
+              "[&>div]:!bg-destructive": strength.score > 0 && strength.score <= 33,
+              "[&>div]:!bg-warning": strength.score > 33 && strength.score <= 66,
+              "[&>div]:!bg-success": strength.score > 66,
+            }
+          )}
         />
+        <p className="text-xs text-muted-foreground">Min: 8 Zeichen, a–z, A–Z, 0–9</p>
       </div>
     );
   }
