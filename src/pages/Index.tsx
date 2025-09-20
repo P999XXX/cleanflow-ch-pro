@@ -66,38 +66,39 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-bg">
-      <div className="p-6 space-y-6">
+      <div className="p-3 md:p-6 space-y-4 md:space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold text-foreground">
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">
               Dashboard
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm md:text-base">
               Willkommen zurück, {user?.email}! Hier ist eine Übersicht Ihrer Reinigungsfirma.
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button className="bg-gradient-elegant hover:opacity-90">
-              <Plus className="mr-2 h-4 w-4" />
-              Neues Projekt
+          <div className="flex gap-2 flex-shrink-0">
+            <Button className="bg-gradient-elegant hover:opacity-90" size="sm">
+              <Plus className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Neues Projekt</span>
+              <span className="sm:hidden">Neu</span>
             </Button>
-            <Button variant="outline" onClick={signOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Abmelden
+            <Button variant="outline" onClick={signOut} size="sm">
+              <LogOut className="mr-1 md:mr-2 h-4 w-4" />
+              <span className="hidden sm:inline">Abmelden</span>
             </Button>
           </div>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, index) => (
             <StatsCard key={index} {...stat} />
           ))}
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Activity Feed */}
           <div className="lg:col-span-2">
             <ActivityCard />
@@ -143,7 +144,7 @@ const Index = () => {
         </div>
 
         {/* Performance Overview */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

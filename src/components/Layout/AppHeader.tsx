@@ -19,20 +19,25 @@ export function AppHeader() {
   return (
     <header className="h-16 border-b border-border/50 bg-card/80 backdrop-blur-sm px-4 flex items-center justify-between">
       {/* Left Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <SidebarTrigger className="hover:bg-muted" />
         
-        <div className="relative max-w-md">
+        <div className="relative max-w-md hidden sm:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <Input 
             placeholder="Suchen in CleanFlow..." 
             className="pl-10 bg-muted/50 border-0 focus:bg-background transition-colors"
           />
         </div>
+        
+        {/* Mobile Search Button */}
+        <Button variant="ghost" size="sm" className="sm:hidden">
+          <Search className="w-4 h-4" />
+        </Button>
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-1 md:gap-3">
         {/* Notifications */}
         <Button variant="ghost" size="sm" className="relative">
           <Bell className="w-4 h-4" />
