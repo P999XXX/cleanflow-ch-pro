@@ -9,6 +9,8 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, Chrome, Eye, EyeOff } from 'lucide-react';
 
+// CleanFlow Login Component
+
 export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
