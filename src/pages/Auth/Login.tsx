@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { Mail, Lock, Chrome, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { GoogleIcon } from '@/components/ui/google-icon';
 
 // CleanFlow Login Component
 
@@ -160,7 +161,7 @@ export default function Login() {
             onClick={handleGoogleSignIn}
             disabled={loading}
           >
-            <Chrome className="mr-2 h-4 w-4" />
+            <GoogleIcon className="mr-2" size={16} />
             Mit Google anmelden
           </Button>
 

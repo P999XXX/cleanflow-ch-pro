@@ -7,8 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { Mail, Lock, User, Chrome } from 'lucide-react';
+import { Mail, Lock, User } from 'lucide-react';
 import { PasswordStrength } from '@/components/ui/password-strength';
+import { GoogleIcon } from '@/components/ui/google-icon';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -19,6 +21,7 @@ export default function Register() {
     confirmPassword: '',
     acceptTerms: false,
     acceptPrivacy: false,
+    recaptchaToken: '',
   });
   const [loading, setLoading] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
@@ -38,11 +41,23 @@ export default function Register() {
     }));
   };
 
+  const handleRecaptchaChange = (token: string | null) => {
+    setFormData(prev => ({
+      ...prev,
+      recaptchaToken: token || ''
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.acceptTerms || !formData.acceptPrivacy) {
       alert('Bitte akzeptieren Sie die AGBs und Datenschutzerklärung.');
+      return;
+    }
+
+    if (!formData.recaptchaToken) {
+      alert('Bitte bestätigen Sie, dass Sie kein Roboter sind.');
       return;
     }
 
@@ -176,6 +191,14 @@ export default function Register() {
             </div>
 
             <div className="space-y-3">
+              <ReCAPTCHA
+                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key - ersetzen Sie dies mit Ihrem echten Site Key
+                onChange={handleRecaptchaChange}
+                theme="light"
+              />
+            </div>
+
+            <div className="space-y-3">
               <div className="flex items-start space-x-2">
                 <Checkbox
                   id="terms"
@@ -208,7 +231,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading || !formData.acceptTerms || !formData.acceptPrivacy}
+              disabled={loading || !formData.acceptTerms || !formData.acceptPrivacy || !formData.recaptchaToken}
             >
               {loading ? 'Registrierung läuft...' : 'Registrieren'}
             </Button>
@@ -232,7 +255,7 @@ export default function Register() {
             onClick={handleGoogleSignUp}
             disabled={loading}
           >
-            <Chrome className="mr-2 h-4 w-4" />
+            <GoogleIcon className="mr-2" size={16} />
             Mit Google registrieren
           </Button>
 
