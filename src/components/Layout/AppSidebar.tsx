@@ -101,26 +101,26 @@ export function AppSidebar() {
     cn(
       "w-full justify-start transition-all duration-200",
       isActive 
-        ? "bg-sidebar-accent text-sidebar-accent-foreground shadow-clean-primary font-medium" 
-        : "hover:bg-sidebar-accent/50 text-sidebar-foreground hover:text-sidebar-accent-foreground"
+        ? "bg-primary text-primary-foreground shadow-clean-primary font-medium" 
+        : "hover:bg-accent hover:text-accent-foreground text-foreground"
     );
 
   return (
     <Sidebar className={cn(
-      "border-sidebar-border bg-sidebar backdrop-blur-sm transition-all duration-300",
+      "border-border bg-card transition-all duration-300",
       collapsed ? "w-16" : "w-64"
     )}>
       <SidebarContent>
         {/* Logo Section */}
-        <div className="p-4 border-b border-sidebar-border">
+        <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             {!collapsed && (
               <div>
-                <h1 className="font-bold text-lg text-sidebar-foreground">CleanFlow</h1>
-                <p className="text-xs text-sidebar-foreground/60">.ai</p>
+                <h1 className="font-bold text-lg text-foreground">CleanFlow</h1>
+                <p className="text-xs text-muted-foreground">.ai</p>
               </div>
             )}
           </div>
@@ -135,18 +135,18 @@ export function AppSidebar() {
             >
               <CollapsibleTrigger asChild>
                 <SidebarGroupLabel className={cn(
-                  "cursor-pointer hover:bg-sidebar-accent/50 rounded-md px-2 py-1 transition-colors text-sidebar-foreground",
+                  "cursor-pointer hover:bg-accent hover:text-accent-foreground rounded-md px-2 py-1 transition-colors text-foreground",
                   collapsed ? "justify-center" : "justify-between"
                 )}>
                   {!collapsed && (
                     <>
-                      <span className="text-xs font-semibold text-sidebar-foreground/70 uppercase tracking-wide">
+                      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                         {group.title}
                       </span>
                       {openGroups[group.title] ? (
-                        <ChevronDown className="w-3 h-3 text-sidebar-foreground/70" />
+                        <ChevronDown className="w-3 h-3 text-muted-foreground" />
                       ) : (
-                        <ChevronRight className="w-3 h-3 text-sidebar-foreground/70" />
+                        <ChevronRight className="w-3 h-3 text-muted-foreground" />
                       )}
                     </>
                   )}
