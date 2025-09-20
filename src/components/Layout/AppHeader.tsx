@@ -17,10 +17,10 @@ export function AppHeader() {
   const { theme, setTheme } = useTheme();
 
   return (
-    <header className="h-16 border-b border-border/50 bg-card/80 backdrop-blur-sm px-4 flex items-center justify-between">
+    <header className="h-16 border-b border-border bg-background backdrop-blur-sm px-4 flex items-center justify-between">
       {/* Left Section */}
       <div className="flex items-center gap-2 md:gap-4">
-        <SidebarTrigger className="hover:bg-muted" />
+        <SidebarTrigger className="hover:bg-accent hover:text-accent-foreground transition-colors" />
         
         <div className="relative max-w-md hidden sm:block">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
