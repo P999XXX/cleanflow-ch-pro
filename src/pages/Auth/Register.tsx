@@ -20,7 +20,6 @@ export default function Register() {
     password: '',
     confirmPassword: '',
     acceptTerms: false,
-    acceptPrivacy: false,
     recaptchaToken: '',
   });
   const [loading, setLoading] = useState(false);
@@ -51,7 +50,7 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.acceptTerms || !formData.acceptPrivacy) {
+    if (!formData.acceptTerms) {
       alert('Bitte akzeptieren Sie die AGBs und Datenschutzerklärung.');
       return;
     }
@@ -210,17 +209,7 @@ export default function Register() {
                   <Link to="/agb" className="text-primary hover:underline">
                     Allgemeinen Geschäftsbedingungen
                   </Link>
-                </Label>
-              </div>
-
-              <div className="flex items-start space-x-2">
-                <Checkbox
-                  id="privacy"
-                  checked={formData.acceptPrivacy}
-                  onCheckedChange={handleCheckboxChange('acceptPrivacy')}
-                />
-                <Label htmlFor="privacy" className="text-sm leading-5">
-                  Ich akzeptiere die{' '}
+                  {' '}und die{' '}
                   <Link to="/datenschutz" className="text-primary hover:underline">
                     Datenschutzerklärung
                   </Link>
@@ -231,7 +220,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading || !formData.acceptTerms || !formData.acceptPrivacy || !formData.recaptchaToken}
+              disabled={loading || !formData.acceptTerms || !formData.recaptchaToken}
             >
               {loading ? 'Registrierung läuft...' : 'Registrieren'}
             </Button>
