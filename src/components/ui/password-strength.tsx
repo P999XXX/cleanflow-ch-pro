@@ -7,23 +7,31 @@ interface PasswordStrengthProps {
   className?: string;
 }
 
-const calculatePasswordStrength = (password: string): { score: number; text: string; color: string } => {
+const calculatePasswordStrength = (password: string): { 
+  score: number; 
+  text: string; 
+  color: string; 
+  criteria: { label: string; met: boolean }[] 
+} => {
   let score = 0;
-  let feedback: string[] = [];
+  
+  const criteria = [
+    { label: "Mindestens 8 Zeichen", met: password.length >= 8 },
+    { label: "Kleinbuchstaben (a-z)", met: /[a-z]/.test(password) },
+    { label: "Großbuchstaben (A-Z)", met: /[A-Z]/.test(password) },
+    { label: "Zahlen (0-9)", met: /[0-9]/.test(password) },
+    { label: "Sonderzeichen (!@#$...)", met: /[^A-Za-z0-9]/.test(password) }
+  ];
 
-  if (password.length >= 8) score += 25;
-  else feedback.push("mindestens 8 Zeichen");
-
-  if (/[a-z]/.test(password)) score += 25;
-  else feedback.push("Kleinbuchstaben");
-
-  if (/[A-Z]/.test(password)) score += 25;
-  else feedback.push("Großbuchstaben");
-
-  if (/[0-9]/.test(password)) score += 25;
-  else feedback.push("Zahlen");
-
-  if (/[^A-Za-z0-9]/.test(password)) score += 10;
+  criteria.forEach((criterion, index) => {
+    if (criterion.met) {
+      if (index === 4) { // Sonderzeichen geben Bonus
+        score += 10;
+      } else {
+        score += 25;
+      }
+    }
+  });
 
   let text = "";
   let color = "";
@@ -36,13 +44,13 @@ const calculatePasswordStrength = (password: string): { score: number; text: str
     color = "bg-warning";
   } else if (score <= 75) {
     text = "Gut";
-    color = "bg-secondary";
+    color = "bg-secondary";  
   } else {
     text = "Sehr stark";
     color = "bg-success";
   }
 
-  return { score: Math.min(score, 100), text, color };
+  return { score: Math.min(score, 100), text, color, criteria };
 };
 
 export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengthProps>(
@@ -68,6 +76,18 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
           value={strength.score} 
           className={cn("h-2", `[&>div]:${strength.color}`)}
         />
+        <div className="space-y-1">
+          {strength.criteria.map((criterion, index) => (
+            <div key={index} className="flex items-center space-x-2 text-xs">
+              <div className={cn("w-2 h-2 rounded-full", 
+                criterion.met ? "bg-success" : "bg-muted"
+              )} />
+              <span className={criterion.met ? "text-success" : "text-muted-foreground"}>
+                {criterion.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
