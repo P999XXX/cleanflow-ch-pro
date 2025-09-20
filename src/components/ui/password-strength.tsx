@@ -16,11 +16,11 @@ const calculatePasswordStrength = (password: string): {
   let score = 0;
   
   const criteria = [
-    { label: "Mindestens 8 Zeichen", met: password.length >= 8 },
-    { label: "Kleinbuchstaben (a-z)", met: /[a-z]/.test(password) },
-    { label: "Großbuchstaben (A-Z)", met: /[A-Z]/.test(password) },
-    { label: "Zahlen (0-9)", met: /[0-9]/.test(password) },
-    { label: "Sonderzeichen (!@#$...)", met: /[^A-Za-z0-9]/.test(password) }
+    { label: "8+ Zeichen", met: password.length >= 8 },
+    { label: "Kleinbuchstaben", met: /[a-z]/.test(password) },
+    { label: "Großbuchstaben", met: /[A-Z]/.test(password) },
+    { label: "Zahlen", met: /[0-9]/.test(password) },
+    { label: "Sonderzeichen", met: /[^A-Za-z0-9]/.test(password) }
   ];
 
   criteria.forEach((criterion, index) => {
@@ -36,7 +36,10 @@ const calculatePasswordStrength = (password: string): {
   let text = "";
   let color = "";
 
-  if (score <= 25) {
+  if (score === 0) {
+    text = "";
+    color = "bg-transparent";
+  } else if (score <= 25) {
     text = "Schwach";
     color = "bg-destructive";
   } else if (score <= 50) {
