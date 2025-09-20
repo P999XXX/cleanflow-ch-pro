@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   BarChart3,
-  Briefcase,
   Calendar,
   Clock,
   FileText,
@@ -10,13 +9,23 @@ import {
   Package,
   Users,
   UserCheck,
-  Ticket,
   Settings,
   Building2,
   DollarSign,
   ChevronDown,
   ChevronRight,
   Sparkles,
+  Home,
+  CalendarDays,
+  FileCheck,
+  Car,
+  MessageSquare,
+  CheckSquare,
+  UserX,
+  GraduationCap,
+  Smartphone,
+  AlertTriangle,
+  Briefcase,
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
@@ -36,43 +45,48 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const navigationItems = [
   {
-    title: "Hauptbereich",
+    title: "Dashboard",
     items: [
-      { title: "Dashboard", url: "/", icon: BarChart3 },
+      { title: "Übersicht", url: "/", icon: Home },
+      { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
     ]
   },
   {
-    title: "Projektmanagement",
-    items: [
-      { title: "Projekte", url: "/projekte", icon: Briefcase },
-      { title: "Einsatzplanung", url: "/einsatzplanung", icon: Calendar },
-      { title: "Zeiterfassung", url: "/zeiterfassung", icon: Clock },
-    ]
-  },
-  {
-    title: "Geschäftsprozesse",
-    items: [
-      { title: "Offerten", url: "/offerten", icon: FileText },
-      { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
-      { title: "Rechnungen", url: "/rechnungen", icon: Receipt },
-      { title: "Materialien", url: "/materialien", icon: Package },
-    ]
-  },
-  {
-    title: "Verwaltung",
+    title: "Kontakte",
     items: [
       { title: "Kunden", url: "/kunden", icon: Users },
       { title: "Mitarbeiter", url: "/mitarbeiter", icon: UserCheck },
-      { title: "Tickets", url: "/tickets", icon: Ticket },
     ]
   },
   {
-    title: "System",
+    title: "Auftragswesen",
     items: [
-      { title: "Admin", url: "/admin", icon: Settings },
-      { title: "Lohnabrechnung", url: "/lohnabrechnung", icon: DollarSign },
-      { title: "Berichte", url: "/berichte", icon: BarChart3 },
-      { title: "Einstellungen", url: "/einstellungen", icon: Settings },
+      { title: "Angebote", url: "/angebote", icon: FileText },
+      { title: "Verträge", url: "/vertraege", icon: FileCheck },
+      { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
+      { title: "Materialbestellungen", url: "/materialbestellungen", icon: Package },
+      { title: "Rechnungen", url: "/rechnungen", icon: Receipt },
+    ]
+  },
+  {
+    title: "Controlling",
+    items: [
+      { title: "Objekte", url: "/objekte", icon: Building2 },
+      { title: "Einsatzplan", url: "/einsatzplan", icon: Calendar },
+      { title: "Fahrzeuge", url: "/fahrzeuge", icon: Car },
+      { title: "Materialschrank", url: "/materialschrank", icon: Briefcase },
+      { title: "Beschwerden", url: "/beschwerden", icon: MessageSquare },
+      { title: "QS Kontrollen", url: "/qs-kontrollen", icon: CheckSquare },
+    ]
+  },
+  {
+    title: "Personal",
+    items: [
+      { title: "Zeiterfassung", url: "/zeiterfassung", icon: Clock },
+      { title: "Stundenkontrolle", url: "/stundenkontrolle", icon: BarChart3 },
+      { title: "Abwesenheiten", url: "/abwesenheiten", icon: UserX },
+      { title: "Schulungen", url: "/schulungen", icon: GraduationCap },
+      { title: "Mitarbeiter App", url: "/mitarbeiter-app", icon: Smartphone },
     ]
   }
 ];
@@ -83,11 +97,11 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "Hauptbereich": true,
-    "Projektmanagement": true,
-    "Geschäftsprozesse": false,
-    "Verwaltung": false,
-    "System": false,
+    "Dashboard": true,
+    "Kontakte": false,
+    "Auftragswesen": false,
+    "Controlling": false,
+    "Personal": false,
   });
 
   const toggleGroup = (groupTitle: string) => {
