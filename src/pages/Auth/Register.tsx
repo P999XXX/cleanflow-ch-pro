@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, User, Chrome } from 'lucide-react';
+import { PasswordStrength } from '@/components/ui/password-strength';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -79,7 +80,7 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-md shadow-elegant">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-elegant bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold text-foreground">
             CleanFlow registrieren
           </CardTitle>
           <p className="text-muted-foreground">
@@ -87,28 +88,6 @@ export default function Register() {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleSignUp}
-            disabled={loading}
-          >
-            <Chrome className="mr-2 h-4 w-4" />
-            Mit Google registrieren
-          </Button>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Oder mit E-Mail
-              </span>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -176,6 +155,7 @@ export default function Register() {
                   minLength={6}
                 />
               </div>
+              <PasswordStrength password={formData.password} />
             </div>
 
             <div className="space-y-2">
@@ -233,6 +213,28 @@ export default function Register() {
               {loading ? 'Registrierung läuft...' : 'Registrieren'}
             </Button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Oder
+              </span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignUp}
+            disabled={loading}
+          >
+            <Chrome className="mr-2 h-4 w-4" />
+            Mit Google registrieren
+          </Button>
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, Chrome, Eye, EyeOff } from 'lucide-react';
@@ -12,6 +13,7 @@ export default function Login() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    rememberMe: false,
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +24,13 @@ export default function Login() {
     setFormData(prev => ({
       ...prev,
       [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleCheckboxChange = (checked: boolean) => {
+    setFormData(prev => ({
+      ...prev,
+      rememberMe: checked
     }));
   };
 
@@ -45,9 +54,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
-      <Card className="w-full max-w-md shadow-elegant">
+      <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-elegant bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold text-foreground">
             Bei CleanFlow anmelden
           </CardTitle>
           <p className="text-muted-foreground">
@@ -55,28 +64,6 @@ export default function Login() {
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full"
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-          >
-            <Chrome className="mr-2 h-4 w-4" />
-            Mit Google anmelden
-          </Button>
-          
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <Separator className="w-full" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Oder mit E-Mail
-              </span>
-            </div>
-          </div>
-
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">E-Mail-Adresse</Label>
@@ -125,7 +112,17 @@ export default function Login() {
               </div>
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="rememberMe"
+                  checked={formData.rememberMe}
+                  onCheckedChange={handleCheckboxChange}
+                />
+                <Label htmlFor="rememberMe" className="text-sm">
+                  Angemeldet bleiben
+                </Label>
+              </div>
               <Link 
                 to="/forgot-password" 
                 className="text-sm text-primary hover:underline"
@@ -142,6 +139,28 @@ export default function Login() {
               {loading ? 'Anmeldung läuft...' : 'Anmelden'}
             </Button>
           </form>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <Separator className="w-full" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                Oder
+              </span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+          >
+            <Chrome className="mr-2 h-4 w-4" />
+            Mit Google anmelden
+          </Button>
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
