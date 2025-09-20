@@ -95,7 +95,7 @@ export default function Register() {
       <Card className="w-full max-w-md shadow-elegant">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-foreground">
-            CleanFlow registrieren
+            cleanflow.ai registrieren
           </CardTitle>
           <p className="text-muted-foreground">
             Erstellen Sie Ihr kostenloses Konto

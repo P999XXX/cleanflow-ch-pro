@@ -86,11 +86,11 @@ export default function CompanySetup() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-2xl shadow-elegant">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-2xl font-bold bg-gradient-elegant bg-clip-text text-transparent">
+          <CardTitle className="text-2xl font-bold text-foreground">
             Firmendaten erfassen
           </CardTitle>
           <p className="text-muted-foreground">
-            Vervollständigen Sie Ihr Profil mit Ihren Firmendaten
+            Vervollständigen Sie Ihr cleanflow.ai Profil mit Ihren Firmendaten
           </p>
         </CardHeader>
         <CardContent>
@@ -103,7 +103,7 @@ export default function CompanySetup() {
                 <Input
                   id="name"
                   name="name"
-                  placeholder="CleanFlow Reinigungsservice GmbH"
+                  placeholder="cleanflow Reinigungsservice GmbH"
                   value={formData.name}
                   onChange={handleInputChange}
                   className="pl-9"
@@ -176,7 +176,7 @@ export default function CompanySetup() {
                     id="email"
                     name="email"
                     type="email"
-                    placeholder="info@cleanflow.ch"
+                    placeholder="info@cleanflow.ai"
                     value={formData.email}
                     onChange={handleInputChange}
                     className="pl-9"
@@ -193,7 +193,7 @@ export default function CompanySetup() {
                   id="website"
                   name="website"
                   type="url"
-                  placeholder="https://www.cleanflow.ch"
+                  placeholder="https://www.cleanflow.ai"
                   value={formData.website}
                   onChange={handleInputChange}
                   className="pl-9"

@@ -59,7 +59,7 @@ export default function Login() {
       <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-foreground">
-            Bei CleanFlow anmelden
+            Bei cleanflow.ai anmelden
           </CardTitle>
           <p className="text-muted-foreground">
             Melden Sie sich in Ihrem Konto an
