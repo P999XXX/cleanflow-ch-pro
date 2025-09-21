@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -34,7 +34,14 @@ const Kontakte = () => {
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
 
-  // Force cards view on mobile and tablet by default, allow table on desktop
+  // Set default view mode based on device type
+  React.useEffect(() => {
+    if (!isMobile && viewMode === 'cards') {
+      setViewMode('table');
+    }
+  }, [isMobile]);
+
+  // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
   // Optimized filtering with useMemo for performance
@@ -599,8 +606,8 @@ const Kontakte = () => {
               </TabsList>
             </Tabs>
 
-            {/* Controls - Desktop only */}
-            <div className="hidden lg:flex flex-row gap-3">
+            {/* Controls - Desktop only - Right aligned */}
+            <div className="hidden lg:flex flex-row gap-3 ml-auto">
               {/* View Mode Toggle - Desktop only */}
               <Button
                 variant="outline"
@@ -782,12 +789,15 @@ const Kontakte = () => {
                    {/* Contact Persons */}
                    {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
                      <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                       <div className="flex items-center justify-between">
-                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                           <Users className="h-4 w-4" />
-                           Kontaktpersonen ({selectedItem.contact_persons.length})
-                         </h4>
-                       </div>
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            Kontaktpersonen
+                            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                              {selectedItem.contact_persons.length}
+                            </Badge>
+                          </h4>
+                        </div>
                        <div className="grid gap-3">
                          {selectedItem.contact_persons.map((contact) => (
                            <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
