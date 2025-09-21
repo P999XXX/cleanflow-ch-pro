@@ -348,10 +348,11 @@ const Kontakte = () => {
         </div>
       )}
 
-      {/* Companies Table */}
-      {companies.length > 0 && (
-        <div className="space-y-3">
-          {showSections && (
+      {/* Tables Container - Equal widths when both shown */}
+      {showSections && companies.length > 0 && persons.length > 0 ? (
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+          {/* Companies Table */}
+          <div className="space-y-3">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Building2 className="h-5 w-5" />
               Unternehmen
@@ -359,8 +360,7 @@ const Kontakte = () => {
                 {companies.length}
               </Badge>
             </h3>
-          )}
-          <Card>
+            <Card>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -432,13 +432,10 @@ const Kontakte = () => {
               </TableBody>
             </Table>
           </Card>
-        </div>
-      )}
-
-      {/* Persons Table */}
-      {persons.length > 0 && (
-        <div className="space-y-3">
-          {showSections && (
+          </div>
+          
+          {/* Persons Table */}
+          <div className="space-y-3">
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Users className="h-5 w-5" />
               Personen
@@ -446,8 +443,7 @@ const Kontakte = () => {
                 {persons.length}
               </Badge>
             </h3>
-          )}
-          <Card>
+            <Card>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -538,7 +534,198 @@ const Kontakte = () => {
               </TableBody>
             </Table>
           </Card>
+          </div>
         </div>
+      ) : (
+        <>
+          {/* Companies Table - Full width when alone */}
+          {companies.length > 0 && (
+            <div className="space-y-3">
+              {showSections && (
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Unternehmen
+                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                    {companies.length}
+                  </Badge>
+                </h3>
+              )}
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Ort</TableHead>
+                      <TableHead>Kontakt</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Aktionen</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {companies.map((company) => (
+                      <TableRow 
+                        key={company.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => handleCardClick(company, 'company')}
+                      >
+                        <TableCell className="font-medium">{company.name}</TableCell>
+                        <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
+                        <TableCell>
+                           <div className="flex flex-wrap items-center gap-3">
+                             {company.email && (
+                               <div className="flex items-center gap-1 text-sm">
+                                 <Mail className="h-3 w-3" />
+                                 <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                                   {company.email}
+                                 </a>
+                               </div>
+                             )}
+                             {company.phone && (
+                               <div className="flex items-center gap-1 text-sm">
+                                 <Phone className="h-3 w-3" />
+                                 <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                                   {company.phone}
+                                 </a>
+                               </div>
+                             )}
+                           </div>
+                        </TableCell>
+                        <TableCell>{getStatusBadge(company.status)}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedCompany(company);
+                                setFormMode('company');
+                                setIsFormOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteCompany.mutate(company.id);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          )}
+
+          {/* Persons Table - Full width when alone */}
+          {persons.length > 0 && (
+            <div className="space-y-3">
+              {showSections && (
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Personen
+                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                    {persons.length}
+                  </Badge>
+                </h3>
+              )}
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Unternehmen</TableHead>
+                      <TableHead>Kontakt</TableHead>
+                      <TableHead>Primär</TableHead>
+                      <TableHead>Aktionen</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {persons.map((person) => (
+                      <TableRow 
+                        key={person.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => handleCardClick(person, 'person')}
+                      >
+                        <TableCell className="font-medium">{person.first_name} {person.last_name}</TableCell>
+                        <TableCell>{person.customer_companies?.name || '-'}</TableCell>
+                        <TableCell>
+                           <div className="flex flex-wrap items-center gap-3">
+                             {person.email && (
+                               <div className="flex items-center gap-1 text-sm">
+                                 <Mail className="h-3 w-3" />
+                                 <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                                   {person.email}
+                                 </a>
+                               </div>
+                             )}
+                             {person.phone && (
+                               <div className="flex items-center gap-1 text-sm">
+                                 <Phone className="h-3 w-3" />
+                                 <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                                   {person.phone}
+                                 </a>
+                               </div>
+                             )}
+                             {person.mobile && (
+                               <div className="flex items-center gap-1 text-sm">
+                                 <Smartphone className="h-3 w-3" />
+                                 <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                                   {person.mobile}
+                                 </a>
+                               </div>
+                             )}
+                           </div>
+                        </TableCell>
+                        <TableCell>
+                          {person.is_primary_contact && (
+                            <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                              Primär
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedPerson(person);
+                                setFormMode('person');
+                                setIsFormOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteContactPerson.mutate(person.id);
+                              }}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -553,36 +740,75 @@ const Kontakte = () => {
             <h1 className="text-2xl font-bold">Kontakte</h1>
           </div>
         
-          {/* Search and Controls */}
-          <div className="flex flex-col lg:flex-row gap-4">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Suchen nach Name, E-Mail, Telefon..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-9"
-              />
-              {searchTerm && (
-                <button
-                  onClick={clearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-            
-            {/* Search Results Info */}
-            {isSearching && (
-              <div className="text-sm text-muted-foreground flex items-center">
-                {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
-              </div>
+        {/* Search and Controls - Desktop: Horizontal Layout */}
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* Search */}
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Suchen nach Name, E-Mail, Telefon..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-9 pr-9"
+            />
+            {searchTerm && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
             )}
-            
+          </div>
+
+          {/* Tabs - Desktop: Inline with controls */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full lg:w-auto">
+              <TabsList className="grid grid-cols-3 lg:grid-cols-3 lg:w-auto">
+                <TabsTrigger value="all" className="flex items-center gap-1 px-2">
+                  <Contact className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">Alle</span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'all' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {totalCount}
+                  </Badge>
+                </TabsTrigger>
+                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                  <Building className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">
+                    <span className="hidden sm:inline">Unternehmen</span>
+                    <span className="sm:hidden">Firma</span>
+                  </span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {filteredCompanies.length}
+                  </Badge>
+                </TabsTrigger>
+                <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
+                  <Users className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">Personen</span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {filteredPersons.length}
+                  </Badge>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             {/* Controls */}
-            <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
+            <div className="flex flex-row gap-3">
               {/* View Mode Toggle - Hidden on mobile */}
               <Button
                 variant="outline"
@@ -616,83 +842,55 @@ const Kontakte = () => {
               </Button>
             </div>
           </div>
-
-          {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="all" className="flex items-center gap-1 px-2">
-                <Contact className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">Alle</span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'all' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {totalCount}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                <Building className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">
-                  <span className="hidden sm:inline">Unternehmen</span>
-                  <span className="sm:hidden">Firma</span>
-                </span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {filteredCompanies.length}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
-                <Users className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">Personen</span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {filteredPersons.length}
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Dynamic Subtitle */}
-            <div className="mt-4 mb-2">
-              <h2 className="text-lg font-medium text-muted-foreground">
-                {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
-              </h2>
+          
+          {/* Search Results Info - Mobile */}
+          {isSearching && (
+            <div className="text-sm text-muted-foreground flex items-center lg:hidden">
+              {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
             </div>
+          )}
+        </div>
 
-            {/* Tab Content */}
-            <TabsContent value="all" className="mt-6">
+        {/* Content Section */}
+        <div className="mt-4">
+          {/* Dynamic Subtitle */}
+          <div className="mb-4">
+            <h2 className="text-lg font-medium text-muted-foreground">
+              {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
+            </h2>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'all' && (
+            <div className="space-y-6">
               {effectiveViewMode === 'cards' ? (
                 <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
               ) : (
                 <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
               )}
-            </TabsContent>
+            </div>
+          )}
 
-            <TabsContent value="companies" className="mt-6">
+          {activeTab === 'companies' && (
+            <div className="space-y-6">
               {effectiveViewMode === 'cards' ? (
                 <CardsView companies={filteredCompanies} persons={[]} />
               ) : (
                 <TableView companies={filteredCompanies} persons={[]} />
               )}
-            </TabsContent>
+            </div>
+          )}
 
-            <TabsContent value="persons" className="mt-6">
+          {activeTab === 'persons' && (
+            <div className="space-y-6">
               {effectiveViewMode === 'cards' ? (
                 <CardsView companies={[]} persons={filteredPersons} />
               ) : (
                 <TableView companies={[]} persons={filteredPersons} />
               )}
-            </TabsContent>
-          </Tabs>
+            </div>
+          )}
+        </div>
         </div>
       </div>
 
