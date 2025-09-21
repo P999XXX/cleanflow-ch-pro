@@ -200,19 +200,24 @@ const Kontakte = () => {
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-lg truncate">
-              {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
-            </h3>
-            {type === 'company' ? (
-              (item.city || item.postal_code) && (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                  <MapPin className="h-3 w-3 flex-shrink-0" />
-                  <span className="truncate">
-                    {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
-                  </span>
-                </div>
-              )
-            ) : (
+             <h3 className="font-semibold text-lg truncate">
+               {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
+             </h3>
+             {type === 'company' ? (
+               <div className="space-y-1">
+                 {item.company_type && (
+                   <p className="text-sm font-normal text-muted-foreground">{item.company_type}</p>
+                 )}
+                 {(item.city || item.postal_code) && (
+                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                     <MapPin className="h-3 w-3 flex-shrink-0" />
+                     <span className="truncate">
+                       {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                     </span>
+                   </div>
+                 )}
+               </div>
+             ) : (
               <div className="space-y-1 mt-1">
                 {item.title && (
                   <p className="text-sm text-muted-foreground truncate">{item.title}</p>
