@@ -67,6 +67,24 @@
     --transition-smooth: all 0.2s ease-in-out;
     --transition-fast: all 0.15s ease-in-out;
 
+    /* Typography Scale - 10% smaller */
+    --text-xs: 0.63rem;     /* ~10.1px */
+    --text-sm: 0.79rem;     /* ~12.6px */
+    --text-base: 0.9rem;    /* ~14.4px */
+    --text-lg: 1.01rem;     /* ~16.2px */
+    --text-xl: 1.13rem;     /* ~18px */
+    --text-2xl: 1.35rem;    /* ~21.6px */
+    --text-3xl: 1.71rem;    /* ~27.4px */
+    --text-4xl: 2.03rem;    /* ~32.5px */
+
+    /* Icon Scale - 10% smaller */
+    --icon-xs: 0.9rem;      /* ~14.4px */
+    --icon-sm: 1.08rem;     /* ~17.3px */
+    --icon-base: 1.26rem;   /* ~20.2px */
+    --icon-lg: 1.44rem;     /* ~23px */
+    --icon-xl: 1.62rem;     /* ~25.9px */
+    --icon-2xl: 1.8rem;     /* ~28.8px */
+
     /* Radius */
     --radius: 0.5rem;
 
