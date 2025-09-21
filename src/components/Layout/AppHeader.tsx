@@ -1,4 +1,4 @@
-import { Bell, Search, Settings, User, LogOut, Moon, Sun, Home, CalendarDays, Users, FileText, Building, UserCheck, MessageCircle } from "lucide-react";
+import { Bell, Search, Settings, User, LogOut, Moon, Sun, Home, CalendarDays, Users, FileText, Building, UserCheck, MessageCircle, Ticket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -264,6 +264,21 @@ export function AppHeader() {
                 </NavLink>
               </NavigationMenuLink>
             </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <NavLink 
+                  to="/tickets" 
+                  className={({ isActive }) => cn(
+                    "group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+                    isActive && "bg-accent text-accent-foreground"
+                  )}
+                >
+                  <Ticket className="mr-2 h-4 w-4" />
+                  Tickets
+                </NavLink>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
         
@@ -291,9 +306,11 @@ export function AppHeader() {
         </Button>
 
         {/* Notifications */}
-        <Button variant="ghost" size="sm" className="relative">
-          <Bell className="w-4 h-4" />
-          <Badge className="absolute -top-1 -right-1 w-2 h-2 p-0 bg-destructive border-0" />
+        <Button variant="ghost" size="sm" className="relative" asChild>
+          <NavLink to="/benachrichtigungen">
+            <Bell className="w-4 h-4" />
+            <Badge className="absolute -top-1 -right-1 w-2 h-2 p-0 bg-destructive border-0" />
+          </NavLink>
         </Button>
 
         {/* Theme Toggle */}
