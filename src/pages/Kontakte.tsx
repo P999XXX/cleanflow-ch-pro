@@ -12,6 +12,7 @@ import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { useIsMobile } from '@/hooks/use-mobile';
+import GoogleMap from '@/components/ui/google-map';
 
 const Kontakte = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -806,6 +807,23 @@ const Kontakte = () => {
                           </div>
                         </div>
                       </div>
+                    </div>
+                  )}
+
+                  {/* Google Maps - Show company location */}
+                  {(selectedItem.address || selectedItem.city) && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Standort
+                      </h4>
+                      <GoogleMap
+                        address={selectedItem.address}
+                        postal_code={selectedItem.postal_code}
+                        city={selectedItem.city}
+                        country={selectedItem.country}
+                        className="w-full h-64 rounded-lg"
+                      />
                     </div>
                   )}
 
