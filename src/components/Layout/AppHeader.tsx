@@ -23,10 +23,12 @@ import { useTheme } from "next-themes";
 import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useProfile } from "@/hooks/useProfile";
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
   const { signOut } = useAuth();
+  const { getDisplayName, getEmail } = useProfile();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -330,7 +332,7 @@ export function AppHeader() {
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground">
-                  MW
+                  {getDisplayName().split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                 </AvatarFallback>
               </Avatar>
             </Button>
@@ -338,9 +340,9 @@ export function AppHeader() {
           <DropdownMenuContent className="w-56 bg-background border shadow-lg z-50" align="end" forceMount>
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
-                <p className="font-medium">Max Weber</p>
+                <p className="font-medium">{getDisplayName()}</p>
                 <p className="w-[200px] truncate text-sm text-muted-foreground">
-                  max.weber@reinigungsfirma.ch
+                  {getEmail()}
                 </p>
               </div>
             </div>
