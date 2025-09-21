@@ -11,6 +11,7 @@ import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, 
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Kontakte = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -26,10 +27,14 @@ const Kontakte = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
 
+  const isMobile = useIsMobile();
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
+
+  // Force cards view on mobile
+  const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
   // Optimized filtering with useMemo for performance
   const filteredCompanies = useMemo(() => {
@@ -576,12 +581,12 @@ const Kontakte = () => {
             
             {/* Controls */}
             <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
-              {/* View Mode Toggle */}
+              {/* View Mode Toggle - Hidden on mobile */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="flex items-center gap-2"
+                className="hidden md:flex items-center gap-2"
               >
                 {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
                 {viewMode === 'table' ? 'Karten' : 'Tabelle'}
@@ -653,7 +658,7 @@ const Kontakte = () => {
 
             {/* Tab Content */}
             <TabsContent value="all" className="mt-6">
-              {viewMode === 'cards' ? (
+              {effectiveViewMode === 'cards' ? (
                 <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
               ) : (
                 <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
@@ -661,7 +666,7 @@ const Kontakte = () => {
             </TabsContent>
 
             <TabsContent value="companies" className="mt-6">
-              {viewMode === 'cards' ? (
+              {effectiveViewMode === 'cards' ? (
                 <CardsView companies={filteredCompanies} persons={[]} />
               ) : (
                 <TableView companies={filteredCompanies} persons={[]} />
@@ -669,7 +674,7 @@ const Kontakte = () => {
             </TabsContent>
 
             <TabsContent value="persons" className="mt-6">
-              {viewMode === 'cards' ? (
+              {effectiveViewMode === 'cards' ? (
                 <CardsView companies={[]} persons={filteredPersons} />
               ) : (
                 <TableView companies={[]} persons={filteredPersons} />
