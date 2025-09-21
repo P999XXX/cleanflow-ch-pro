@@ -348,11 +348,10 @@ const Kontakte = () => {
         </div>
       )}
 
-      {/* Tables Container - Equal widths when both shown */}
-      {showSections && companies.length > 0 && persons.length > 0 ? (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {/* Companies Table */}
-          <div className="space-y-3">
+      {/* Companies Table */}
+      {companies.length > 0 && (
+        <div className="space-y-3">
+          {showSections && (
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Building2 className="h-5 w-5" />
               Unternehmen
@@ -360,7 +359,8 @@ const Kontakte = () => {
                 {companies.length}
               </Badge>
             </h3>
-            <Card>
+          )}
+          <Card>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -432,10 +432,13 @@ const Kontakte = () => {
               </TableBody>
             </Table>
           </Card>
-          </div>
-          
-          {/* Persons Table */}
-          <div className="space-y-3">
+        </div>
+      )}
+
+      {/* Persons Table */}
+      {persons.length > 0 && (
+        <div className="space-y-3">
+          {showSections && (
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Users className="h-5 w-5" />
               Personen
@@ -443,7 +446,8 @@ const Kontakte = () => {
                 {persons.length}
               </Badge>
             </h3>
-            <Card>
+          )}
+          <Card>
             <Table>
               <TableHeader>
                 <TableRow>
@@ -534,198 +538,7 @@ const Kontakte = () => {
               </TableBody>
             </Table>
           </Card>
-          </div>
         </div>
-      ) : (
-        <>
-          {/* Companies Table - Full width when alone */}
-          {companies.length > 0 && (
-            <div className="space-y-3">
-              {showSections && (
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  Unternehmen
-                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                    {companies.length}
-                  </Badge>
-                </h3>
-              )}
-              <Card>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Ort</TableHead>
-                      <TableHead>Kontakt</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {companies.map((company) => (
-                      <TableRow 
-                        key={company.id}
-                        className="cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleCardClick(company, 'company')}
-                      >
-                        <TableCell className="font-medium">{company.name}</TableCell>
-                        <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                        <TableCell>
-                           <div className="flex flex-wrap items-center gap-3">
-                             {company.email && (
-                               <div className="flex items-center gap-1 text-sm">
-                                 <Mail className="h-3 w-3" />
-                                 <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                                   {company.email}
-                                 </a>
-                               </div>
-                             )}
-                             {company.phone && (
-                               <div className="flex items-center gap-1 text-sm">
-                                 <Phone className="h-3 w-3" />
-                                 <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                                   {company.phone}
-                                 </a>
-                               </div>
-                             )}
-                           </div>
-                        </TableCell>
-                        <TableCell>{getStatusBadge(company.status)}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedCompany(company);
-                                setFormMode('company');
-                                setIsFormOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteCompany.mutate(company.id);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Card>
-            </div>
-          )}
-
-          {/* Persons Table - Full width when alone */}
-          {persons.length > 0 && (
-            <div className="space-y-3">
-              {showSections && (
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Personen
-                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                    {persons.length}
-                  </Badge>
-                </h3>
-              )}
-              <Card>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Unternehmen</TableHead>
-                      <TableHead>Kontakt</TableHead>
-                      <TableHead>Primär</TableHead>
-                      <TableHead>Aktionen</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {persons.map((person) => (
-                      <TableRow 
-                        key={person.id}
-                        className="cursor-pointer hover:bg-muted/50 transition-colors"
-                        onClick={() => handleCardClick(person, 'person')}
-                      >
-                        <TableCell className="font-medium">{person.first_name} {person.last_name}</TableCell>
-                        <TableCell>{person.customer_companies?.name || '-'}</TableCell>
-                        <TableCell>
-                           <div className="flex flex-wrap items-center gap-3">
-                             {person.email && (
-                               <div className="flex items-center gap-1 text-sm">
-                                 <Mail className="h-3 w-3" />
-                                 <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                                   {person.email}
-                                 </a>
-                               </div>
-                             )}
-                             {person.phone && (
-                               <div className="flex items-center gap-1 text-sm">
-                                 <Phone className="h-3 w-3" />
-                                 <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                                   {person.phone}
-                                 </a>
-                               </div>
-                             )}
-                             {person.mobile && (
-                               <div className="flex items-center gap-1 text-sm">
-                                 <Smartphone className="h-3 w-3" />
-                                 <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                                   {person.mobile}
-                                 </a>
-                               </div>
-                             )}
-                           </div>
-                        </TableCell>
-                        <TableCell>
-                          {person.is_primary_contact && (
-                            <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                              Primär
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedPerson(person);
-                                setFormMode('person');
-                                setIsFormOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteContactPerson.mutate(person.id);
-                              }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Card>
-            </div>
-          )}
-        </>
       )}
     </div>
   );
