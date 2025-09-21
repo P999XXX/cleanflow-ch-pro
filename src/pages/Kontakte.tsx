@@ -547,24 +547,8 @@ const Kontakte = () => {
         <div className="flex flex-col space-y-4">
           {/* Title */}
           <div className="flex items-center gap-2">
-            {activeTab === 'all' && (
-              <>
-                <Users className="h-6 w-6" />
-                <h1 className="text-2xl font-bold">Kontakte</h1>
-              </>
-            )}
-            {activeTab === 'companies' && (
-              <>
-                <Building className="h-6 w-6" />
-                <h1 className="text-2xl font-bold">Unternehmen</h1>
-              </>
-            )}
-            {activeTab === 'persons' && (
-              <>
-                <Users className="h-6 w-6" />
-                <h1 className="text-2xl font-bold">Personen</h1>
-              </>
-            )}
+            <Users className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Kontakte</h1>
           </div>
         
           {/* Search and Controls */}
