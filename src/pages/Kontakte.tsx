@@ -725,25 +725,13 @@ const Kontakte = () => {
                   </>
                 )}
               </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
-                <div className="flex items-center gap-2">
-                  {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
-                  {itemType === 'person' && selectedItem?.is_primary_contact && (
-                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                      Primärkontakt
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleEditItem}>
-                    <Edit className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Bearbeiten</span>
-                  </Button>
-                  <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleDeleteItem}>
-                    <Trash2 className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Löschen</span>
-                  </Button>
-                </div>
+              <div className="flex items-center gap-2">
+                {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
+                {itemType === 'person' && selectedItem?.is_primary_contact && (
+                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                    Primärkontakt
+                  </Badge>
+                )}
               </div>
             </DialogTitle>
           </DialogHeader>
@@ -978,6 +966,18 @@ const Kontakte = () => {
               )}
             </div>
           )}
+          
+          {/* Action Buttons at Bottom */}
+          <div className="flex justify-end gap-2 pt-4 border-t mt-6">
+            <Button variant="outline" onClick={handleEditItem} className="flex items-center gap-2">
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Button>
+            <Button variant="outline" onClick={handleDeleteItem} className="flex items-center gap-2">
+              <Trash2 className="h-4 w-4" />
+              Löschen
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
