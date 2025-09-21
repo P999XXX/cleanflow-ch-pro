@@ -129,14 +129,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/company-setup`,
+        redirectTo: `${window.location.origin}/`,
       }
     });
 
     if (error) {
+      let errorMessage = error.message;
+      
+      // Provide more user-friendly error messages
+      if (error.message.includes('invalid_client')) {
+        errorMessage = "Google-Anmeldung ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut oder verwenden Sie die E-Mail-Anmeldung.";
+      } else if (error.message.includes('redirect_uri_mismatch')) {
+        errorMessage = "Konfigurationsfehler bei der Google-Anmeldung. Bitte kontaktieren Sie den Support.";
+      }
+      
       toast({
         title: "Google-Anmeldung fehlgeschlagen",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     }

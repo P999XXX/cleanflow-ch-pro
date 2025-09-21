@@ -50,8 +50,17 @@ export default function Login() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    await signInWithGoogle();
-    setLoading(false);
+    try {
+      const { error } = await signInWithGoogle();
+      if (error) {
+        // Error handling is already done in useAuth hook
+        console.error('Google sign-in error:', error);
+      }
+    } catch (err) {
+      console.error('Unexpected error during Google sign-in:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
