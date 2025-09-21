@@ -82,6 +82,7 @@ function AuthLayout() {
       <CompanyProvider>
         <Routes>
           <Route path="/company-setup" element={<CompanySetup />} />
+          <Route path="/google-callback" element={<GoogleCallback />} />
           <Route path="/*" element={
             <SidebarProvider defaultOpen={false}>
               <div className="min-h-screen flex w-full bg-background">
@@ -134,7 +135,7 @@ function AuthLayout() {
     <Routes>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/google-callback" element={<GoogleCallback />} />
+      <Route path="/google-callback" element={<CompanyProvider><GoogleCallback /></CompanyProvider>} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/agb" element={<AGB />} />
