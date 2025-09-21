@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ModalOverlay } from "@/components/ui/modal-overlay";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -15,7 +15,7 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
   const { user } = useAuth();
   const [hasCompany, setHasCompany] = useState<boolean | null>(null);
   const [companyLoading, setCompanyLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const checkCompanyData = async () => {
@@ -49,7 +49,7 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
 
   const handleCompanySuccess = () => {
     setHasCompany(true);
-    setDialogOpen(false);
+    setModalOpen(false);
   };
 
   if (companyLoading) {
@@ -81,17 +81,12 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
               <p className="text-muted-foreground">
                 Bitte vervollständigen Sie Ihre Firmendaten, um CleanFlow.ai nutzen zu können.
               </p>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90">Erfassen</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Firmendaten erfassen</DialogTitle>
-                  </DialogHeader>
-                  <CompanyForm isProfile={true} isSetupMode={isSetupMode} onSuccess={handleCompanySuccess} />
-                </DialogContent>
-              </Dialog>
+              <Button 
+                className="bg-primary hover:bg-primary/90" 
+                onClick={() => setModalOpen(true)}
+              >
+                Erfassen
+              </Button>
             </CardContent>
           </Card>
         ) : (
@@ -106,17 +101,12 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
               <p className="text-muted-foreground">
                 Bearbeiten Sie Ihre Firmendaten und Kontaktinformationen.
               </p>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Anpassen</Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Firmendaten bearbeiten</DialogTitle>
-                  </DialogHeader>
-                  <CompanyForm isProfile={true} isSetupMode={false} onSuccess={handleCompanySuccess} />
-                </DialogContent>
-              </Dialog>
+              <Button 
+                variant="outline" 
+                onClick={() => setModalOpen(true)}
+              >
+                Anpassen
+              </Button>
             </CardContent>
           </Card>
         )}
@@ -154,6 +144,18 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
           </CardContent>
         </Card>
       </div>
+      
+      <ModalOverlay
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={hasCompany ? "Firmendaten bearbeiten" : "Firmendaten erfassen"}
+      >
+        <CompanyForm 
+          isProfile={true} 
+          isSetupMode={isSetupMode} 
+          onSuccess={handleCompanySuccess} 
+        />
+      </ModalOverlay>
     </div>
   );
 };
