@@ -160,16 +160,14 @@ export const ContactForm = ({
       newErrors.country = 'Land ist erforderlich';
     }
 
-    if (!companyData.phone.trim()) {
-      newErrors.phone = 'Telefon ist erforderlich';
-    } else if (!/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
-      newErrors.phone = 'Ungültiges Telefonformat';
+    // Validate email format if provided
+    if (companyData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
+      newErrors.email = 'Ungültige E-Mail-Adresse';
     }
 
-    if (!companyData.email.trim()) {
-      newErrors.email = 'E-Mail ist erforderlich';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
-      newErrors.email = 'Ungültige E-Mail-Adresse';
+    // Validate phone format if provided
+    if (companyData.phone.trim() && !/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
+      newErrors.phone = 'Ungültiges Telefonformat';
     }
 
     setErrors(newErrors);
@@ -270,7 +268,7 @@ export const ContactForm = ({
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
-                  Firmenname <span className="text-destructive">*</span>
+                  Firmenname <span className="text-muted-foreground">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -284,7 +282,7 @@ export const ContactForm = ({
 
               <div>
                 <Label htmlFor="address">
-                  Adresse <span className="text-destructive">*</span>
+                  Adresse <span className="text-muted-foreground">*</span>
                 </Label>
                 <Input
                   id="address"
@@ -299,7 +297,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="postal_code">
-                    PLZ <span className="text-destructive">*</span>
+                    PLZ <span className="text-muted-foreground">*</span>
                   </Label>
                   <Input
                     id="postal_code"
@@ -312,7 +310,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="city">
-                    Ort <span className="text-destructive">*</span>
+                    Ort <span className="text-muted-foreground">*</span>
                   </Label>
                   <Input
                     id="city"
@@ -327,7 +325,7 @@ export const ContactForm = ({
 
               <div>
                 <Label htmlFor="country">
-                  Land <span className="text-destructive">*</span>
+                  Land <span className="text-muted-foreground">*</span>
                 </Label>
                 <Input
                   id="country"
@@ -355,28 +353,22 @@ export const ContactForm = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone">
-                    Telefon <span className="text-destructive">*</span>
-                  </Label>
+                  <Label htmlFor="phone">Telefon</Label>
                   <Input
                     id="phone"
                     value={companyData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
-                    required
                     className={errors.phone ? 'border-destructive' : ''}
                   />
                   {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">
-                    E-Mail <span className="text-destructive">*</span>
-                  </Label>
+                  <Label htmlFor="email">E-Mail</Label>
                   <Input
                     id="email"
                     type="email"
                     value={companyData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    required
                     className={errors.email ? 'border-destructive' : ''}
                   />
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
@@ -417,7 +409,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="first_name">
-                    Vorname <span className="text-destructive">*</span>
+                    Vorname <span className="text-muted-foreground">*</span>
                   </Label>
                   <Input
                     id="first_name"
@@ -430,7 +422,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="last_name">
-                    Nachname <span className="text-destructive">*</span>
+                    Nachname <span className="text-muted-foreground">*</span>
                   </Label>
                   <Input
                     id="last_name"
