@@ -226,9 +226,27 @@ const Kontakte = () => {
               </div>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
+          <div className="flex items-center gap-2 flex-shrink-0 ml-2 flex-wrap">
             {type === 'company' ? (
-              getStatusBadge(item.status)
+              <>
+                {getStatusBadge(item.status)}
+                {item.industry_category && (
+                  <Badge 
+                    variant="outline" 
+                    className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                  >
+                    {item.industry_category}
+                  </Badge>
+                )}
+                {item.contact_type && (
+                  <Badge 
+                    variant="outline" 
+                    className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                  >
+                    {item.contact_type}
+                  </Badge>
+                )}
+              </>
             ) : (
               item.is_primary_contact && (
                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
@@ -406,7 +424,27 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">{getStatusBadge(company.status)}</TableCell>
+                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-2 flex-wrap">
+                            {getStatusBadge(company.status)}
+                            {company.industry_category && (
+                              <Badge 
+                                variant="outline" 
+                                className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                              >
+                                {company.industry_category}
+                              </Badge>
+                            )}
+                            {company.contact_type && (
+                              <Badge 
+                                variant="outline" 
+                                className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                              >
+                                {company.contact_type}
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
                       </TableRow>
                 ))}
               </TableBody>
