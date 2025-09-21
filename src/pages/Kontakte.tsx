@@ -1526,37 +1526,43 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <DialogHeader className="pb-4">
-            <DialogTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
+        <DialogContent className="max-w-7xl w-full mx-4 max-h-[95vh] overflow-y-auto backdrop-blur-md">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
                 {itemType === 'company' ? (
                   <>
-                    <Building2 className="h-5 w-5 text-primary" />
-                    <span className="text-xl font-semibold">{selectedItem?.name}</span>
+                    <Building2 className="h-6 w-6 text-primary" />
+                    <span className="text-2xl font-semibold">{selectedItem?.name}</span>
                   </>
                 ) : (
                   <>
-                    <Users className="h-5 w-5 text-primary" />
-                    <span className="text-xl font-semibold">
+                    <Users className="h-6 w-6 text-primary" />
+                    <span className="text-2xl font-semibold">
                       {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
                     </span>
                   </>
                 )}
               </div>
-              <div className="flex items-center gap-2">
-                {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
-                {itemType === 'person' && selectedItem?.is_primary_contact && (
-                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                    Primärkontakt
-                  </Badge>
-                )}
-                <Button variant="outline" size="sm" onClick={handleEditItem}>
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={handleDeleteItem}>
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 w-full lg:w-auto">
+                <div className="flex items-center gap-2">
+                  {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
+                  {itemType === 'person' && selectedItem?.is_primary_contact && (
+                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                      Primärkontakt
+                    </Badge>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleEditItem}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    <span className="sm:hidden">Bearbeiten</span>
+                  </Button>
+                  <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleDeleteItem}>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    <span className="sm:hidden">Löschen</span>
+                  </Button>
+                </div>
               </div>
             </DialogTitle>
           </DialogHeader>
@@ -1663,65 +1669,36 @@ const Kontakte = () => {
                           Kontaktpersonen ({selectedItem.contact_persons.length})
                         </h4>
                       </div>
-                      <div className="grid gap-3">
-                        {selectedItem.contact_persons.map((contact) => (
-                          <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50">
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <button 
-                                    onClick={() => handleNavigateToPerson(contact)}
-                                    className="font-medium text-sm text-primary hover:underline cursor-pointer"
-                                  >
-                                    {contact.first_name} {contact.last_name}
-                                  </button>
-                                  {contact.is_primary_contact && (
-                                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
-                                      Primär
-                                    </Badge>
-                                  )}
-                                </div>
-                                <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                  {contact.title && <span>{contact.title}</span>}
-                                  {contact.title && contact.department && <span>•</span>}
-                                  {contact.department && <span>{contact.department}</span>}
-                                </div>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap items-center gap-4">
-                              {contact.email && (
-                                <div className="flex items-center gap-1">
-                                  <Mail className="h-3 w-3 text-primary" />
-                                   <a href={`mailto:${contact.email}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
-                                     {contact.email}
-                                   </a>
-                                </div>
-                              )}
-                              {contact.phone && (
-                                <div className="flex items-center gap-1">
-                                  <Phone className="h-3 w-3 text-primary" />
-                                   <a href={`tel:${contact.phone}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
-                                     {contact.phone}
-                                   </a>
-                                </div>
-                              )}
-                              {contact.mobile && (
-                                <div className="flex items-center gap-1">
-                                  <Smartphone className="h-3 w-3 text-primary" />
-                                   <a href={`tel:${contact.mobile}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
-                                     {contact.mobile}
-                                   </a>
-                                </div>
-                              )}
-                            </div>
-                            {contact.notes && (
-                              <div className="mt-2 pt-2 border-t border-border/50">
-                                <p className="text-xs text-muted-foreground">{contact.notes}</p>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+                       <div className="grid gap-3">
+                         {selectedItem.contact_persons.map((contact) => (
+                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                             <div className="flex items-start justify-between">
+                               <div className="flex-1">
+                                 <div className="flex items-center gap-2">
+                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                     {contact.first_name} {contact.last_name}
+                                   </span>
+                                   {contact.is_primary_contact && (
+                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                       Primär
+                                     </Badge>
+                                   )}
+                                 </div>
+                                 <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                   {contact.title && <span>{contact.title}</span>}
+                                   {contact.title && contact.department && <span>•</span>}
+                                   {contact.department && <span>{contact.department}</span>}
+                                 </div>
+                               </div>
+                             </div>
+                             {contact.notes && (
+                               <div className="mt-2 pt-2 border-t border-border/50">
+                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                               </div>
+                             )}
+                           </div>
+                         ))}
+                       </div>
                     </div>
                   )}
                 </>
