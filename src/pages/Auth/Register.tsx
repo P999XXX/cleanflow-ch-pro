@@ -68,7 +68,9 @@ export default function Register() {
       return;
     }
 
-    if (!formData.recaptchaToken) {
+    // reCAPTCHA ist optional - nur prüfen wenn Site Key vorhanden ist
+    const recaptchaSiteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
+    if (recaptchaSiteKey && !formData.recaptchaToken) {
       toast({
         title: "reCAPTCHA erforderlich",
         description: "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
@@ -109,7 +111,7 @@ export default function Register() {
         formData.password,
         formData.firstName,
         formData.lastName,
-        formData.recaptchaToken
+        formData.recaptchaToken || undefined
       );
 
       if (!error) {
@@ -282,7 +284,7 @@ export default function Register() {
                 </Label>
               </div>
 
-{formData.acceptTerms && (
+{formData.acceptTerms && import.meta.env.VITE_RECAPTCHA_SITE_KEY && (
   <>
     <GoogleReCaptcha onVerify={handleRecaptchaChange} action="register" />
     <p className="text-xs text-muted-foreground">Sicherheitsprüfung aktiv.</p>
@@ -293,7 +295,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading || submitting || !formData.acceptTerms || !formData.recaptchaToken}
+              disabled={loading || submitting || !formData.acceptTerms || (import.meta.env.VITE_RECAPTCHA_SITE_KEY && !formData.recaptchaToken)}
             >
               {loading ? 'Registrierung läuft...' : 'Registrieren'}
             </Button>
