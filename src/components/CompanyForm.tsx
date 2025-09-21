@@ -78,6 +78,21 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
     }));
   };
 
+  const waitForCompany = async (maxAttempts = 6, delayMs = 400) => {
+    if (!user) return null;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const { data, error } = await supabase
+        .from('companies')
+        .select('id')
+        .eq('owner_id', user.id)
+        .maybeSingle();
+
+      if (data && !error) return data;
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+    return null;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -105,40 +120,62 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
       owner_id: user.id,
     };
 
-    let error;
-    
-    if (companyExists) {
-      // Update existing company
-      const result = await supabase
-        .from('companies')
-        .update(companyData)
-        .eq('owner_id', user.id);
-      error = result.error;
-    } else {
-      // Insert new company
-      const result = await supabase
-        .from('companies')
-        .insert([companyData]);
-      error = result.error;
-    }
+    try {
+      let opError: any = null;
 
-    if (error) {
-      toast({
-        title: "Fehler",
-        description: `Firma konnte nicht ${companyExists ? 'aktualisiert' : 'erstellt'} werden: ` + error.message,
-        variant: "destructive",
-      });
-    } else {
+      if (companyExists) {
+        const { error } = await supabase
+          .from('companies')
+          .update(companyData)
+          .eq('owner_id', user.id)
+          .select('id')
+          .maybeSingle();
+        opError = error;
+      } else {
+        const { error } = await supabase
+          .from('companies')
+          .insert([companyData])
+          .select('id')
+          .maybeSingle();
+        opError = error;
+      }
+
+      if (opError) {
+        toast({
+          title: "Fehler",
+          description: `Firma konnte nicht ${companyExists ? 'aktualisiert' : 'erstellt'} werden: ` + opError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Verifizieren, dass die Firma lesbar ist (RLS/Propagation) bevor wir weiterleiten
+      const confirmed = await waitForCompany();
+      if (!confirmed) {
+        toast({
+          title: "Hinweis",
+          description: "Firmendaten gespeichert, bitte einen Moment...",
+        });
+      }
+
+      setCompanyExists(true);
       toast({
         title: "Erfolgreich",
         description: `Ihre Firmendaten wurden erfolgreich ${companyExists ? 'aktualisiert' : 'erstellt'}!`,
       });
+
       if (onSuccess) {
         onSuccess();
       }
+    } catch (error: any) {
+      toast({
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   const handleSignOut = async () => {
