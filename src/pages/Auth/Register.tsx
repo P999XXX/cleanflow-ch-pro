@@ -230,7 +230,11 @@ export default function Register() {
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Passwort bestätigen</Label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                {formData.confirmPassword && formData.password === formData.confirmPassword ? (
+                  <Check className="absolute left-3 top-3 h-4 w-4 text-success" />
+                ) : (
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                )}
                 <Input
                   id="confirmPassword"
                   name="confirmPassword"
@@ -238,27 +242,22 @@ export default function Register() {
                   placeholder="Passwort wiederholen"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="pl-9 pr-16"
+                  className="pl-9 pr-9"
                   required
                 />
-                <div className="absolute right-0 top-0 h-full flex items-center">
-                  {formData.confirmPassword && formData.password === formData.confirmPassword && (
-                    <Check className="h-4 w-4 text-green-600 mr-2" />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
                   )}
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
+                </Button>
               </div>
             </div>
 
