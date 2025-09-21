@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { MapPin } from 'lucide-react';
-import { GOOGLE_MAPS_CONFIG, isGoogleMapsConfigured } from '@/lib/config';
+import { supabase } from '@/integrations/supabase/client';
 
 interface GoogleMapProps {
   address?: string;
@@ -21,20 +21,43 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const mapRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
 
   // Construct full address
   const fullAddress = [address, postal_code, city, country]
     .filter(Boolean)
     .join(', ');
 
+  // Fetch API key from Edge Function
   useEffect(() => {
-    if (!fullAddress || !mapRef.current) {
-      setIsLoading(false);
-      return;
-    }
+    const fetchApiKey = async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke('get-maps-config');
+        
+        if (error) {
+          throw new Error(`Function error: ${error.message}`);
+        }
+        
+        if (data?.apiKey) {
+          setApiKey(data.apiKey);
+        } else {
+          setError('Google Maps API-Schlüssel nicht konfiguriert');
+        }
+      } catch (err) {
+        console.error('Error fetching Maps API key:', err);
+        setError('Google Maps API-Schlüssel konnte nicht geladen werden');
+      }
+    };
 
-    if (!isGoogleMapsConfigured()) {
-      setError('Google Maps API-Schlüssel nicht konfiguriert');
+    fetchApiKey();
+  }, []);
+
+  useEffect(() => {
+    if (!fullAddress || !mapRef.current || !apiKey) {
+      if (!apiKey && !error) {
+        // Still loading API key
+        return;
+      }
       setIsLoading(false);
       return;
     }
@@ -42,7 +65,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     const initMap = async () => {
       try {
         const loader = new Loader({
-          apiKey: GOOGLE_MAPS_CONFIG.apiKey,
+          apiKey: apiKey,
           version: 'weekly',
           libraries: ['places']
         });
@@ -54,7 +77,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         geocoder.geocode({ address: fullAddress }, (results, status) => {
           if (status === 'OK' && results && results[0]) {
             const map = new google.maps.Map(mapRef.current!, {
-              zoom: GOOGLE_MAPS_CONFIG.defaultZoom,
+              zoom: 15,
               center: results[0].geometry.location,
               mapTypeControl: false,
               streetViewControl: false,
@@ -69,7 +92,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               ]
             });
 
-            // Add marker with custom style
+            // Add marker with theme colors
             new google.maps.Marker({
               position: results[0].geometry.location,
               map: map,
@@ -77,9 +100,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               icon: {
                 path: google.maps.SymbolPath.CIRCLE,
                 scale: 8,
-                fillColor: 'hsl(var(--primary))',
+                fillColor: '#3b82f6',
                 fillOpacity: 1,
-                strokeColor: 'hsl(var(--primary-foreground))',
+                strokeColor: '#1e40af',
                 strokeWeight: 2
               }
             });
@@ -98,7 +121,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
 
     initMap();
-  }, [fullAddress]);
+  }, [fullAddress, apiKey]);
 
   if (!fullAddress) {
     return (
@@ -118,11 +141,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm font-medium">{error}</p>
           <p className="text-xs mt-1 px-4">{fullAddress}</p>
-          {error.includes('API-Schlüssel') && (
-            <p className="text-xs mt-2 text-orange-600 dark:text-orange-400">
-              Bitte Google Maps API-Schlüssel konfigurieren
-            </p>
-          )}
         </div>
       </div>
     );

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
@@ -735,6 +735,9 @@ const Kontakte = () => {
                 )}
               </div>
             </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              {itemType === 'company' ? 'Detaillierte Unternehmensansicht' : 'Detaillierte Personenansicht'}
+            </DialogDescription>
           </DialogHeader>
           
           {selectedItem && (
