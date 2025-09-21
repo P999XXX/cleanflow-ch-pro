@@ -362,15 +362,15 @@ const Kontakte = () => {
           )}
           <Card>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Ort</TableHead>
-                  <TableHead>Kontakt</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Aktionen</TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Ort</TableHead>
+                      <TableHead>Kontakt</TableHead>
+                      <TableHead className="text-right"></TableHead>
+                      <TableHead className="text-right"></TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {companies.map((company) => (
                   <TableRow 
@@ -400,8 +400,8 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                    <TableCell>{getStatusBadge(company.status)}</TableCell>
-                    <TableCell>
+                        <TableCell className="text-right">{getStatusBadge(company.status)}</TableCell>
+                        <TableCell className="text-right">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
@@ -449,15 +449,15 @@ const Kontakte = () => {
           )}
           <Card>
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Unternehmen</TableHead>
-                  <TableHead>Kontakt</TableHead>
-                  <TableHead>Primär</TableHead>
-                  <TableHead>Aktionen</TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Unternehmen</TableHead>
+                      <TableHead>Kontakt</TableHead>
+                      <TableHead className="text-right"></TableHead>
+                      <TableHead className="text-right"></TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {persons.map((person) => (
                   <TableRow 
@@ -500,14 +500,14 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                    <TableCell>
-                      {person.is_primary_contact && (
-                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                          Primär
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
+                        <TableCell className="text-right">
+                          {person.is_primary_contact && (
+                            <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                              Primär
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
                       <div className="flex items-center gap-2">
                         <Button
                           variant="outline"
