@@ -24,6 +24,7 @@ const Profileinstellungen = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [profile, setProfile] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string>('');
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
@@ -42,6 +43,21 @@ const Profileinstellungen = () => {
       .single();
       
     setProfile(data);
+
+    // Load user role
+    const { data: roleData } = await supabase
+      .rpc('get_user_roles', { _user_id: user.id });
+    
+    if (roleData && roleData.length > 0) {
+      // Get the German translation of the role
+      const roleTranslations = {
+        'masteradministrator': 'Masteradministrator',
+        'administrator': 'Administrator', 
+        'objektleiter': 'Objektleiter',
+        'reinigungsmitarbeiter': 'Reinigungsmitarbeiter'
+      };
+      setUserRole(roleTranslations[roleData[0].role] || roleData[0].role);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -114,6 +130,10 @@ const Profileinstellungen = () => {
             <div>
               <label className="text-sm font-medium">E-Mail</label>
               <p className="text-muted-foreground">{user?.email}</p>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Rolle</label>
+              <p className="text-muted-foreground">{userRole || 'Nicht zugewiesen'}</p>
             </div>
           </CardContent>
         </Card>
