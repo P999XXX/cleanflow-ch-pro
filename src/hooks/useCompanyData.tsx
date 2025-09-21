@@ -9,6 +9,7 @@ interface CompanyData {
   address: string;
   postalCode: string;
   city: string;
+  country?: string;
   phone: string;
   email: string;
   website: string;
@@ -57,6 +58,7 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
           address: data.address || '',
           postalCode: data.postal_code || '',
           city: data.city || '',
+          country: data.country || 'Schweiz',
           phone: data.phone || '',
           email: data.email || '',
           website: data.website || '',
@@ -108,6 +110,7 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
       address: data.address,
       postal_code: data.postalCode,
       city: data.city,
+      country: data.country || 'Schweiz',
       phone: data.phone,
       email: data.email,
       website: data.website,

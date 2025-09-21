@@ -7,6 +7,7 @@ interface CompanyData {
   address: string;
   postalCode: string;
   city: string;
+  country?: string;
   phone: string;
   email: string;
   website: string;
@@ -17,19 +18,38 @@ interface CompanyData {
 interface CompanyFormFieldsProps {
   formData: CompanyData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  errors?: {
+    address?: string;
+    postalCode?: string;
+    city?: string;
+    phone?: string;
+    email?: string;
+    country?: string;
+  };
   required?: {
     name?: boolean;
     address?: boolean;
+    postalCode?: boolean;
     city?: boolean;
     phone?: boolean;
     email?: boolean;
+    country?: boolean;
   };
 }
 
 export function CompanyFormFields({ 
   formData, 
-  onChange, 
-  required = { name: true } 
+  onChange,
+  errors = {},
+  required = { 
+    name: true, 
+    address: true, 
+    postalCode: true, 
+    city: true, 
+    phone: true, 
+    email: true,
+    country: true
+  } 
 }: CompanyFormFieldsProps) {
   return (
     <div className="space-y-6">
@@ -66,20 +86,31 @@ export function CompanyFormFields({
               placeholder="Musterstrasse 123"
               value={formData.address}
               onChange={onChange}
-              className="pl-9"
+              className={`pl-9 ${errors.address ? "border-destructive" : ""}`}
               required={required.address}
             />
           </div>
+          {errors.address && (
+            <p className="text-sm text-destructive">{errors.address}</p>
+          )}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="postalCode">PLZ</Label>
+          <Label htmlFor="postalCode">
+            PLZ {required.postalCode && '*'}
+          </Label>
           <Input
             id="postalCode"
             name="postalCode"
             placeholder="8000"
             value={formData.postalCode}
             onChange={onChange}
+            required={required.postalCode}
+            pattern="[0-9]{4}"
+            className={errors.postalCode ? "border-destructive" : ""}
           />
+          {errors.postalCode && (
+            <p className="text-sm text-destructive">{errors.postalCode}</p>
+          )}
         </div>
       </div>
 
@@ -94,7 +125,30 @@ export function CompanyFormFields({
           value={formData.city}
           onChange={onChange}
           required={required.city}
+          className={errors.city ? "border-destructive" : ""}
         />
+        {errors.city && (
+          <p className="text-sm text-destructive">{errors.city}</p>
+        )}
+      </div>
+
+      {/* Land */}
+      <div className="space-y-2">
+        <Label htmlFor="country">
+          Land {required.country && '*'}
+        </Label>
+        <Input
+          id="country"
+          name="country"
+          placeholder="Schweiz"
+          value={formData.country || 'Schweiz'}
+          onChange={onChange}
+          required={required.country}
+          className={errors.country ? "border-destructive" : ""}
+        />
+        {errors.country && (
+          <p className="text-sm text-destructive">{errors.country}</p>
+        )}
       </div>
 
       {/* Kontaktdaten */}
@@ -112,10 +166,14 @@ export function CompanyFormFields({
               placeholder="+41 44 123 45 67"
               value={formData.phone}
               onChange={onChange}
-              className="pl-9"
+              className={`pl-9 ${errors.phone ? "border-destructive" : ""}`}
               required={required.phone}
+              pattern="^\+?[1-9]\d{1,14}$"
             />
           </div>
+          {errors.phone && (
+            <p className="text-sm text-destructive">{errors.phone}</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">
@@ -130,10 +188,13 @@ export function CompanyFormFields({
               placeholder="info@cleanflow.ai"
               value={formData.email}
               onChange={onChange}
-              className="pl-9"
+              className={`pl-9 ${errors.email ? "border-destructive" : ""}`}
               required={required.email}
             />
           </div>
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email}</p>
+          )}
         </div>
       </div>
 

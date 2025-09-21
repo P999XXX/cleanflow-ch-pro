@@ -24,12 +24,14 @@ export default function CompanyForm({
     address: '',
     postalCode: '',
     city: '',
+    country: 'Schweiz',
     phone: '',
     email: '',
     website: '',
     taxNumber: '',
     vatNumber: '',
   });
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   const [loading, setLoading] = useState(false);
   const { companyData, saveCompany } = useCompanyData();
 
@@ -40,6 +42,7 @@ export default function CompanyForm({
         address: companyData.address,
         postalCode: companyData.postalCode,
         city: companyData.city,
+        country: companyData.country || 'Schweiz',
         phone: companyData.phone,
         email: companyData.email,
         website: companyData.website,
@@ -67,15 +70,64 @@ export default function CompanyForm({
     }
   }, [isModal, onClose]);
 
+  const validateForm = () => {
+    const newErrors: {[key: string]: string} = {};
+
+    // Validate required fields
+    if (!formData.name.trim()) {
+      newErrors.name = 'Firmenname ist erforderlich';
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = 'Adresse ist erforderlich';
+    }
+    if (!formData.postalCode.trim()) {
+      newErrors.postalCode = 'PLZ ist erforderlich';
+    } else if (!/^[0-9]{4}$/.test(formData.postalCode)) {
+      newErrors.postalCode = 'PLZ muss aus 4 Ziffern bestehen';
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = 'Ort ist erforderlich';
+    }
+    if (!formData.country.trim()) {
+      newErrors.country = 'Land ist erforderlich';
+    }
+    if (!formData.phone.trim()) {
+      newErrors.phone = 'Telefon ist erforderlich';
+    } else if (!/^\+?[1-9]\d{1,14}$/.test(formData.phone.replace(/[\s-]/g, ''))) {
+      newErrors.phone = 'Bitte geben Sie eine gültige Telefonnummer ein';
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'E-Mail ist erforderlich';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Bitte geben Sie eine gültige E-Mail-Adresse ein';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+    
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
     
     setLoading(true);
     const success = await saveCompany(formData);
@@ -119,14 +171,23 @@ export default function CompanyForm({
           <CompanyFormFields 
             formData={formData}
             onChange={handleInputChange}
-            required={{ name: true }}
+            errors={errors}
+            required={{ 
+              name: true, 
+              address: true, 
+              postalCode: true, 
+              city: true, 
+              country: true, 
+              phone: true, 
+              email: true 
+            }}
           />
 
           <div className="flex gap-4 pt-4">
             <Button
               type="submit"
               className="flex-1"
-              disabled={loading || !formData.name}
+              disabled={loading}
             >
               {loading ? 'Speichern...' : 'Speichern'}
             </Button>
