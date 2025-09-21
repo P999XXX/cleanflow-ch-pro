@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
@@ -22,6 +23,8 @@ const Kontakte = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
 
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
@@ -71,6 +74,52 @@ const Kontakte = () => {
     setItemType(type);
     setDetailsOpen(true);
   }, []);
+
+  // Handle navigation between company and person details
+  const handleNavigateToCompany = useCallback((companyId: string) => {
+    const company = companies?.find(c => c.id === companyId);
+    if (company) {
+      setSelectedItem(company);
+      setItemType('company');
+    }
+  }, [companies]);
+
+  const handleNavigateToPerson = useCallback((person: any) => {
+    setSelectedItem(person);
+    setItemType('person');
+  }, []);
+
+  // Handle edit actions
+  const handleEditItem = useCallback(() => {
+    if (itemType === 'company') {
+      setSelectedCompany(selectedItem);
+      setFormMode('company');
+    } else {
+      setSelectedPerson(selectedItem);
+      setFormMode('person');
+    }
+    setDetailsOpen(false);
+    setIsFormOpen(true);
+  }, [selectedItem, itemType]);
+
+  // Handle delete actions
+  const handleDeleteItem = useCallback(() => {
+    setItemToDelete({ item: selectedItem, type: itemType });
+    setDeleteDialogOpen(true);
+  }, [selectedItem, itemType]);
+
+  const confirmDelete = useCallback(() => {
+    if (itemToDelete) {
+      if (itemToDelete.type === 'company') {
+        deleteCompany.mutate(itemToDelete.item.id);
+      } else {
+        deleteContactPerson.mutate(itemToDelete.item.id);
+      }
+      setDeleteDialogOpen(false);
+      setDetailsOpen(false);
+      setItemToDelete(null);
+    }
+  }, [itemToDelete, deleteCompany, deleteContactPerson]);
 
   const handleCompanySubmit = (companyData) => {
     if (selectedCompany) {
@@ -1495,12 +1544,20 @@ const Kontakte = () => {
                   </>
                 )}
               </div>
-              {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
-              {itemType === 'person' && selectedItem?.is_primary_contact && (
-                <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                  Primärkontakt
-                </Badge>
-              )}
+              <div className="flex items-center gap-2">
+                {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
+                {itemType === 'person' && selectedItem?.is_primary_contact && (
+                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                    Primärkontakt
+                  </Badge>
+                )}
+                <Button variant="outline" size="sm" onClick={handleEditItem}>
+                  <Edit className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleDeleteItem}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
             </DialogTitle>
           </DialogHeader>
           
@@ -1612,9 +1669,12 @@ const Kontakte = () => {
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
-                                  <h5 className="font-medium text-sm">
+                                  <button 
+                                    onClick={() => handleNavigateToPerson(contact)}
+                                    className="font-medium text-sm text-primary hover:underline cursor-pointer"
+                                  >
                                     {contact.first_name} {contact.last_name}
-                                  </h5>
+                                  </button>
                                   {contact.is_primary_contact && (
                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
                                       Primär
@@ -1688,10 +1748,13 @@ const Kontakte = () => {
                       {selectedItem.customer_companies?.name && (
                         <div className="p-2 bg-background rounded-md">
                           <p className="text-xs text-muted-foreground">Unternehmen</p>
-                          <p className="text-sm font-medium flex items-center gap-1">
+                          <button 
+                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer"
+                          >
                             <Building2 className="h-3 w-3" />
                             {selectedItem.customer_companies.name}
-                          </p>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1756,6 +1819,32 @@ const Kontakte = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Kontakt löschen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sind Sie sicher, dass Sie {itemToDelete?.type === 'company' ? 'dieses Unternehmen' : 'diese Person'} löschen möchten?
+              {itemToDelete?.type === 'company' && itemToDelete.item.contact_persons?.length > 0 && (
+                <span className="block mt-2 font-medium text-destructive">
+                  Achtung: Dieses Unternehmen hat {itemToDelete.item.contact_persons.length} verbundene Kontaktperson(en), die ebenfalls betroffen sein könnten.
+                </span>
+              )}
+              <span className="block mt-2">Diese Aktion kann nicht rückgängig gemacht werden.</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
+              Abbrechen
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">
+              Löschen
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
