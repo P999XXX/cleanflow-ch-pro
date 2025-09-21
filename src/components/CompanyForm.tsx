@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Building, MapPin, Phone, Mail, Globe, Hash, Check } from 'lucide-react';
+import { Building, MapPin, Phone, Mail, Globe, Hash, Check, Trash2 } from 'lucide-react';
 
 interface CompanyFormProps {
   isProfile?: boolean;
@@ -26,8 +26,9 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
     vatNumber: '',
   });
   const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [companyExists, setCompanyExists] = useState(false);
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -129,6 +130,55 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
     }
     
     setLoading(false);
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+
+    const confirmed = window.confirm(
+      'Sind Sie sicher, dass Sie Ihr Konto permanent löschen möchten?\n\n' +
+      'Diese Aktion kann nicht rückgängig gemacht werden und alle Ihre Daten werden unwiderruflich entfernt.'
+    );
+
+    if (!confirmed) return;
+
+    const doubleConfirmed = window.confirm(
+      'LETZTE WARNUNG: Ihr Konto und alle Daten werden permanent gelöscht.\n\n' +
+      'Klicken Sie OK um fortzufahren oder Abbrechen um den Vorgang abzubrechen.'
+    );
+
+    if (!doubleConfirmed) return;
+
+    setDeleting(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('delete-account');
+
+      if (error) {
+        toast({
+          title: "Fehler",
+          description: "Konto konnte nicht gelöscht werden: " + error.message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Konto gelöscht",
+          description: "Ihr Konto wurde erfolgreich gelöscht.",
+        });
+        
+        // Sign out and redirect
+        await signOut();
+        window.location.href = '/login';
+      }
+    } catch (err) {
+      toast({
+        title: "Fehler",
+        description: "Ein unerwarteter Fehler ist aufgetreten.",
+        variant: "destructive",
+      });
+    } finally {
+      setDeleting(false);
+    }
   };
 
   return (
@@ -287,10 +337,23 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
             <Button
               type="submit"
               className="flex-1"
-              disabled={loading || !formData.name}
+              disabled={loading || deleting || !formData.name}
             >
               {loading ? 'Speichern...' : (companyExists ? 'Aktualisieren' : (isProfile ? 'Speichern' : 'Firma erstellen'))}
             </Button>
+            
+            {!isProfile && (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleDeleteAccount}
+                disabled={loading || deleting}
+                className="flex items-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                {deleting ? 'Löschen...' : 'Konto löschen'}
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>
