@@ -547,16 +547,8 @@ const Kontakte = () => {
         <div className="flex flex-col space-y-4">
           {/* Title */}
           <div className="flex items-center gap-2">
-            {activeTab === 'companies' ? (
-              <Building2 className="h-6 w-6" />
-            ) : activeTab === 'persons' ? (
-              <Users className="h-6 w-6" />
-            ) : (
-              <Users className="h-6 w-6" />
-            )}
-            <h1 className="text-2xl font-bold">
-              {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Kontakte'}
-            </h1>
+            <Users className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Kontakte</h1>
           </div>
         
           {/* Search and Controls */}
