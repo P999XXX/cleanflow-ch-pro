@@ -45,17 +45,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const navigationItems = [
   {
-    title: "Dashboard",
+    title: "Main",
     items: [
-      { title: "Übersicht", url: "/", icon: Home },
+      { title: "Dashboard", url: "/", icon: Home },
       { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
-    ]
-  },
-  {
-    title: "Kontakte",
-    items: [
-      { title: "Kunden", url: "/kunden", icon: Users },
-      { title: "Mitarbeiter", url: "/mitarbeiter", icon: UserCheck },
+      { title: "Kontakte", url: "/kontakte", icon: Users },
     ]
   },
   {
@@ -82,10 +76,12 @@ const navigationItems = [
   {
     title: "Personal",
     items: [
+      { title: "Mitarbeiter", url: "/mitarbeiter", icon: UserCheck },
       { title: "Zeiterfassung", url: "/zeiterfassung", icon: Clock },
       { title: "Stundenkontrolle", url: "/stundenkontrolle", icon: BarChart3 },
       { title: "Abwesenheiten", url: "/abwesenheiten", icon: UserX },
       { title: "Schulungen", url: "/schulungen", icon: GraduationCap },
+      { title: "Mitarbeiter Chat", url: "/mitarbeiter-chat", icon: MessageSquare },
       { title: "Mitarbeiter App", url: "/mitarbeiter-app", icon: Smartphone },
     ]
   }
@@ -97,8 +93,7 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "Dashboard": true,
-    "Kontakte": false,
+    "Main": true,
     "Auftragswesen": false,
     "Controlling": false,
     "Personal": false,
