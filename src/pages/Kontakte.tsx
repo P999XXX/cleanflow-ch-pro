@@ -12,7 +12,7 @@ import { ContactForm } from '@/components/Contacts/ContactForm';
 
 const Kontakte = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('companies');
+  const [activeTab, setActiveTab] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -35,6 +35,8 @@ const Kontakte = () => {
     person.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     person.customer_companies?.name?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
+
+  const totalCount = filteredCompanies.length + filteredPersons.length;
 
   const handleCompanySubmit = (companyData) => {
     if (selectedCompany) {
@@ -94,7 +96,12 @@ const Kontakte = () => {
           </div>
           
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-2">
+            <TabsList className="grid grid-cols-3">
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Alle</span>
+                <span className="ml-1">({totalCount})</span>
+              </TabsTrigger>
               <TabsTrigger value="companies" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
                 <span>Unternehmen</span>
@@ -114,6 +121,7 @@ const Kontakte = () => {
               size="sm"
               onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
               className="flex items-center gap-2"
+              disabled={activeTab === 'all'}
             >
               {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
               {viewMode === 'table' ? 'Karten' : 'Tabelle'}
@@ -124,9 +132,13 @@ const Kontakte = () => {
                 if (activeTab === 'companies') {
                   setSelectedCompany(null);
                   setFormMode('company');
-                } else {
+                } else if (activeTab === 'persons') {
                   setSelectedPerson(null);
                   setFormMode('person');
+                } else {
+                  // For 'all' tab, default to company
+                  setSelectedCompany(null);
+                  setFormMode('company');
                 }
                 setIsFormOpen(true);
               }}
@@ -152,7 +164,12 @@ const Kontakte = () => {
           
           <div className="flex items-center justify-between gap-4">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-auto grid-cols-2">
+              <TabsList className="grid w-auto grid-cols-3">
+                <TabsTrigger value="all" className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  <span>Alle</span>
+                  <span className="ml-1">({totalCount})</span>
+                </TabsTrigger>
                 <TabsTrigger value="companies" className="flex items-center gap-2">
                   <Building2 className="h-4 w-4" />
                   <span className="sm:hidden">Firmen</span>
@@ -172,9 +189,13 @@ const Kontakte = () => {
                 if (activeTab === 'companies') {
                   setSelectedCompany(null);
                   setFormMode('company');
-                } else {
+                } else if (activeTab === 'persons') {
                   setSelectedPerson(null);
                   setFormMode('person');
+                } else {
+                  // For 'all' tab, default to company
+                  setSelectedCompany(null);
+                  setFormMode('company');
                 }
                 setIsFormOpen(true);
               }}
@@ -190,10 +211,182 @@ const Kontakte = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="lg:hidden">
         <div className="hidden">
           <TabsList>
+            <TabsTrigger value="all">Alle</TabsTrigger>
             <TabsTrigger value="companies">Unternehmen</TabsTrigger>
             <TabsTrigger value="persons">Personen</TabsTrigger>
           </TabsList>
         </div>
+
+        <TabsContent value="all">
+          {/* Mobile Combined View */}
+          <div className="space-y-6">
+            {/* Companies Section */}
+            {filteredCompanies.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Building2 className="h-5 w-5" />
+                  Unternehmen ({filteredCompanies.length})
+                </h3>
+                <div className="space-y-4">
+                  {filteredCompanies.map((company) => (
+                    <Card key={`company-${company.id}`}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">{company.name}</h3>
+                            {(company.city || company.postal_code) && (
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                <MapPin className="h-3 w-3" />
+                                {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedCompany(company);
+                                setFormMode('company');
+                                setIsFormOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteCompany.mutate(company.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2">
+                          {company.email && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="h-4 w-4 text-muted-foreground" />
+                              <a href={`mailto:${company.email}`} className="text-primary hover:underline">
+                                {company.email}
+                              </a>
+                            </div>
+                          )}
+                          {company.phone && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                {company.phone}
+                              </a>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between">
+                            {getStatusBadge(company.status)}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Persons Section */}
+            {filteredPersons.length > 0 && (
+              <div className="space-y-3">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Personen ({filteredPersons.length})
+                </h3>
+                <div className="space-y-4">
+                  {filteredPersons.map((person) => (
+                    <Card key={`person-${person.id}`}>
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-lg">
+                              {`${person.first_name} ${person.last_name}`}
+                            </h3>
+                            {person.title && (
+                              <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                            )}
+                            {person.customer_companies?.name && (
+                              <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                <Building2 className="h-3 w-3" />
+                                {person.customer_companies.name}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                setSelectedPerson(person);
+                                setFormMode('person');
+                                setIsFormOpen(true);
+                              }}
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => deleteContactPerson.mutate(person.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="space-y-2">
+                          {person.email && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Mail className="h-4 w-4 text-muted-foreground" />
+                              <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                                {person.email}
+                              </a>
+                            </div>
+                          )}
+                          {person.phone && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                                {person.phone}
+                              </a>
+                            </div>
+                          )}
+                          {person.mobile && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                                {person.mobile}
+                              </a>
+                            </div>
+                          )}
+                          <div className="flex items-center justify-between">
+                            {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <p className="text-muted-foreground">Keine Kontakte gefunden</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </TabsContent>
 
         <TabsContent value="companies">
           {/* Desktop Table View */}
@@ -696,6 +889,177 @@ const Kontakte = () => {
       {/* Desktop Only Tabs */}
       <div className="hidden lg:block">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsContent value="all">
+            {/* Desktop Combined View - Cards Only */}
+            <div className="space-y-6">
+              {/* Companies Section */}
+              {filteredCompanies.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Building2 className="h-5 w-5" />
+                    Unternehmen ({filteredCompanies.length})
+                  </h3>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    {filteredCompanies.map((company) => (
+                      <Card key={`company-${company.id}`}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">{company.name}</h3>
+                              {(company.city || company.postal_code) && (
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                  <MapPin className="h-3 w-3" />
+                                  {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedCompany(company);
+                                  setFormMode('company');
+                                  setIsFormOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deleteCompany.mutate(company.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="space-y-2">
+                            {company.email && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                <a href={`mailto:${company.email}`} className="text-primary hover:underline">
+                                  {company.email}
+                                </a>
+                              </div>
+                            )}
+                            {company.phone && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                  {company.phone}
+                                </a>
+                              </div>
+                            )}
+                            <div className="flex items-center justify-between">
+                              {getStatusBadge(company.status)}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Persons Section */}
+              {filteredPersons.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Personen ({filteredPersons.length})
+                  </h3>
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                    {filteredPersons.map((person) => (
+                      <Card key={`person-${person.id}`}>
+                        <CardHeader className="pb-2">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-lg">
+                                {`${person.first_name} ${person.last_name}`}
+                              </h3>
+                              {person.title && (
+                                <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                              )}
+                              {person.customer_companies?.name && (
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                  <Building2 className="h-3 w-3" />
+                                  {person.customer_companies.name}
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  setSelectedPerson(person);
+                                  setFormMode('person');
+                                  setIsFormOpen(true);
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => deleteContactPerson.mutate(person.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="space-y-2">
+                            {person.email && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Mail className="h-4 w-4 text-muted-foreground" />
+                                <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                                  {person.email}
+                                </a>
+                              </div>
+                            )}
+                            {person.phone && (
+                              <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-muted-foreground" />
+                                <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                                  {person.phone}
+                                </a>
+                              </div>
+                            )}
+                            {person.mobile && (
+                              <div className="flex items-center gap-2 text-sm">
+                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                                  {person.mobile}
+                                </a>
+                              </div>
+                            )}
+                            <div className="flex items-center justify-between">
+                              {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Empty State */}
+              {filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <p className="text-muted-foreground">Keine Kontakte gefunden</p>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </TabsContent>
+
           <TabsContent value="companies">
             {/* Desktop Table View */}
             <div className={`${viewMode === 'cards' ? 'hidden' : 'block'}`}>
