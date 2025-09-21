@@ -341,21 +341,35 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
             >
               {loading ? 'Speichern...' : (companyExists ? 'Aktualisieren' : (isProfile ? 'Speichern' : 'Firma erstellen'))}
             </Button>
-            
-            {!isProfile && (
-              <Button
-                type="button"
-                variant="destructive"
-                onClick={handleDeleteAccount}
-                disabled={loading || deleting}
-                className="flex items-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                {deleting ? 'Löschen...' : 'Konto löschen'}
-              </Button>
-            )}
           </div>
         </form>
+
+        {!isProfile && (
+          <div className="mt-6 pt-4 border-t border-border">
+            <div className="flex flex-col gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => signOut()}
+                disabled={loading || deleting}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Von diesem Konto abmelden
+              </Button>
+              
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={handleDeleteAccount}
+                disabled={loading || deleting}
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center justify-center gap-2"
+              >
+                <Trash2 className="h-4 w-4" />
+                {deleting ? 'Konto wird gelöscht...' : 'Konto permanent löschen'}
+              </Button>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
