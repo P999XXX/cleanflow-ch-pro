@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
+import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -619,37 +619,37 @@ const Kontakte = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="all" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Alle</span>
+                <Contact className="h-4 w-4" />
+                <span>Alle</span>
                 <Badge 
                   variant="secondary" 
                   className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
                     activeTab === 'all' ? 'font-bold' : 'font-medium'
-                  }`}
+                  } hover:bg-primary/10`}
                 >
                   {totalCount}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="companies" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Unternehmen</span>
+                <span>Unternehmen</span>
                 <Badge 
                   variant="secondary" 
                   className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
                     activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                  }`}
+                  } hover:bg-primary/10`}
                 >
                   {filteredCompanies.length}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="persons" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
-                <span className="hidden sm:inline">Personen</span>
+                <span>Personen</span>
                 <Badge 
                   variant="secondary" 
                   className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
                     activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                  }`}
+                  } hover:bg-primary/10`}
                 >
                   {filteredPersons.length}
                 </Badge>
