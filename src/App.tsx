@@ -14,6 +14,26 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import CompanySetup from "./pages/Auth/CompanySetup";
+import Terminkalender from "./pages/Terminkalender";
+import Kontakte from "./pages/Kontakte";
+import Angebote from "./pages/Angebote";
+import Vertraege from "./pages/Vertraege";
+import Auftraege from "./pages/Auftraege";
+import Materialbestellungen from "./pages/Materialbestellungen";
+import Rechnungen from "./pages/Rechnungen";
+import Objekte from "./pages/Objekte";
+import Einsatzplan from "./pages/Einsatzplan";
+import Fahrzeuge from "./pages/Fahrzeuge";
+import Materialschrank from "./pages/Materialschrank";
+import Beschwerden from "./pages/Beschwerden";
+import QSKontrollen from "./pages/QSKontrollen";
+import Mitarbeiter from "./pages/Mitarbeiter";
+import Zeiterfassung from "./pages/Zeiterfassung";
+import Stundenkontrolle from "./pages/Stundenkontrolle";
+import Abwesenheiten from "./pages/Abwesenheiten";
+import Schulungen from "./pages/Schulungen";
+import MitarbeiterChat from "./pages/MitarbeiterChat";
+import MitarbeiterApp from "./pages/MitarbeiterApp";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +77,26 @@ function AuthLayout() {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/company-setup" element={<CompanySetup />} />
+                <Route path="/terminkalender" element={<Terminkalender />} />
+                <Route path="/kontakte" element={<Kontakte />} />
+                <Route path="/angebote" element={<Angebote />} />
+                <Route path="/vertraege" element={<Vertraege />} />
+                <Route path="/auftraege" element={<Auftraege />} />
+                <Route path="/materialbestellungen" element={<Materialbestellungen />} />
+                <Route path="/rechnungen" element={<Rechnungen />} />
+                <Route path="/objekte" element={<Objekte />} />
+                <Route path="/einsatzplan" element={<Einsatzplan />} />
+                <Route path="/fahrzeuge" element={<Fahrzeuge />} />
+                <Route path="/materialschrank" element={<Materialschrank />} />
+                <Route path="/beschwerden" element={<Beschwerden />} />
+                <Route path="/qs-kontrollen" element={<QSKontrollen />} />
+                <Route path="/mitarbeiter" element={<Mitarbeiter />} />
+                <Route path="/zeiterfassung" element={<Zeiterfassung />} />
+                <Route path="/stundenkontrolle" element={<Stundenkontrolle />} />
+                <Route path="/abwesenheiten" element={<Abwesenheiten />} />
+                <Route path="/schulungen" element={<Schulungen />} />
+                <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
+                <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
