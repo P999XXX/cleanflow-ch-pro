@@ -722,7 +722,7 @@ const Kontakte = () => {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-6xl">
           <DialogHeader className="pb-4 border-b">
-            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
               <div className="flex items-center gap-3">
                 {itemType === 'company' ? (
                   <>
@@ -738,7 +738,7 @@ const Kontakte = () => {
                   </>
                 )}
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 lg:mr-2">
                 {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
                 {itemType === 'person' && selectedItem?.is_primary_contact && (
                   <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
