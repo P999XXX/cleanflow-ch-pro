@@ -353,13 +353,17 @@ const Kontakte = () => {
                             {company.email && (
                               <div className="flex items-center gap-1">
                                 <Mail className="h-3 w-3 text-muted-foreground" />
-                                <span className="text-muted-foreground">{company.email}</span>
+                                <a href={`mailto:${company.email}`} className="text-primary hover:underline">
+                                  {company.email}
+                                </a>
                               </div>
                             )}
                             {company.phone && (
                               <div className="flex items-center gap-1">
                                 <Phone className="h-3 w-3 text-muted-foreground" />
-                                <span className="text-muted-foreground">{company.phone}</span>
+                                <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                  {company.phone}
+                                </a>
                               </div>
                             )}
                           </div>
@@ -986,19 +990,25 @@ const Kontakte = () => {
                                {person.email && (
                                  <div className="flex items-center gap-1">
                                    <Mail className="h-3 w-3 text-muted-foreground" />
-                                   <span className="text-muted-foreground">{person.email}</span>
+                                   <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                                     {person.email}
+                                   </a>
                                  </div>
                                )}
                                {person.phone && (
                                  <div className="flex items-center gap-1">
                                    <Phone className="h-3 w-3 text-muted-foreground" />
-                                   <span className="text-muted-foreground">{person.phone}</span>
+                                   <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                                     {person.phone}
+                                   </a>
                                  </div>
                                )}
                                {person.mobile && (
                                  <div className="flex items-center gap-1">
                                    <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                   <span className="text-muted-foreground">{person.mobile}</span>
+                                   <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                                     {person.mobile}
+                                   </a>
                                  </div>
                                )}
                              </div>
@@ -1468,18 +1478,28 @@ const Kontakte = () => {
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {itemType === 'company' ? (
-                <>
-                  <Building2 className="h-5 w-5" />
-                  {selectedItem?.name}
-                </>
-              ) : (
-                <>
-                  <Users className="h-5 w-5" />
-                  {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
-                </>
+          <DialogHeader className="pb-4">
+            <DialogTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {itemType === 'company' ? (
+                  <>
+                    <Building2 className="h-5 w-5 text-primary" />
+                    <span className="text-xl font-semibold">{selectedItem?.name}</span>
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-5 w-5 text-primary" />
+                    <span className="text-xl font-semibold">
+                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                    </span>
+                  </>
+                )}
+              </div>
+              {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
+              {itemType === 'person' && selectedItem?.is_primary_contact && (
+                <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                  Primärkontakt
+                </Badge>
               )}
             </DialogTitle>
           </DialogHeader>
@@ -1487,84 +1507,108 @@ const Kontakte = () => {
           {selectedItem && (
             <div className="space-y-6">
               {itemType === 'company' ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Unternehmensinformationen</h3>
-                    {getStatusBadge(selectedItem.status)}
+                <>
+                  {/* Company Basic Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Kontaktinformationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                            <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-primary hover:underline">
+                              {selectedItem.email}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                            <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-primary hover:underline">
+                              {selectedItem.phone}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.website && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Building2 className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Website</p>
+                            <a 
+                              href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-sm font-medium text-primary hover:underline"
+                            >
+                              {selectedItem.website}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {selectedItem.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
-                        <a href={`mailto:${selectedItem.email}`} className="text-sm text-primary hover:underline">
-                          {selectedItem.email}
-                        </a>
-                      </div>
-                    )}
-                    {selectedItem.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
-                        <a href={`tel:${selectedItem.phone}`} className="text-sm text-primary hover:underline">
-                          {selectedItem.phone}
-                        </a>
-                      </div>
-                    )}
-                    {selectedItem.website && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">Website:</span>
-                        <a href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
-                          {selectedItem.website}
-                        </a>
-                      </div>
-                    )}
-                    {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                      <div className="flex items-start gap-2">
-                        <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                        <div className="text-sm">
-                          {selectedItem.address && <div>{selectedItem.address}</div>}
+
+                  {/* Address */}
+                  {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Adresse
+                      </h4>
+                      <div className="flex items-start gap-2 p-2 bg-background rounded-md">
+                        <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                        <div>
+                          {selectedItem.address && <p className="text-sm font-medium">{selectedItem.address}</p>}
                           {(selectedItem.postal_code || selectedItem.city) && (
-                            <div>{selectedItem.postal_code} {selectedItem.city}</div>
+                            <p className="text-sm">{selectedItem.postal_code} {selectedItem.city}</p>
                           )}
-                          {selectedItem.country && <div>{selectedItem.country}</div>}
+                          {selectedItem.country && <p className="text-sm text-muted-foreground">{selectedItem.country}</p>}
                         </div>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   
+                  {/* Tax Information */}
                   {(selectedItem.vat_number || selectedItem.tax_number) && (
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Steuerliche Informationen</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Steuerliche Informationen
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {selectedItem.vat_number && (
-                          <div>
-                            <span className="font-medium">MwSt-Nr.:</span> {selectedItem.vat_number}
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">MwSt-Nr.</p>
+                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
                           </div>
                         )}
                         {selectedItem.tax_number && (
-                          <div>
-                            <span className="font-medium">Steuer-Nr.:</span> {selectedItem.tax_number}
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">Steuer-Nr.</p>
+                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
                           </div>
                         )}
                       </div>
                     </div>
                   )}
                   
-                  {/* Contact Persons Section */}
+                  {/* Contact Persons */}
                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                    <div className="space-y-3">
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
-                        <h4 className="font-medium flex items-center gap-2">
+                        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
                           <Users className="h-4 w-4" />
-                          Kontaktpersonen
-                          <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                            {selectedItem.contact_persons.length}
-                          </Badge>
+                          Kontaktpersonen ({selectedItem.contact_persons.length})
                         </h4>
                       </div>
-                      <div className="space-y-3">
+                      <div className="grid gap-3">
                         {selectedItem.contact_persons.map((contact) => (
-                          <div key={contact.id} className="border rounded-lg p-3 bg-muted/20">
+                          <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50">
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
@@ -1577,42 +1621,41 @@ const Kontakte = () => {
                                     </Badge>
                                   )}
                                 </div>
-                                {contact.title && (
-                                  <p className="text-xs text-muted-foreground mt-1">{contact.title}</p>
-                                )}
-                                {contact.department && (
-                                  <p className="text-xs text-muted-foreground">Abteilung: {contact.department}</p>
-                                )}
+                                <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                  {contact.title && <span>{contact.title}</span>}
+                                  {contact.title && contact.department && <span>•</span>}
+                                  {contact.department && <span>{contact.department}</span>}
+                                </div>
                               </div>
                             </div>
-                            <div className="flex flex-wrap items-center gap-2 text-xs">
+                            <div className="flex flex-wrap items-center gap-4">
                               {contact.email && (
                                 <div className="flex items-center gap-1">
-                                  <Mail className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`mailto:${contact.email}`} className="text-primary hover:underline">
+                                  <Mail className="h-3 w-3 text-primary" />
+                                  <a href={`mailto:${contact.email}`} className="text-xs text-primary hover:underline font-medium">
                                     {contact.email}
                                   </a>
                                 </div>
                               )}
                               {contact.phone && (
                                 <div className="flex items-center gap-1">
-                                  <Phone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${contact.phone}`} className="text-primary hover:underline">
+                                  <Phone className="h-3 w-3 text-primary" />
+                                  <a href={`tel:${contact.phone}`} className="text-xs text-primary hover:underline font-medium">
                                     {contact.phone}
                                   </a>
                                 </div>
                               )}
                               {contact.mobile && (
                                 <div className="flex items-center gap-1">
-                                  <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${contact.mobile}`} className="text-primary hover:underline">
+                                  <Smartphone className="h-3 w-3 text-primary" />
+                                  <a href={`tel:${contact.mobile}`} className="text-xs text-primary hover:underline font-medium">
                                     {contact.mobile}
                                   </a>
                                 </div>
                               )}
                             </div>
                             {contact.notes && (
-                              <div className="mt-2 pt-2 border-t">
+                              <div className="mt-2 pt-2 border-t border-border/50">
                                 <p className="text-xs text-muted-foreground">{contact.notes}</p>
                               </div>
                             )}
@@ -1621,70 +1664,93 @@ const Kontakte = () => {
                       </div>
                     </div>
                   )}
-                </div>
+                </>
               ) : (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold">Kontaktperson</h3>
-                    {selectedItem.is_primary_contact && (
-                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                        Primär
-                      </Badge>
-                    )}
+                <>
+                  {/* Person Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Persönliche Informationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {selectedItem.title && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Position</p>
+                          <p className="text-sm font-medium">{selectedItem.title}</p>
+                        </div>
+                      )}
+                      {selectedItem.department && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Abteilung</p>
+                          <p className="text-sm font-medium">{selectedItem.department}</p>
+                        </div>
+                      )}
+                      {selectedItem.customer_companies?.name && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Unternehmen</p>
+                          <p className="text-sm font-medium flex items-center gap-1">
+                            <Building2 className="h-3 w-3" />
+                            {selectedItem.customer_companies.name}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Contact Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Kontaktinformationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                            <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-primary hover:underline">
+                              {selectedItem.email}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                            <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-primary hover:underline">
+                              {selectedItem.phone}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.mobile && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Smartphone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Mobil</p>
+                            <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-primary hover:underline">
+                              {selectedItem.mobile}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   
-                  <div className="flex flex-wrap items-center gap-4">
-                    {selectedItem.title && (
-                      <div>
-                        <span className="text-sm font-medium">Position:</span>
-                        <span className="text-sm ml-2">{selectedItem.title}</span>
-                      </div>
-                    )}
-                    {selectedItem.department && (
-                      <div>
-                        <span className="text-sm font-medium">Abteilung:</span>
-                        <span className="text-sm ml-2">{selectedItem.department}</span>
-                      </div>
-                    )}
-                    {selectedItem.email && (
-                      <div className="flex items-center gap-1">
-                        <Mail className="h-3 w-3 text-muted-foreground" />
-                        <a href={`mailto:${selectedItem.email}`} className="text-sm text-primary hover:underline">
-                          {selectedItem.email}
-                        </a>
-                      </div>
-                    )}
-                    {selectedItem.phone && (
-                      <div className="flex items-center gap-1">
-                        <Phone className="h-3 w-3 text-muted-foreground" />
-                        <a href={`tel:${selectedItem.phone}`} className="text-sm text-primary hover:underline">
-                          {selectedItem.phone}
-                        </a>
-                      </div>
-                    )}
-                    {selectedItem.mobile && (
-                      <div className="flex items-center gap-1">
-                        <Smartphone className="h-3 w-3 text-muted-foreground" />
-                        <a href={`tel:${selectedItem.mobile}`} className="text-sm text-primary hover:underline">
-                          {selectedItem.mobile}
-                        </a>
-                      </div>
-                    )}
-                    {selectedItem.customer_companies?.name && (
-                      <div className="flex items-center gap-1">
-                        <Building2 className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.customer_companies.name}</span>
-                      </div>
-                    )}
-                  </div>
-                  
+                  {/* Notes */}
                   {selectedItem.notes && (
-                    <div className="space-y-2">
-                      <h4 className="font-medium">Notizen</h4>
-                      <p className="text-sm text-muted-foreground">{selectedItem.notes}</p>
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Notizen
+                      </h4>
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-sm">{selectedItem.notes}</p>
+                      </div>
                     </div>
                   )}
-                </div>
+                </>
               )}
             </div>
           )}
