@@ -8,7 +8,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Layout/AppSidebar";
 import { AppHeader } from "@/components/Layout/AppHeader";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { useCompanyGuard } from "@/hooks/useCompanyGuard";
+import { CompanyProtectionWrapper } from "@/components/CompanyProtectionWrapper";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Auth/Register";
@@ -65,32 +65,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 function AuthLayout() {
   const { user, loading } = useAuth();
-  const { needsCompanySetup, loading: companyLoading } = useCompanyGuard();
   
-  if (loading || companyLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
-    );
-  }
-  
-  if (user && needsCompanySetup) {
-    return (
-      <SidebarProvider defaultOpen={false}>
-        <div className="min-h-screen flex w-full bg-background">
-          <AppSidebar />
-          <div className="flex-1 flex flex-col min-w-0">
-            <AppHeader />
-            <main className="flex-1 overflow-auto">
-              <Routes>
-                <Route path="/einstellungen" element={<Einstellungen isSetupMode={true} />} />
-                <Route path="*" element={<Einstellungen isSetupMode={true} />} />
-              </Routes>
-            </main>
-          </div>
-        </div>
-      </SidebarProvider>
     );
   }
   
@@ -102,35 +82,37 @@ function AuthLayout() {
           <div className="flex-1 flex flex-col min-w-0">
             <AppHeader />
             <main className="flex-1 overflow-auto">
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/terminkalender" element={<Terminkalender />} />
-                <Route path="/kontakte" element={<Kontakte />} />
-                <Route path="/angebote" element={<Angebote />} />
-                <Route path="/vertraege" element={<Vertraege />} />
-                <Route path="/auftraege" element={<Auftraege />} />
-                <Route path="/materialbestellungen" element={<Materialbestellungen />} />
-                <Route path="/rechnungen" element={<Rechnungen />} />
-                <Route path="/objekte" element={<Objekte />} />
-                <Route path="/einsatzplan" element={<Einsatzplan />} />
-                <Route path="/fahrzeuge" element={<Fahrzeuge />} />
-                <Route path="/materialschrank" element={<Materialschrank />} />
-                <Route path="/beschwerden" element={<Beschwerden />} />
-                <Route path="/qs-kontrollen" element={<QSKontrollen />} />
-                <Route path="/mitarbeiter" element={<Mitarbeiter />} />
-                <Route path="/zeiterfassung" element={<Zeiterfassung />} />
-                <Route path="/stundenkontrolle" element={<Stundenkontrolle />} />
-                <Route path="/abwesenheiten" element={<Abwesenheiten />} />
-                <Route path="/schulungen" element={<Schulungen />} />
-                <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
-                <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
-                <Route path="/chat" element={<Chat />} />
-                <Route path="/profileinstellungen" element={<Profileinstellungen />} />
-                <Route path="/einstellungen" element={<Einstellungen />} />
-                <Route path="/benachrichtigungen" element={<Benachrichtigungen />} />
-                <Route path="/tickets" element={<Tickets />} />
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <CompanyProtectionWrapper>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/terminkalender" element={<Terminkalender />} />
+                  <Route path="/kontakte" element={<Kontakte />} />
+                  <Route path="/angebote" element={<Angebote />} />
+                  <Route path="/vertraege" element={<Vertraege />} />
+                  <Route path="/auftraege" element={<Auftraege />} />
+                  <Route path="/materialbestellungen" element={<Materialbestellungen />} />
+                  <Route path="/rechnungen" element={<Rechnungen />} />
+                  <Route path="/objekte" element={<Objekte />} />
+                  <Route path="/einsatzplan" element={<Einsatzplan />} />
+                  <Route path="/fahrzeuge" element={<Fahrzeuge />} />
+                  <Route path="/materialschrank" element={<Materialschrank />} />
+                  <Route path="/beschwerden" element={<Beschwerden />} />
+                  <Route path="/qs-kontrollen" element={<QSKontrollen />} />
+                  <Route path="/mitarbeiter" element={<Mitarbeiter />} />
+                  <Route path="/zeiterfassung" element={<Zeiterfassung />} />
+                  <Route path="/stundenkontrolle" element={<Stundenkontrolle />} />
+                  <Route path="/abwesenheiten" element={<Abwesenheiten />} />
+                  <Route path="/schulungen" element={<Schulungen />} />
+                  <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
+                  <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/profileinstellungen" element={<Profileinstellungen />} />
+                  <Route path="/einstellungen" element={<Einstellungen />} />
+                  <Route path="/benachrichtigungen" element={<Benachrichtigungen />} />
+                  <Route path="/tickets" element={<Tickets />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </CompanyProtectionWrapper>
             </main>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import CompanyForm from "@/components/CompanyForm";
 
 interface EinstellungenProps {
@@ -12,9 +13,13 @@ interface EinstellungenProps {
 
 const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [hasCompany, setHasCompany] = useState<boolean | null>(null);
   const [companyLoading, setCompanyLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+
+  // Check if we should auto-open the form (from email verification)
+  const autoOpen = searchParams.get('setup') === 'true' || isSetupMode;
 
   useEffect(() => {
     const checkCompanyData = async () => {
@@ -26,7 +31,7 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
       try {
         const { data, error } = await supabase
           .from('companies')
-          .select('id')
+          .select('id, name')
           .eq('owner_id', user.id)
           .maybeSingle();
 
@@ -34,7 +39,17 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
           console.error('Error checking company data:', error);
         }
 
-        setHasCompany(!!data);
+        const companyExists = !!data?.id && !!data?.name;
+        setHasCompany(companyExists);
+
+        // Auto-open form if no company and should auto-open
+        if (!companyExists && autoOpen) {
+          setModalOpen(true);
+          // Clear setup parameter from URL
+          if (searchParams.get('setup')) {
+            setSearchParams({});
+          }
+        }
       } catch (error) {
         console.error('Error checking company data:', error);
         setHasCompany(false);
@@ -44,7 +59,7 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
     };
 
     checkCompanyData();
-  }, [user]);
+  }, [user, autoOpen, searchParams, setSearchParams]);
 
   const handleCompanySuccess = () => {
     setHasCompany(true);

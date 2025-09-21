@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Building, MapPin, Phone, Mail, Globe, Hash, Check, Trash2, X } from 'lucide-react';
+import { Building, MapPin, Phone, Mail, Globe, Hash, Check, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CompanyFormProps {
@@ -39,9 +39,8 @@ export default function CompanyForm({
     vatNumber: '',
   });
   const [loading, setLoading] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const [companyExists, setCompanyExists] = useState(false);
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -210,60 +209,6 @@ export default function CompanyForm({
       });
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!user) return;
-
-    const confirmed = window.confirm(
-      'Sind Sie sicher, dass Sie Ihr Konto permanent löschen möchten?\n\n' +
-      'Diese Aktion kann nicht rückgängig gemacht werden und alle Ihre Daten werden unwiderruflich entfernt.'
-    );
-
-    if (!confirmed) return;
-
-    const doubleConfirmed = window.confirm(
-      'LETZTE WARNUNG: Ihr Konto und alle Daten werden permanent gelöscht.\n\n' +
-      'Klicken Sie OK um fortzufahren oder Abbrechen um den Vorgang abzubrechen.'
-    );
-
-    if (!doubleConfirmed) return;
-
-    setDeleting(true);
-
-    try {
-      const { data, error } = await supabase.functions.invoke('delete-account');
-
-      if (error) {
-        toast({
-          title: "Fehler",
-          description: "Konto konnte nicht gelöscht werden: " + error.message,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Konto gelöscht",
-          description: "Ihr Konto wurde erfolgreich gelöscht.",
-        });
-        
-        // Sign out and redirect to register
-        await signOut();
-        navigate('/register');
-      }
-    } catch (err) {
-      toast({
-        title: "Fehler",
-        description: "Ein unerwarteter Fehler ist aufgetreten.",
-        variant: "destructive",
-      });
-    } finally {
-      setDeleting(false);
     }
   };
 
@@ -441,39 +386,13 @@ export default function CompanyForm({
             <Button
               type="submit"
               className="flex-1"
-              disabled={loading || deleting || !formData.name}
+              disabled={loading || !formData.name}
             >
               {loading ? 'Speichern...' : (companyExists ? 'Aktualisieren' : (isProfile ? 'Speichern' : 'Firma erstellen'))}
             </Button>
           </div>
         </form>
 
-        {isSetupMode && (
-          <div className="mt-6 pt-4 border-t border-border">
-            <div className="flex flex-col gap-3">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleSignOut}
-                disabled={loading || deleting}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                Von diesem Konto abmelden
-              </Button>
-              
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={handleDeleteAccount}
-                disabled={loading || deleting}
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 flex items-center justify-center gap-2"
-              >
-                <Trash2 className="h-4 w-4" />
-                {deleting ? 'Konto wird gelöscht...' : 'Konto permanent löschen'}
-              </Button>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );
