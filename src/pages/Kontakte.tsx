@@ -734,9 +734,6 @@ const Kontakte = () => {
                 )}
               </div>
             </DialogTitle>
-            <DialogDescription className="text-muted-foreground">
-              {itemType === 'company' ? 'Detaillierte Unternehmensansicht' : 'Detaillierte Personenansicht'}
-            </DialogDescription>
           </DialogHeader>
           
           {selectedItem && (
@@ -788,9 +785,51 @@ const Kontakte = () => {
                         </div>
                       )}
                     </div>
-                  </div>
+                   </div>
 
-                  {/* Address */}
+                   {/* Contact Persons */}
+                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                       <div className="flex items-center justify-between">
+                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                           <Users className="h-4 w-4" />
+                           Kontaktpersonen ({selectedItem.contact_persons.length})
+                         </h4>
+                       </div>
+                       <div className="grid gap-3">
+                         {selectedItem.contact_persons.map((contact) => (
+                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                             <div className="flex items-start justify-between">
+                               <div className="flex-1">
+                                 <div className="flex items-center justify-between">
+                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                     {contact.first_name} {contact.last_name}
+                                   </span>
+                                   {contact.is_primary_contact && (
+                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                       Primär
+                                     </Badge>
+                                   )}
+                                 </div>
+                                 <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                   {contact.title && <span>{contact.title}</span>}
+                                   {contact.title && contact.department && <span>•</span>}
+                                   {contact.department && <span>{contact.department}</span>}
+                                 </div>
+                               </div>
+                             </div>
+                             {contact.notes && (
+                               <div className="mt-2 pt-2 border-t border-border/50">
+                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                               </div>
+                             )}
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Address */}
                   {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -848,48 +887,6 @@ const Kontakte = () => {
                             <p className="text-sm font-medium">{selectedItem.tax_number}</p>
                           </div>
                         )}
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Contact Persons */}
-                  {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                          <Users className="h-4 w-4" />
-                          Kontaktpersonen ({selectedItem.contact_persons.length})
-                        </h4>
-                      </div>
-                      <div className="grid gap-3">
-                        {selectedItem.contact_persons.map((contact) => (
-                          <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                    {contact.first_name} {contact.last_name}
-                                  </span>
-                                  {contact.is_primary_contact && (
-                                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
-                                      Primär
-                                    </Badge>
-                                  )}
-                                </div>
-                                <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                  {contact.title && <span>{contact.title}</span>}
-                                  {contact.title && contact.department && <span>•</span>}
-                                  {contact.department && <span>{contact.department}</span>}
-                                </div>
-                              </div>
-                            </div>
-                            {contact.notes && (
-                              <div className="mt-2 pt-2 border-t border-border/50">
-                                <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
-                              </div>
-                            )}
-                          </div>
-                        ))}
                       </div>
                     </div>
                   )}
