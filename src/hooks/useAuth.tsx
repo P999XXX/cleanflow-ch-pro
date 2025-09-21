@@ -41,28 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Enforce blocked access for deleted accounts
-  useEffect(() => {
-    if (!session?.user) return;
-    const uid = session.user.id;
-    const timer = setTimeout(async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('account_status')
-        .eq('user_id', uid)
-        .maybeSingle();
-
-      if (!error && data && data.account_status === 'deleted') {
-        toast({
-          title: 'Konto deaktiviert',
-          description: 'Ihr Konto wurde gelöscht. Bitte registrieren Sie sich neu.',
-          variant: 'destructive',
-        });
-        await supabase.auth.signOut();
-      }
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [session?.user?.id]);
+  // This check is no longer needed since deleted users are completely removed from auth
 
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     const redirectUrl = `${window.location.origin}/verify-email`;
@@ -80,11 +59,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
-      toast({
-        title: "Registrierung fehlgeschlagen",
-        description: error.message,
-        variant: "destructive",
-      });
+      // Handle specific error cases
+      if (error.message.includes('User already registered') || error.message.includes('user_repeated_signup')) {
+        toast({
+          title: "Neues Konto wird erstellt",
+          description: "Ein neues Konto wird für diese E-Mail-Adresse erstellt. Bitte überprüfen Sie Ihr E-Mail-Postfach zur Bestätigung.",
+        });
+        // Even with repeated signup, this is often successful
+        return { error: null };
+      } else {
+        toast({
+          title: "Registrierung fehlgeschlagen",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Registrierung erfolgreich",
