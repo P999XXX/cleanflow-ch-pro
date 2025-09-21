@@ -16,6 +16,7 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 import ThankYou from "./pages/Auth/ThankYou";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
+import GoogleCallback from "./pages/Auth/GoogleCallback";
 import CompanySetup from "./pages/CompanySetup";
 import AGB from "./pages/Auth/AGB";
 import Datenschutz from "./pages/Auth/Datenschutz";
@@ -133,6 +134,7 @@ function AuthLayout() {
     <Routes>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/google-callback" element={<GoogleCallback />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/agb" element={<AGB />} />
