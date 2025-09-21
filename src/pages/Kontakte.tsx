@@ -167,7 +167,7 @@ const Kontakte = () => {
       aktiv: { 
         label: 'Aktiv', 
         variant: 'default' as const,
-        className: 'bg-green-500/15 text-green-700 hover:bg-green-500/25 border-green-500/20 dark:bg-green-500/10 dark:text-green-400 dark:hover:bg-green-500/20'
+        className: 'bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20'
       },
       inaktiv: { 
         label: 'Inaktiv', 
@@ -958,7 +958,7 @@ const Kontakte = () => {
                       )}
                       {selectedItem.mobile && (
                         <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <MessageCircle className="h-4 w-4 text-green-600" />
+                          <MessageCircle className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">WhatsApp</p>
                              <a 
