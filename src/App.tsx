@@ -15,6 +15,8 @@ import Login from "./pages/Auth/Login";
 import ThankYou from "./pages/Auth/ThankYou";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import CompanySetup from "./pages/Auth/CompanySetup";
+import AGB from "./pages/Auth/AGB";
+import Datenschutz from "./pages/Auth/Datenschutz";
 import Terminkalender from "./pages/Terminkalender";
 import Kontakte from "./pages/Kontakte";
 import Angebote from "./pages/Angebote";
@@ -124,6 +126,8 @@ function AuthLayout() {
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/company-setup" element={<CompanySetup />} />
+      <Route path="/agb" element={<AGB />} />
+      <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="*" element={<Login />} />
     </Routes>
   );

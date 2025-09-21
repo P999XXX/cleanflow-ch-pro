@@ -11,6 +11,7 @@ import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { PasswordStrength } from '@/components/ui/password-strength';
 import { GoogleIcon } from '@/components/ui/google-icon';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -23,10 +24,12 @@ export default function Register() {
     recaptchaToken: '',
   });
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -54,38 +57,68 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (submitting) return;
+
     if (!formData.acceptTerms) {
-      alert('Bitte akzeptieren Sie die AGBs und Datenschutzerklärung.');
+      toast({
+        title: "AGB und Datenschutz",
+        description: "Bitte akzeptieren Sie die Allgemeinen Geschäftsbedingungen und Datenschutzerklärung.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (!formData.recaptchaToken) {
-      alert('Bitte bestätigen Sie, dass Sie kein Roboter sind.');
+      toast({
+        title: "reCAPTCHA erforderlich",
+        description: "Bitte bestätigen Sie, dass Sie kein Roboter sind.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwörter stimmen nicht überein.');
+      toast({
+        title: "Passwörter stimmen nicht überein",
+        description: "Bitte überprüfen Sie Ihre Passworteingaben.",
+        variant: "destructive",
+      });
       return;
     }
 
     if (formData.password.length < 8) {
-      alert('Passwort muss mindestens 8 Zeichen lang sein und sollte Buchstaben, Zahlen und Sonderzeichen enthalten.');
+      toast({
+        title: "Ungültiges Passwort",
+        description: "Das Passwort muss mindestens 8 Zeichen lang sein und sollte Buchstaben, Zahlen und Sonderzeichen enthalten.",
+        variant: "destructive",
+      });
       return;
     }
 
+    setSubmitting(true);
     setLoading(true);
-    const { error } = await signUp(
-      formData.email,
-      formData.password,
-      formData.firstName,
-      formData.lastName
-    );
+    
+    try {
+      const { error } = await signUp(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName
+      );
 
-    if (!error) {
-      navigate('/thank-you');
+      if (!error) {
+        navigate('/thank-you');
+      }
+    } catch (err) {
+      toast({
+        title: "Registrierung fehlgeschlagen",
+        description: "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+      setSubmitting(false);
     }
-    setLoading(false);
   };
 
   const handleGoogleSignUp = async () => {
@@ -250,7 +283,7 @@ export default function Register() {
             <Button
               type="submit"
               className="w-full"
-              disabled={loading || !formData.acceptTerms || !formData.recaptchaToken}
+              disabled={loading || submitting || !formData.acceptTerms || !formData.recaptchaToken}
             >
               {loading ? 'Registrierung läuft...' : 'Registrieren'}
             </Button>
