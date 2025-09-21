@@ -16,11 +16,13 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/hooks/useProfile";
+import { useCompanyData } from "@/hooks/useCompanyData";
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
   const { signOut } = useAuth();
   const { getDisplayName, getEmail } = useProfile();
+  const { companyData } = useCompanyData();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -94,6 +96,11 @@ export function AppHeader() {
                 <p className="w-[200px] truncate text-sm text-muted-foreground">
                   {getEmail()}
                 </p>
+                {companyData?.name && (
+                  <p className="w-[200px] truncate text-xs text-muted-foreground/80">
+                    {companyData.name}
+                  </p>
+                )}
               </div>
             </div>
             <DropdownMenuSeparator />
