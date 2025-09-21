@@ -123,8 +123,7 @@ const Kontakte = () => {
             className="flex items-center gap-2 w-full sm:w-auto"
           >
             <Plus className="h-4 w-4" />
-            <span className="sm:hidden">{activeTab === 'companies' ? 'Firma' : 'Person'}</span>
-            <span className="hidden sm:inline">{activeTab === 'companies' ? 'Neues Unternehmen' : 'Neue Person'}</span>
+            Hinzufügen
           </Button>
         </div>
 
