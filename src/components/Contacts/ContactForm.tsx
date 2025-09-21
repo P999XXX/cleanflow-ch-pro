@@ -401,7 +401,7 @@ export const ContactForm = ({
               Abbrechen
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Speichere...' : (company || contactPerson) ? 'Aktualisieren' : 'Erstellen'}
+              {isLoading ? 'Speichere...' : 'Hinzufügen'}
             </Button>
           </div>
         </form>
