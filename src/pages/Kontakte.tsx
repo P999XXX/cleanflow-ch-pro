@@ -362,14 +362,14 @@ const Kontakte = () => {
           )}
           <Card>
             <Table className="lg:table-fixed">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="lg:w-1/4">Name</TableHead>
-                  <TableHead className="lg:w-1/4">Ort</TableHead>
-                  <TableHead className="lg:w-1/4">Kontakt</TableHead>
-                  <TableHead className="text-right lg:w-1/4"></TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="lg:w-1/4">Name</TableHead>
+                      <TableHead className="lg:w-1/4">Ort</TableHead>
+                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right lg:w-1/4"></TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {companies.map((company) => (
                   <TableRow 
@@ -377,30 +377,30 @@ const Kontakte = () => {
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(company, 'company')}
                   >
-                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">{company.name}</TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
-                        {company.email && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3" />
-                            <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                              {company.email}
-                            </a>
-                          </div>
-                        )}
-                        {company.phone && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Phone className="h-3 w-3" />
-                            <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                              {company.phone}
-                            </a>
-                          </div>
-                        )}
-                      </div>
+                        <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">{company.name}</TableCell>
+                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
+                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                           <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
+                         {company.email && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Mail className="h-3 w-3" />
+                             <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                               {company.email}
+                             </a>
+                           </div>
+                         )}
+                         {company.phone && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Phone className="h-3 w-3" />
+                             <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                               {company.phone}
+                             </a>
+                           </div>
+                         )}
+                       </div>
                     </TableCell>
-                    <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">{getStatusBadge(company.status)}</TableCell>
-                  </TableRow>
+                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">{getStatusBadge(company.status)}</TableCell>
+                      </TableRow>
                 ))}
               </TableBody>
             </Table>
@@ -422,14 +422,14 @@ const Kontakte = () => {
           )}
           <Card>
             <Table className="lg:table-fixed">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="lg:w-1/4">Name</TableHead>
-                  <TableHead className="lg:w-1/4">Unternehmen</TableHead>
-                  <TableHead className="lg:w-1/4">Kontakt</TableHead>
-                  <TableHead className="text-right lg:w-1/4">Status</TableHead>
-                </TableRow>
-              </TableHeader>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="lg:w-1/4">Name</TableHead>
+                      <TableHead className="lg:w-1/4">Unternehmen</TableHead>
+                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right lg:w-1/4"></TableHead>
+                    </TableRow>
+                  </TableHeader>
               <TableBody>
                 {persons.map((person) => (
                   <TableRow 
@@ -439,49 +439,47 @@ const Kontakte = () => {
                   >
                     <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
                       <div>
-                        <div className="font-medium">{`${person.first_name} ${person.last_name}`}</div>
+                        <div>{`${person.first_name} ${person.last_name}`}</div>
                         {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
                       </div>
                     </TableCell>
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
                     <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      {person.customer_companies?.name || '-'}
+                       <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
+                         {person.email && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Mail className="h-3 w-3" />
+                             <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                               {person.email}
+                             </a>
+                           </div>
+                         )}
+                         {person.phone && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Phone className="h-3 w-3" />
+                             <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                               {person.phone}
+                             </a>
+                           </div>
+                         )}
+                         {person.mobile && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Smartphone className="h-3 w-3" />
+                             <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
+                               {person.mobile}
+                             </a>
+                           </div>
+                         )}
+                       </div>
                     </TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
-                        {person.email && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3" />
-                            <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                              {person.email}
-                            </a>
-                          </div>
-                        )}
-                        {person.phone && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Phone className="h-3 w-3" />
-                            <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                              {person.phone}
-                            </a>
-                          </div>
-                        )}
-                        {person.mobile && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Smartphone className="h-3 w-3" />
-                            <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                              {person.mobile}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
-                      {person.is_primary_contact && (
-                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                          Primär
-                        </Badge>
-                      )}
-                    </TableCell>
-                  </TableRow>
+                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
+                          {person.is_primary_contact && (
+                            <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                              Primär
+                            </Badge>
+                          )}
+                        </TableCell>
+                      </TableRow>
                 ))}
               </TableBody>
             </Table>
@@ -496,48 +494,24 @@ const Kontakte = () => {
       {/* Header - Responsive */}
       <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
         <div className="flex flex-col space-y-4">
-          {/* Title */}
+          {/* Title with View Toggle for Tablet */}
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Kontakte</h1>
-            
-            {/* Desktop: Right-aligned controls */}
-            <div className="hidden lg:flex items-center gap-3">
-              {/* View Mode Toggle - Desktop only */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="flex items-center gap-2"
-              >
-                {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
-              </Button>
-              
-              {/* Add Button - Desktop */}
-              <Button
-                onClick={() => {
-                  if (activeTab === 'companies') {
-                    setSelectedCompany(null);
-                    setFormMode('company');
-                  } else if (activeTab === 'persons') {
-                    setSelectedPerson(null);
-                    setFormMode('person');
-                  } else {
-                    setSelectedCompany(null);
-                    setFormMode('company');
-                  }
-                  setIsFormOpen(true);
-                }}
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Hinzufügen
-              </Button>
-            </div>
+            {/* View Mode Toggle - Tablet only (right of title) */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
+              className="hidden md:flex lg:hidden items-center gap-2"
+            >
+              {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
+            </Button>
           </div>
         
-          {/* Search */}
-          <div className="relative w-full lg:max-w-md">
+        {/* Search and Controls */}
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* Search - Full width on mobile/tablet */}
+          <div className="relative w-full lg:flex-1 lg:max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Suchen nach Name, E-Mail, Telefon..."
@@ -555,75 +529,88 @@ const Kontakte = () => {
             )}
           </div>
 
-          {/* Mobile/Tablet: Add Button after search, before tabs */}
-          <div className="lg:hidden">
-            <Button
-              onClick={() => {
-                if (activeTab === 'companies') {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                } else if (activeTab === 'persons') {
-                  setSelectedPerson(null);
-                  setFormMode('person');
-                } else {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                }
-                setIsFormOpen(true);
-              }}
-              size="sm"
-              className="flex items-center gap-2 w-full"
-            >
-              <Plus className="h-4 w-4" />
-              Hinzufügen
-            </Button>
+          {/* Tabs - Desktop: Inline with controls */}
+          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full lg:w-auto">
+              <TabsList className="grid grid-cols-3 lg:grid-cols-3 lg:w-auto">
+                <TabsTrigger value="all" className="flex items-center gap-1 px-2">
+                  <Contact className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">Alle</span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'all' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {totalCount}
+                  </Badge>
+                </TabsTrigger>
+                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                  <Building className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">
+                    <span className="hidden sm:inline">Unternehmen</span>
+                    <span className="sm:hidden">Firma</span>
+                  </span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {filteredCompanies.length}
+                  </Badge>
+                </TabsTrigger>
+                <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
+                  <Users className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">Personen</span>
+                  <Badge 
+                    variant="secondary" 
+                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                      activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                    } hover:bg-primary/10`}
+                  >
+                    {filteredPersons.length}
+                  </Badge>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {/* Controls */}
+            <div className="flex flex-row gap-3 w-full lg:w-auto">
+              {/* View Mode Toggle - Desktop only */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
+                className="hidden lg:flex items-center gap-2"
+              >
+                {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
+              </Button>
+              
+              {/* Add Button - Full width on mobile/tablet */}
+              <Button
+                onClick={() => {
+                  if (activeTab === 'companies') {
+                    setSelectedCompany(null);
+                    setFormMode('company');
+                  } else if (activeTab === 'persons') {
+                    setSelectedPerson(null);
+                    setFormMode('person');
+                  } else {
+                    setSelectedCompany(null);
+                    setFormMode('company');
+                  }
+                  setIsFormOpen(true);
+                }}
+                size="sm"
+                className="flex items-center gap-2 w-full lg:w-auto"
+              >
+                <Plus className="h-4 w-4" />
+                Hinzufügen
+              </Button>
+            </div>
           </div>
-
-          {/* Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid grid-cols-3 w-full lg:w-auto">
-              <TabsTrigger value="all" className="flex items-center gap-1 px-2">
-                <Contact className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">Alle</span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'all' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {totalCount}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                <Building className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">
-                  <span className="hidden sm:inline">Unternehmen</span>
-                  <span className="sm:hidden">Firma</span>
-                </span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {filteredCompanies.length}
-                </Badge>
-              </TabsTrigger>
-              <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
-                <Users className="h-4 w-4" />
-                <span className="text-xs sm:text-sm">Personen</span>
-                <Badge 
-                  variant="secondary" 
-                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                    activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                  } hover:bg-primary/10`}
-                >
-                  {filteredPersons.length}
-                </Badge>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
+          
           {/* Search Results Info - Mobile */}
           {isSearching && (
             <div className="text-sm text-muted-foreground flex items-center lg:hidden">
@@ -631,47 +618,48 @@ const Kontakte = () => {
             </div>
           )}
         </div>
-      </div>
 
-      {/* Content Section */}
-      <div className="mt-4">
-        {/* Dynamic Subtitle */}
-        <div className="mb-4">
-          <h2 className="text-lg font-medium text-muted-foreground">
-            {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
-          </h2>
+        {/* Content Section */}
+        <div className="mt-4">
+          {/* Dynamic Subtitle */}
+          <div className="mb-4">
+            <h2 className="text-lg font-medium text-muted-foreground">
+              {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
+            </h2>
+          </div>
+
+          {/* Tab Content */}
+          {activeTab === 'all' && (
+            <div className="space-y-6">
+              {effectiveViewMode === 'cards' ? (
+                <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
+              ) : (
+                <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
+              )}
+            </div>
+          )}
+
+          {activeTab === 'companies' && (
+            <div className="space-y-6">
+              {effectiveViewMode === 'cards' ? (
+                <CardsView companies={filteredCompanies} persons={[]} />
+              ) : (
+                <TableView companies={filteredCompanies} persons={[]} />
+              )}
+            </div>
+          )}
+
+          {activeTab === 'persons' && (
+            <div className="space-y-6">
+              {effectiveViewMode === 'cards' ? (
+                <CardsView companies={[]} persons={filteredPersons} />
+              ) : (
+                <TableView companies={[]} persons={filteredPersons} />
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Tab Content */}
-        {activeTab === 'all' && (
-          <div className="space-y-6">
-            {effectiveViewMode === 'cards' ? (
-              <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
-            ) : (
-              <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
-            )}
-          </div>
-        )}
-
-        {activeTab === 'companies' && (
-          <div className="space-y-6">
-            {effectiveViewMode === 'cards' ? (
-              <CardsView companies={filteredCompanies} persons={[]} />
-            ) : (
-              <TableView companies={filteredCompanies} persons={[]} />
-            )}
-          </div>
-        )}
-
-        {activeTab === 'persons' && (
-          <div className="space-y-6">
-            {effectiveViewMode === 'cards' ? (
-              <CardsView companies={[]} persons={filteredPersons} />
-            ) : (
-              <TableView companies={[]} persons={filteredPersons} />
-            )}
-          </div>
-        )}
+        </div>
       </div>
 
       {/* Contact Form */}
@@ -685,186 +673,301 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Contact Details Dialog */}
+      {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              {itemType === 'company' ? <Building2 className="h-5 w-5" /> : <Users className="h-5 w-5" />}
-              {itemType === 'company' 
-                ? selectedItem?.name 
-                : `${selectedItem?.first_name} ${selectedItem?.last_name}`
-              }
+        <DialogContent className="max-w-6xl">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+              <div className="flex items-center gap-3">
+                {itemType === 'company' ? (
+                  <>
+                    <Building2 className="h-6 w-6 text-primary" />
+                    <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-6 w-6 text-primary" />
+                    <span className="text-xl lg:text-2xl font-semibold">
+                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                    </span>
+                  </>
+                )}
+              </div>
+              <div className="flex items-center gap-2 lg:mr-2">
+                {itemType === 'company' && selectedItem && getStatusBadge(selectedItem.status)}
+                {itemType === 'person' && selectedItem?.is_primary_contact && (
+                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                    Primärkontakt
+                  </Badge>
+                )}
+              </div>
             </DialogTitle>
-            <DialogDescription>
-              {itemType === 'company' ? 'Unternehmensdetails' : 'Kontaktperson Details'}
-            </DialogDescription>
           </DialogHeader>
           
           {selectedItem && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Left Column - Details & Map */}
-              <div className="space-y-6">
-                {/* Contact Information */}
-                <Card>
-                  <CardHeader>
-                    <h3 className="text-lg font-semibold">Kontaktinformationen</h3>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {itemType === 'company' ? (
-                      <>
-                        {selectedItem.email && (
-                          <div className="flex items-center gap-3">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <a href={`mailto:${selectedItem.email}`} className="text-primary hover:underline">
-                              {selectedItem.email}
-                            </a>
+            <div className="space-y-6 animate-fade-in">
+              {itemType === 'company' ? (
+                <>
+                  {/* Company Basic Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Kontaktinformationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.email}
+                             </a>
                           </div>
-                        )}
-                        {selectedItem.phone && (
-                          <div className="flex items-center gap-3">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${selectedItem.phone}`} className="text-primary hover:underline">
-                              {selectedItem.phone}
-                            </a>
+                        </div>
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.phone}
+                             </a>
                           </div>
-                        )}
-                        {selectedItem.address && (
-                          <div className="flex items-start gap-3">
-                            <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                            <div>
-                              <p>{selectedItem.address}</p>
-                              <p>{selectedItem.postal_code} {selectedItem.city}</p>
-                            </div>
-                          </div>
-                        )}
-                        {selectedItem.website && (
-                          <div className="flex items-center gap-3">
-                            <MessageCircle className="h-4 w-4 text-muted-foreground" />
-                            <a href={selectedItem.website} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        </div>
+                      )}
+                      {selectedItem.website && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Building2 className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Website</p>
+                            <a 
+                              href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-sm font-medium text-primary hover:underline transition-colors"
+                            >
                               {selectedItem.website}
                             </a>
                           </div>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        {selectedItem.title && (
-                          <div className="flex items-center gap-3">
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                            <span>{selectedItem.title}</span>
-                          </div>
-                        )}
-                        {selectedItem.email && (
-                          <div className="flex items-center gap-3">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <a href={`mailto:${selectedItem.email}`} className="text-primary hover:underline">
-                              {selectedItem.email}
-                            </a>
-                          </div>
-                        )}
-                        {selectedItem.phone && (
-                          <div className="flex items-center gap-3">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${selectedItem.phone}`} className="text-primary hover:underline">
-                              {selectedItem.phone}
-                            </a>
-                          </div>
-                        )}
-                        {selectedItem.mobile && (
-                          <div className="flex items-center gap-3">
-                            <Smartphone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${selectedItem.mobile}`} className="text-primary hover:underline">
-                              {selectedItem.mobile}
-                            </a>
-                          </div>
-                        )}
-                        {selectedItem.customer_companies && (
-                          <div className="flex items-center gap-3">
-                            <Building2 className="h-4 w-4 text-muted-foreground" />
-                            <button 
-                              onClick={() => handleNavigateToCompany(selectedItem.customer_companies.id)}
-                              className="text-primary hover:underline"
-                            >
-                              {selectedItem.customer_companies.name}
-                            </button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Google Map for companies */}
-                {itemType === 'company' && selectedItem.address && (
-                  <Card>
-                    <CardHeader>
-                      <h3 className="text-lg font-semibold">Standort</h3>
-                    </CardHeader>
-                    <CardContent>
-                      <GoogleMap
-                        address={`${selectedItem.address}, ${selectedItem.postal_code} ${selectedItem.city}`}
-                      />
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
-
-              {/* Right Column - Related Data */}
-              <div className="space-y-6">
-                {/* Actions */}
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={handleEditItem} className="flex-1">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Bearbeiten
-                  </Button>
-                  <Button variant="destructive" onClick={handleDeleteItem} className="flex-1">
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Löschen
-                  </Button>
-                </div>
-
-                {/* Company: Show contact persons */}
-                {itemType === 'company' && contactPersons && (
-                  <Card>
-                    <CardHeader>
-                      <h3 className="text-lg font-semibold">Kontaktpersonen</h3>
-                    </CardHeader>
-                    <CardContent>
-                      {contactPersons
-                        .filter(person => person.customer_company_id === selectedItem.id)
-                        .length > 0 ? (
-                        <div className="space-y-3">
-                          {contactPersons
-                            .filter(person => person.customer_company_id === selectedItem.id)
-                            .map(person => (
-                              <div key={person.id} className="p-3 border rounded-lg hover:bg-muted/50 transition-colors">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="font-medium">{person.first_name} {person.last_name}</p>
-                                    {person.title && <p className="text-sm text-muted-foreground">{person.title}</p>}
-                                  </div>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    onClick={() => handleNavigateToPerson(person)}
-                                  >
-                                    Anzeigen
-                                  </Button>
-                                </div>
-                              </div>
-                            ))
-                          }
                         </div>
-                      ) : (
-                        <p className="text-muted-foreground">Keine Kontaktpersonen vorhanden</p>
                       )}
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+                    </div>
+                   </div>
+
+                   {/* Contact Persons */}
+                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                       <div className="flex items-center justify-between">
+                         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                           <Users className="h-4 w-4" />
+                           Kontaktpersonen ({selectedItem.contact_persons.length})
+                         </h4>
+                       </div>
+                       <div className="grid gap-3">
+                         {selectedItem.contact_persons.map((contact) => (
+                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                             <div className="flex items-start justify-between">
+                               <div className="flex-1">
+                                 <div className="flex items-center justify-between">
+                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                     {contact.first_name} {contact.last_name}
+                                   </span>
+                                   {contact.is_primary_contact && (
+                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                       Primär
+                                     </Badge>
+                                   )}
+                                 </div>
+                                 <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                   {contact.title && <span>{contact.title}</span>}
+                                   {contact.title && contact.department && <span>•</span>}
+                                   {contact.department && <span>{contact.department}</span>}
+                                 </div>
+                               </div>
+                             </div>
+                             {contact.notes && (
+                               <div className="mt-2 pt-2 border-t border-border/50">
+                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                               </div>
+                             )}
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Address */}
+                  {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Adresse
+                      </h4>
+                      <div className="p-2 bg-background rounded-md">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                          <div className="text-sm">
+                            {selectedItem.address && <div>{selectedItem.address}</div>}
+                            <div>
+                              {selectedItem.postal_code && selectedItem.city 
+                                ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                : selectedItem.postal_code || selectedItem.city}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Google Maps - Show company location */}
+                  {(selectedItem.address || selectedItem.city) && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Standort
+                      </h4>
+                      <GoogleMap
+                        address={selectedItem.address}
+                        postal_code={selectedItem.postal_code}
+                        city={selectedItem.city}
+                        country={selectedItem.country}
+                        className="w-full h-64 rounded-lg"
+                      />
+                    </div>
+                  )}
+
+                  {/* Additional Info */}
+                  {(selectedItem.vat_number || selectedItem.tax_number) && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Zusätzliche Informationen
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedItem.vat_number && (
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                          </div>
+                        )}
+                        {selectedItem.tax_number && (
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">Steuernummer</p>
+                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Person Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Personeninformationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.title && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Position</p>
+                          <p className="text-sm font-medium">{selectedItem.title}</p>
+                        </div>
+                      )}
+                      {selectedItem.department && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Abteilung</p>
+                          <p className="text-sm font-medium">{selectedItem.department}</p>
+                        </div>
+                      )}
+                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Unternehmen</p>
+                          <button 
+                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
+                          >
+                            <Building2 className="h-3 w-3" />
+                            {selectedItem.customer_companies.name}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Contact Info */}
+                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Kontaktinformationen
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.email}
+                             </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.phone}
+                             </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.mobile && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <MessageCircle className="h-4 w-4 text-green-600" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">WhatsApp</p>
+                             <a 
+                               href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                             >
+                               {selectedItem.mobile}
+                             </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Notes */}
+                  {selectedItem.notes && (
+                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Notizen
+                      </h4>
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-sm">{selectedItem.notes}</p>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           )}
+          
+          {/* Action Buttons at Bottom */}
+          <div className="flex justify-end gap-2 pt-4 border-t mt-6">
+            <Button variant="outline" onClick={handleEditItem} className="flex items-center gap-2">
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Button>
+            <Button variant="outline" onClick={handleDeleteItem} className="flex items-center gap-2">
+              <Trash2 className="h-4 w-4" />
+              Löschen
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -872,7 +975,7 @@ const Kontakte = () => {
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Kontakt löschen</AlertDialogTitle>
+            <AlertDialogTitle>Kontakt löschen?</AlertDialogTitle>
             <AlertDialogDescription>
               Diese Aktion kann nicht rückgängig gemacht werden. Der Kontakt wird permanent gelöscht und alle verknüpften Daten gehen verloren.
             </AlertDialogDescription>
