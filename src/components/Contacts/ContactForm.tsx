@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Building2, User } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
+import { useToast } from '@/hooks/use-toast';
 
 type ContactFormMode = 'company' | 'person';
 
@@ -35,7 +36,9 @@ export const ContactForm = ({
   initialMode = 'company'
 }: ContactFormProps) => {
   const { data: companies } = useCompanies();
+  const { toast } = useToast();
   const [mode, setMode] = useState<ContactFormMode>(initialMode);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [companyData, setCompanyData] = useState<CustomerCompanyInput>({
     name: '',
@@ -132,12 +135,97 @@ export const ContactForm = ({
     }
   }, [contactPerson]);
 
+  const validateCompanyForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!companyData.name.trim()) {
+      newErrors.name = 'Firmenname ist erforderlich';
+    }
+
+    if (!companyData.address.trim()) {
+      newErrors.address = 'Adresse ist erforderlich';
+    }
+
+    if (!companyData.postal_code.trim()) {
+      newErrors.postal_code = 'PLZ ist erforderlich';
+    } else if (!/^\d{4}$/.test(companyData.postal_code)) {
+      newErrors.postal_code = 'PLZ muss 4 Ziffern enthalten';
+    }
+
+    if (!companyData.city.trim()) {
+      newErrors.city = 'Ort ist erforderlich';
+    }
+
+    if (!companyData.country.trim()) {
+      newErrors.country = 'Land ist erforderlich';
+    }
+
+    if (!companyData.phone.trim()) {
+      newErrors.phone = 'Telefon ist erforderlich';
+    } else if (!/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
+      newErrors.phone = 'Ungültiges Telefonformat';
+    }
+
+    if (!companyData.email.trim()) {
+      newErrors.email = 'E-Mail ist erforderlich';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
+      newErrors.email = 'Ungültige E-Mail-Adresse';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validatePersonForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    if (!personData.first_name.trim()) {
+      newErrors.first_name = 'Vorname ist erforderlich';
+    }
+
+    if (!personData.last_name.trim()) {
+      newErrors.last_name = 'Nachname ist erforderlich';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    if (mode === 'company') {
+      setCompanyData({ ...companyData, [field]: value });
+    } else {
+      setPersonData({ ...personData, [field]: value });
+    }
+    
+    // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: '' });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    let isValid = false;
     if (mode === 'company') {
-      onSubmitCompany(companyData);
+      isValid = validateCompanyForm();
+      if (isValid) {
+        onSubmitCompany(companyData);
+      }
     } else {
-      onSubmitPerson(personData);
+      isValid = validatePersonForm();
+      if (isValid) {
+        onSubmitPerson(personData);
+      }
+    }
+
+    if (!isValid) {
+      toast({
+        title: 'Validierungsfehler',
+        description: 'Bitte korrigieren Sie die markierten Felder',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -154,6 +242,12 @@ export const ContactForm = ({
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>{getTitle()}</DialogTitle>
+          <DialogDescription>
+            {mode === 'company' 
+              ? (company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu')
+              : (contactPerson ? 'Bearbeiten Sie die Kontaktperson' : 'Fügen Sie eine neue Kontaktperson hinzu')
+            }
+          </DialogDescription>
         </DialogHeader>
 
         {canSwitchMode && (
@@ -175,50 +269,74 @@ export const ContactForm = ({
           {mode === 'company' ? (
             <div className="grid grid-cols-1 gap-4">
               <div>
-                <Label htmlFor="name">Firmenname *</Label>
+                <Label htmlFor="name">
+                  Firmenname <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="name"
                   value={companyData.name}
-                  onChange={(e) => setCompanyData({ ...companyData, name: e.target.value })}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
                   required
+                  className={errors.name ? 'border-destructive' : ''}
                 />
+                {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
               </div>
 
               <div>
-                <Label htmlFor="address">Adresse</Label>
+                <Label htmlFor="address">
+                  Adresse <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="address"
                   value={companyData.address}
-                  onChange={(e) => setCompanyData({ ...companyData, address: e.target.value })}
+                  onChange={(e) => handleInputChange('address', e.target.value)}
+                  required
+                  className={errors.address ? 'border-destructive' : ''}
                 />
+                {errors.address && <p className="text-sm text-destructive mt-1">{errors.address}</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="postal_code">PLZ</Label>
+                  <Label htmlFor="postal_code">
+                    PLZ <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="postal_code"
                     value={companyData.postal_code}
-                    onChange={(e) => setCompanyData({ ...companyData, postal_code: e.target.value })}
+                    onChange={(e) => handleInputChange('postal_code', e.target.value)}
+                    required
+                    className={errors.postal_code ? 'border-destructive' : ''}
                   />
+                  {errors.postal_code && <p className="text-sm text-destructive mt-1">{errors.postal_code}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="city">Stadt</Label>
+                  <Label htmlFor="city">
+                    Ort <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="city"
                     value={companyData.city}
-                    onChange={(e) => setCompanyData({ ...companyData, city: e.target.value })}
+                    onChange={(e) => handleInputChange('city', e.target.value)}
+                    required
+                    className={errors.city ? 'border-destructive' : ''}
                   />
+                  {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="country">Land</Label>
+                <Label htmlFor="country">
+                  Land <span className="text-destructive">*</span>
+                </Label>
                 <Input
                   id="country"
                   value={companyData.country}
-                  onChange={(e) => setCompanyData({ ...companyData, country: e.target.value })}
+                  onChange={(e) => handleInputChange('country', e.target.value)}
+                  required
+                  className={errors.country ? 'border-destructive' : ''}
                 />
+                {errors.country && <p className="text-sm text-destructive mt-1">{errors.country}</p>}
               </div>
 
               <div>
@@ -237,41 +355,51 @@ export const ContactForm = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone">Telefon</Label>
+                  <Label htmlFor="phone">
+                    Telefon <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="phone"
                     value={companyData.phone}
-                    onChange={(e) => setCompanyData({ ...companyData, phone: e.target.value })}
+                    onChange={(e) => handleInputChange('phone', e.target.value)}
+                    required
+                    className={errors.phone ? 'border-destructive' : ''}
                   />
+                  {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">E-Mail</Label>
+                  <Label htmlFor="email">
+                    E-Mail <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     value={companyData.email}
-                    onChange={(e) => setCompanyData({ ...companyData, email: e.target.value })}
+                    onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
+                    className={errors.email ? 'border-destructive' : ''}
                   />
+                  {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="website">Website</Label>
-                  <Input
-                    id="website"
-                    value={companyData.website}
-                    onChange={(e) => setCompanyData({ ...companyData, website: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="vat_number">MwSt-Nummer</Label>
-                  <Input
-                    id="vat_number"
-                    value={companyData.vat_number}
-                    onChange={(e) => setCompanyData({ ...companyData, vat_number: e.target.value })}
-                  />
-                </div>
+                  <div>
+                    <Label htmlFor="website">Website</Label>
+                    <Input
+                      id="website"
+                      value={companyData.website}
+                      onChange={(e) => handleInputChange('website', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="vat_number">MwSt-Nummer</Label>
+                    <Input
+                      id="vat_number"
+                      value={companyData.vat_number}
+                      onChange={(e) => handleInputChange('vat_number', e.target.value)}
+                    />
+                  </div>
               </div>
 
               <div>
@@ -279,7 +407,7 @@ export const ContactForm = ({
                 <Textarea
                   id="notes"
                   value={companyData.notes}
-                  onChange={(e) => setCompanyData({ ...companyData, notes: e.target.value })}
+                  onChange={(e) => handleInputChange('notes', e.target.value)}
                   rows={3}
                 />
               </div>
@@ -288,22 +416,30 @@ export const ContactForm = ({
             <div className="grid grid-cols-1 gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="first_name">Vorname *</Label>
+                  <Label htmlFor="first_name">
+                    Vorname <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="first_name"
                     value={personData.first_name}
-                    onChange={(e) => setPersonData({ ...personData, first_name: e.target.value })}
+                    onChange={(e) => handleInputChange('first_name', e.target.value)}
                     required
+                    className={errors.first_name ? 'border-destructive' : ''}
                   />
+                  {errors.first_name && <p className="text-sm text-destructive mt-1">{errors.first_name}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="last_name">Nachname *</Label>
+                  <Label htmlFor="last_name">
+                    Nachname <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="last_name"
                     value={personData.last_name}
-                    onChange={(e) => setPersonData({ ...personData, last_name: e.target.value })}
+                    onChange={(e) => handleInputChange('last_name', e.target.value)}
                     required
+                    className={errors.last_name ? 'border-destructive' : ''}
                   />
+                  {errors.last_name && <p className="text-sm text-destructive mt-1">{errors.last_name}</p>}
                 </div>
               </div>
 
