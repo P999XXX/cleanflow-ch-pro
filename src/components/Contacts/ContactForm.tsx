@@ -52,6 +52,9 @@ export const ContactForm = ({
     vat_number: '',
     notes: '',
     status: 'aktiv',
+    company_type: '',
+    industry_category: '',
+    contact_type: '',
   });
 
   const [personData, setPersonData] = useState<ContactPersonInput>({
@@ -85,6 +88,9 @@ export const ContactForm = ({
         vat_number: company.vat_number || '',
         notes: company.notes || '',
         status: company.status || 'aktiv',
+        company_type: company.company_type || '',
+        industry_category: company.industry_category || '',
+        contact_type: company.contact_type || '',
       });
       setMode('company');
     } else {
@@ -100,6 +106,9 @@ export const ContactForm = ({
         vat_number: '',
         notes: '',
         status: 'aktiv',
+        company_type: '',
+        industry_category: '',
+        contact_type: '',
       });
     }
   }, [company]);
@@ -337,18 +346,78 @@ export const ContactForm = ({
                 {errors.country && <p className="text-sm text-destructive mt-1">{errors.country}</p>}
               </div>
 
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select value={companyData.status} onValueChange={(value) => setCompanyData({ ...companyData, status: value })}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="aktiv">Aktiv</SelectItem>
-                    <SelectItem value="inaktiv">Inaktiv</SelectItem>
-                    <SelectItem value="potentiell">Potentieller Kunde</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="company_type">Gesellschaftsart</Label>
+                  <Select value={companyData.company_type} onValueChange={(value) => setCompanyData({ ...companyData, company_type: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Gesellschaftsart auswählen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="AG">Aktiengesellschaft (AG)</SelectItem>
+                      <SelectItem value="GmbH">Gesellschaft mit beschränkter Haftung (GmbH)</SelectItem>
+                      <SelectItem value="KG">Kommanditgesellschaft (KG)</SelectItem>
+                      <SelectItem value="OHG">Offene Handelsgesellschaft (OHG)</SelectItem>
+                      <SelectItem value="Einzelunternehmen">Einzelunternehmen</SelectItem>
+                      <SelectItem value="Genossenschaft">Genossenschaft</SelectItem>
+                      <SelectItem value="Verein">Verein</SelectItem>
+                      <SelectItem value="Stiftung">Stiftung</SelectItem>
+                      <SelectItem value="Öffentlich">Öffentliche Einrichtung</SelectItem>
+                      <SelectItem value="Sonstige">Sonstige</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="industry_category">Branche</Label>
+                  <Select value={companyData.industry_category} onValueChange={(value) => setCompanyData({ ...companyData, industry_category: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Branche auswählen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Büro">Büro & Verwaltung</SelectItem>
+                      <SelectItem value="Einzelhandel">Einzelhandel</SelectItem>
+                      <SelectItem value="Gastronomie">Gastronomie & Hotellerie</SelectItem>
+                      <SelectItem value="Gesundheitswesen">Gesundheitswesen</SelectItem>
+                      <SelectItem value="Bildung">Bildung & Erziehung</SelectItem>
+                      <SelectItem value="Industrie">Industrie & Produktion</SelectItem>
+                      <SelectItem value="Logistik">Logistik & Transport</SelectItem>
+                      <SelectItem value="Immobilien">Immobilien & Hausverwaltung</SelectItem>
+                      <SelectItem value="Öffentlich">Öffentlicher Sektor</SelectItem>
+                      <SelectItem value="Sonstige">Sonstige</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="contact_type">Kontaktart</Label>
+                  <Select value={companyData.contact_type} onValueChange={(value) => setCompanyData({ ...companyData, contact_type: value })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Kontaktart auswählen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Kunde">Kunde</SelectItem>
+                      <SelectItem value="Lieferant">Lieferant</SelectItem>
+                      <SelectItem value="Dienstleister">Dienstleister</SelectItem>
+                      <SelectItem value="Amtlich">Amtlich</SelectItem>
+                      <SelectItem value="Sonstige">Sonstige</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select value={companyData.status} onValueChange={(value) => setCompanyData({ ...companyData, status: value })}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="aktiv">Aktiv</SelectItem>
+                      <SelectItem value="inaktiv">Inaktiv</SelectItem>
+                      <SelectItem value="potentiell">Potentieller Kunde</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
