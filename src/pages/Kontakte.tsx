@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building } from "lucide-react";
+import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building, MessageCircle } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -958,10 +958,15 @@ const Kontakte = () => {
                       )}
                       {selectedItem.mobile && (
                         <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Smartphone className="h-4 w-4 text-primary" />
+                          <MessageCircle className="h-4 w-4 text-green-600" />
                           <div>
-                            <p className="text-xs text-muted-foreground">Mobil</p>
-                             <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                            <p className="text-xs text-muted-foreground">WhatsApp</p>
+                             <a 
+                               href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                             >
                                {selectedItem.mobile}
                              </a>
                           </div>
