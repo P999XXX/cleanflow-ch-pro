@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
@@ -18,6 +19,9 @@ const Kontakte = () => {
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [formMode, setFormMode] = useState<'company' | 'person'>('company');
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [itemType, setItemType] = useState<'company' | 'person'>('company');
 
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
@@ -59,6 +63,13 @@ const Kontakte = () => {
   // Clear search function
   const clearSearch = useCallback(() => {
     setSearchTerm('');
+  }, []);
+
+  // Handle card clicks to open details
+  const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
+    setSelectedItem(item);
+    setItemType(type);
+    setDetailsOpen(true);
   }, []);
 
   const handleCompanySubmit = (companyData) => {
@@ -312,9 +323,13 @@ const Kontakte = () => {
                   <Building2 className="h-5 w-5" />
                   Unternehmen ({filteredCompanies.length})
                 </h3>
-                <div className="space-y-4">
-                  {filteredCompanies.map((company) => (
-                    <Card key={`company-${company.id}`}>
+                 <div className="space-y-4">
+                   {filteredCompanies.map((company) => (
+                     <Card 
+                       key={`company-${company.id}`} 
+                       className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                       onClick={() => handleCardClick(company, 'company')}
+                     >
                        <CardHeader className="pb-2">
                          <div className="flex items-start justify-between">
                            <div className="flex-1">
@@ -328,24 +343,6 @@ const Kontakte = () => {
                            </div>
                            <div className="flex items-center gap-2">
                              {getStatusBadge(company.status)}
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               onClick={() => {
-                                 setSelectedCompany(company);
-                                 setFormMode('company');
-                                 setIsFormOpen(true);
-                               }}
-                             >
-                               <Edit className="h-4 w-4" />
-                             </Button>
-                             <Button
-                               variant="outline"
-                               size="sm"
-                               onClick={() => deleteCompany.mutate(company.id)}
-                             >
-                               <Trash2 className="h-4 w-4" />
-                             </Button>
                            </div>
                          </div>
                        </CardHeader>
@@ -354,23 +351,19 @@ const Kontakte = () => {
                            {company.email && (
                              <div className="flex items-center gap-2 text-sm">
                                <Mail className="h-4 w-4 text-muted-foreground" />
-                               <a href={`mailto:${company.email}`} className="text-primary hover:underline">
-                                 {company.email}
-                               </a>
+                               <span className="text-muted-foreground">{company.email}</span>
                              </div>
                            )}
                            {company.phone && (
                              <div className="flex items-center gap-2 text-sm">
                                <Phone className="h-4 w-4 text-muted-foreground" />
-                               <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                                 {company.phone}
-                               </a>
+                               <span className="text-muted-foreground">{company.phone}</span>
                              </div>
                            )}
                          </div>
                        </CardContent>
-                    </Card>
-                  ))}
+                     </Card>
+                   ))}
                 </div>
               </div>
             )}
@@ -534,61 +527,43 @@ const Kontakte = () => {
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-4">
-                {filteredCompanies.map((company) => (
-                  <Card key={company.id}>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg">{company.name}</h3>
-                          {(company.city || company.postal_code) && (
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                              <MapPin className="h-3 w-3" />
-                              {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                            </div>
-                          )}
-                        </div>
-                         <div className="flex items-center gap-2">
-                           {getStatusBadge(company.status)}
-                           <Button
-                             variant="outline"
-                             size="sm"
-                             onClick={() => {
-                               setSelectedCompany(company);
-                               setFormMode('company');
-                               setIsFormOpen(true);
-                             }}
-                           >
-                             <Edit className="h-4 w-4" />
-                           </Button>
-                           <Button
-                             variant="outline"
-                             size="sm"
-                             onClick={() => deleteCompany.mutate(company.id)}
-                           >
-                             <Trash2 className="h-4 w-4" />
-                           </Button>
+               <div className="space-y-4">
+                 {filteredCompanies.map((company) => (
+                   <Card 
+                     key={company.id}
+                     className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                     onClick={() => handleCardClick(company, 'company')}
+                   >
+                     <CardHeader className="pb-2">
+                       <div className="flex items-start justify-between">
+                         <div className="flex-1">
+                           <h3 className="font-semibold text-lg">{company.name}</h3>
+                           {(company.city || company.postal_code) && (
+                             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                               <MapPin className="h-3 w-3" />
+                               {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
+                             </div>
+                           )}
                          </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-2">
-                        {company.email && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <a href={`mailto:${company.email}`} className="text-primary hover:underline">
-                              {company.email}
-                            </a>
+                          <div className="flex items-center gap-2">
+                            {getStatusBadge(company.status)}
                           </div>
-                        )}
-                         {company.phone && (
+                       </div>
+                     </CardHeader>
+                     <CardContent className="pt-0">
+                       <div className="space-y-2">
+                         {company.email && (
                            <div className="flex items-center gap-2 text-sm">
-                             <Phone className="h-4 w-4 text-muted-foreground" />
-                             <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                               {company.phone}
-                             </a>
+                             <Mail className="h-4 w-4 text-muted-foreground" />
+                             <span className="text-muted-foreground">{company.email}</span>
                            </div>
                          )}
+                          {company.phone && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <span className="text-muted-foreground">{company.phone}</span>
+                            </div>
+                          )}
                        </div>
                      </CardContent>
                   </Card>
@@ -1357,6 +1332,148 @@ const Kontakte = () => {
         contactPerson={selectedPerson}
         initialMode={formMode}
       />
+
+      {/* Details Dialog */}
+      <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {itemType === 'company' ? (
+                <>
+                  <Building2 className="h-5 w-5" />
+                  {selectedItem?.name}
+                </>
+              ) : (
+                <>
+                  <Users className="h-5 w-5" />
+                  {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                </>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedItem && (
+            <div className="space-y-6">
+              {itemType === 'company' ? (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Unternehmensinformationen</h3>
+                    {getStatusBadge(selectedItem.status)}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.email}</span>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.phone}</span>
+                      </div>
+                    )}
+                    {selectedItem.website && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Website:</span>
+                        <span className="text-sm">{selectedItem.website}</span>
+                      </div>
+                    )}
+                    {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                      <div className="flex items-start gap-2">
+                        <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
+                        <div className="text-sm">
+                          {selectedItem.address && <div>{selectedItem.address}</div>}
+                          {(selectedItem.postal_code || selectedItem.city) && (
+                            <div>{selectedItem.postal_code} {selectedItem.city}</div>
+                          )}
+                          {selectedItem.country && <div>{selectedItem.country}</div>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {(selectedItem.vat_number || selectedItem.tax_number) && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium">Steuerliche Informationen</h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        {selectedItem.vat_number && (
+                          <div>
+                            <span className="font-medium">MwSt-Nr.:</span> {selectedItem.vat_number}
+                          </div>
+                        )}
+                        {selectedItem.tax_number && (
+                          <div>
+                            <span className="font-medium">Steuer-Nr.:</span> {selectedItem.tax_number}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Kontaktperson</h3>
+                    {selectedItem.is_primary_contact && (
+                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                        Primär
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {selectedItem.title && (
+                      <div>
+                        <span className="text-sm font-medium">Position:</span>
+                        <span className="text-sm ml-2">{selectedItem.title}</span>
+                      </div>
+                    )}
+                    {selectedItem.department && (
+                      <div>
+                        <span className="text-sm font-medium">Abteilung:</span>
+                        <span className="text-sm ml-2">{selectedItem.department}</span>
+                      </div>
+                    )}
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.email}</span>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.phone}</span>
+                      </div>
+                    )}
+                    {selectedItem.mobile && (
+                      <div className="flex items-center gap-2">
+                        <Smartphone className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.mobile}</span>
+                      </div>
+                    )}
+                    {selectedItem.customer_companies?.name && (
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-sm">{selectedItem.customer_companies.name}</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {selectedItem.notes && (
+                    <div className="space-y-2">
+                      <h4 className="font-medium">Notizen</h4>
+                      <p className="text-sm text-muted-foreground">{selectedItem.notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
