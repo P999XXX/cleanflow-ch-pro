@@ -34,10 +34,10 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (isProfile && user) {
+    if (user) {
       loadCompanyData();
     }
-  }, [isProfile, user]);
+  }, [user]);
 
   const loadCompanyData = async () => {
     if (!user) return;
@@ -46,7 +46,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
       .from('companies')
       .select('*')
       .eq('owner_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (data && !error) {
       setFormData({
@@ -61,6 +61,13 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
         vatNumber: data.vat_number || '',
       });
       setCompanyExists(true);
+      
+      // If this is the company setup flow and company exists, trigger onSuccess
+      if (!isProfile && onSuccess && data.name) {
+        setTimeout(() => {
+          onSuccess();
+        }, 500);
+      }
     }
   };
 
