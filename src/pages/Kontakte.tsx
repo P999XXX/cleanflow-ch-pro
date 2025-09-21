@@ -348,22 +348,22 @@ const Kontakte = () => {
                            </div>
                          </div>
                        </CardHeader>
-                       <CardContent className="pt-0">
-                         <div className="space-y-2">
-                           {company.email && (
-                             <div className="flex items-center gap-2 text-sm">
-                               <Mail className="h-4 w-4 text-muted-foreground" />
-                               <span className="text-muted-foreground">{company.email}</span>
-                             </div>
-                           )}
-                           {company.phone && (
-                             <div className="flex items-center gap-2 text-sm">
-                               <Phone className="h-4 w-4 text-muted-foreground" />
-                               <span className="text-muted-foreground">{company.phone}</span>
-                             </div>
-                           )}
-                         </div>
-                       </CardContent>
+                        <CardContent className="pt-0">
+                          <div className="flex flex-wrap items-center gap-4 text-sm">
+                            {company.email && (
+                              <div className="flex items-center gap-1">
+                                <Mail className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">{company.email}</span>
+                              </div>
+                            )}
+                            {company.phone && (
+                              <div className="flex items-center gap-1">
+                                <Phone className="h-3 w-3 text-muted-foreground" />
+                                <span className="text-muted-foreground">{company.phone}</span>
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
                      </Card>
                    ))}
                 </div>
@@ -412,34 +412,34 @@ const Kontakte = () => {
                            </div>
                          </div>
                        </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-2">
-                          {person.email && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Mail className="h-4 w-4 text-muted-foreground" />
-                              <a href={`mailto:${person.email}`} className="text-primary hover:underline">
-                                {person.email}
-                              </a>
-                            </div>
-                          )}
-                          {person.phone && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
-                              <a href={`tel:${person.phone}`} className="text-primary hover:underline">
-                                {person.phone}
-                              </a>
-                            </div>
-                          )}
-                          {person.mobile && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Smartphone className="h-4 w-4 text-muted-foreground" />
-                              <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
-                                {person.mobile}
-                              </a>
-                            </div>
-                          )}
+                       <CardContent className="pt-0">
+                         <div className="flex flex-wrap items-center gap-4 text-sm">
+                           {person.email && (
+                             <div className="flex items-center gap-1">
+                               <Mail className="h-3 w-3 text-muted-foreground" />
+                               <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                                 {person.email}
+                               </a>
+                             </div>
+                           )}
+                           {person.phone && (
+                             <div className="flex items-center gap-1">
+                               <Phone className="h-3 w-3 text-muted-foreground" />
+                               <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                                 {person.phone}
+                               </a>
+                             </div>
+                           )}
+                           {person.mobile && (
+                             <div className="flex items-center gap-1">
+                               <Smartphone className="h-3 w-3 text-muted-foreground" />
+                               <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                                 {person.mobile}
+                               </a>
+                             </div>
+                           )}
                          </div>
-                      </CardContent>
+                       </CardContent>
                     </Card>
                   ))}
                 </div>
@@ -648,34 +648,34 @@ const Kontakte = () => {
                          </div>
                        </div>
                      </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="space-y-2">
-                        {person.email && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Mail className="h-4 w-4 text-muted-foreground" />
-                            <a href={`mailto:${person.email}`} className="text-primary hover:underline">
-                              {person.email}
-                            </a>
-                          </div>
-                        )}
-                        {person.phone && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${person.phone}`} className="text-primary hover:underline">
-                              {person.phone}
-                            </a>
-                          </div>
-                        )}
-                        {person.mobile && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Smartphone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
-                              {person.mobile}
-                            </a>
-                          </div>
-                        )}
+                     <CardContent className="pt-0">
+                       <div className="flex flex-wrap items-center gap-4 text-sm">
+                         {person.email && (
+                           <div className="flex items-center gap-1">
+                             <Mail className="h-3 w-3 text-muted-foreground" />
+                             <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                               {person.email}
+                             </a>
+                           </div>
+                         )}
+                         {person.phone && (
+                           <div className="flex items-center gap-1">
+                             <Phone className="h-3 w-3 text-muted-foreground" />
+                             <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                               {person.phone}
+                             </a>
+                           </div>
+                         )}
+                         {person.mobile && (
+                           <div className="flex items-center gap-1">
+                             <Smartphone className="h-3 w-3 text-muted-foreground" />
+                             <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                               {person.mobile}
+                             </a>
+                           </div>
+                         )}
                        </div>
-                    </CardContent>
+                     </CardContent>
                   </Card>
                 ))}
               </div>
@@ -723,24 +723,24 @@ const Kontakte = () => {
                               <TableCell className="font-medium">{company.name}</TableCell>
                               <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
                               <TableCell>
-                                <div className="flex flex-col gap-1">
-                                  {company.email && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Mail className="h-3 w-3" />
-                                      <a href={`mailto:${company.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                        {company.email}
-                                      </a>
-                                    </div>
-                                  )}
-                                  {company.phone && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Phone className="h-3 w-3" />
-                                      <a href={`tel:${company.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                        {company.phone}
-                                      </a>
-                                    </div>
-                                  )}
-                                </div>
+                                 <div className="flex flex-wrap items-center gap-3">
+                                   {company.email && (
+                                     <div className="flex items-center gap-1 text-sm">
+                                       <Mail className="h-3 w-3" />
+                                       <a href={`mailto:${company.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                         {company.email}
+                                       </a>
+                                     </div>
+                                   )}
+                                   {company.phone && (
+                                     <div className="flex items-center gap-1 text-sm">
+                                       <Phone className="h-3 w-3" />
+                                       <a href={`tel:${company.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                         {company.phone}
+                                       </a>
+                                     </div>
+                                   )}
+                                 </div>
                               </TableCell>
                               <TableCell>{getStatusBadge(company.status)}</TableCell>
                               <TableCell>
@@ -813,32 +813,32 @@ const Kontakte = () => {
                               </TableCell>
                               <TableCell>{person.customer_companies?.name || '-'}</TableCell>
                               <TableCell>
-                                <div className="flex flex-col gap-1">
-                                  {person.email && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Mail className="h-3 w-3" />
-                                      <a href={`mailto:${person.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                        {person.email}
-                                      </a>
-                                    </div>
-                                  )}
-                                  {person.phone && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Phone className="h-3 w-3" />
-                                      <a href={`tel:${person.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                        {person.phone}
-                                      </a>
-                                    </div>
-                                  )}
-                                  {person.mobile && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Smartphone className="h-3 w-3" />
-                                      <a href={`tel:${person.mobile}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                        {person.mobile}
-                                      </a>
-                                    </div>
-                                  )}
-                                </div>
+                                 <div className="flex flex-wrap items-center gap-3">
+                                   {person.email && (
+                                     <div className="flex items-center gap-1 text-sm">
+                                       <Mail className="h-3 w-3" />
+                                       <a href={`mailto:${person.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                         {person.email}
+                                       </a>
+                                     </div>
+                                   )}
+                                   {person.phone && (
+                                     <div className="flex items-center gap-1 text-sm">
+                                       <Phone className="h-3 w-3" />
+                                       <a href={`tel:${person.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                         {person.phone}
+                                       </a>
+                                     </div>
+                                   )}
+                                   {person.mobile && (
+                                     <div className="flex items-center gap-1 text-sm">
+                                       <Smartphone className="h-3 w-3" />
+                                       <a href={`tel:${person.mobile}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                         {person.mobile}
+                                       </a>
+                                     </div>
+                                   )}
+                                 </div>
                               </TableCell>
                               <TableCell>
                                 {person.is_primary_contact && (
@@ -981,28 +981,28 @@ const Kontakte = () => {
                                </div>
                              </div>
                            </CardHeader>
-                          <CardContent className="pt-0">
-                            <div className="space-y-2">
-                              {person.email && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <Mail className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">{person.email}</span>
-                                </div>
-                              )}
-                              {person.phone && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <Phone className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">{person.phone}</span>
-                                </div>
-                              )}
-                              {person.mobile && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <Smartphone className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">{person.mobile}</span>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
+                           <CardContent className="pt-0">
+                             <div className="flex flex-wrap items-center gap-4 text-sm">
+                               {person.email && (
+                                 <div className="flex items-center gap-1">
+                                   <Mail className="h-3 w-3 text-muted-foreground" />
+                                   <span className="text-muted-foreground">{person.email}</span>
+                                 </div>
+                               )}
+                               {person.phone && (
+                                 <div className="flex items-center gap-1">
+                                   <Phone className="h-3 w-3 text-muted-foreground" />
+                                   <span className="text-muted-foreground">{person.phone}</span>
+                                 </div>
+                               )}
+                               {person.mobile && (
+                                 <div className="flex items-center gap-1">
+                                   <Smartphone className="h-3 w-3 text-muted-foreground" />
+                                   <span className="text-muted-foreground">{person.mobile}</span>
+                                 </div>
+                               )}
+                             </div>
+                           </CardContent>
                         </Card>
                       ))}
                     </div>
@@ -1094,20 +1094,20 @@ const Kontakte = () => {
                             <TableCell className="font-medium">{company.name}</TableCell>
                             <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
                             <TableCell>
-                              <div className="flex flex-col gap-1">
-                                {company.email && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Mail className="h-3 w-3" />
-                                    {company.email}
-                                  </div>
-                                )}
-                                {company.phone && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Phone className="h-3 w-3" />
-                                    {company.phone}
-                                  </div>
-                                )}
-                              </div>
+                               <div className="flex flex-wrap items-center gap-3">
+                                 {company.email && (
+                                   <div className="flex items-center gap-1 text-sm">
+                                     <Mail className="h-3 w-3" />
+                                     {company.email}
+                                   </div>
+                                 )}
+                                 {company.phone && (
+                                   <div className="flex items-center gap-1 text-sm">
+                                     <Phone className="h-3 w-3" />
+                                     {company.phone}
+                                   </div>
+                                 )}
+                               </div>
                             </TableCell>
                             <TableCell>{getStatusBadge(company.status)}</TableCell>
                             <TableCell>
@@ -1306,26 +1306,26 @@ const Kontakte = () => {
                              </TableCell>
                              <TableCell>{person.customer_companies?.name || '-'}</TableCell>
                              <TableCell>
-                               <div className="flex flex-col gap-1">
-                                 {person.email && (
-                                   <div className="flex items-center gap-1 text-sm">
-                                     <Mail className="h-3 w-3" />
-                                     {person.email}
-                                   </div>
-                                 )}
-                                 {person.phone && (
-                                   <div className="flex items-center gap-1 text-sm">
-                                     <Phone className="h-3 w-3" />
-                                     {person.phone}
-                                   </div>
-                                 )}
-                                 {person.mobile && (
-                                   <div className="flex items-center gap-1 text-sm">
-                                     <Smartphone className="h-3 w-3" />
-                                     {person.mobile}
-                                   </div>
-                                 )}
-                               </div>
+                                <div className="flex flex-wrap items-center gap-3">
+                                  {person.email && (
+                                    <div className="flex items-center gap-1 text-sm">
+                                      <Mail className="h-3 w-3" />
+                                      {person.email}
+                                    </div>
+                                  )}
+                                  {person.phone && (
+                                    <div className="flex items-center gap-1 text-sm">
+                                      <Phone className="h-3 w-3" />
+                                      {person.phone}
+                                    </div>
+                                  )}
+                                  {person.mobile && (
+                                    <div className="flex items-center gap-1 text-sm">
+                                      <Smartphone className="h-3 w-3" />
+                                      {person.mobile}
+                                    </div>
+                                  )}
+                                </div>
                              </TableCell>
                              <TableCell>
                                {person.is_primary_contact && (
@@ -1412,34 +1412,34 @@ const Kontakte = () => {
                              </div>
                            </div>
                          </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="space-y-2">
-                            {person.email && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Mail className="h-4 w-4 text-muted-foreground" />
-                                <a href={`mailto:${person.email}`} className="text-primary hover:underline">
-                                  {person.email}
-                                </a>
-                              </div>
-                            )}
-                            {person.phone && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
-                                <a href={`tel:${person.phone}`} className="text-primary hover:underline">
-                                  {person.phone}
-                                </a>
-                              </div>
-                            )}
-                            {person.mobile && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Smartphone className="h-4 w-4 text-muted-foreground" />
-                                <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
-                                  {person.mobile}
-                                </a>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
+                         <CardContent className="pt-0">
+                           <div className="flex flex-wrap items-center gap-4 text-sm">
+                             {person.email && (
+                               <div className="flex items-center gap-1">
+                                 <Mail className="h-3 w-3 text-muted-foreground" />
+                                 <a href={`mailto:${person.email}`} className="text-primary hover:underline">
+                                   {person.email}
+                                 </a>
+                               </div>
+                             )}
+                             {person.phone && (
+                               <div className="flex items-center gap-1">
+                                 <Phone className="h-3 w-3 text-muted-foreground" />
+                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
+                                   {person.phone}
+                                 </a>
+                               </div>
+                             )}
+                             {person.mobile && (
+                               <div className="flex items-center gap-1">
+                                 <Smartphone className="h-3 w-3 text-muted-foreground" />
+                                 <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
+                                   {person.mobile}
+                                 </a>
+                               </div>
+                             )}
+                           </div>
+                         </CardContent>
                       </Card>
                     ))}
                   </div>
@@ -1585,11 +1585,11 @@ const Kontakte = () => {
                                 )}
                               </div>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                            <div className="flex flex-wrap items-center gap-2 text-xs">
                               {contact.email && (
                                 <div className="flex items-center gap-1">
                                   <Mail className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`mailto:${contact.email}`} className="text-xs text-primary hover:underline">
+                                  <a href={`mailto:${contact.email}`} className="text-primary hover:underline">
                                     {contact.email}
                                   </a>
                                 </div>
@@ -1597,7 +1597,7 @@ const Kontakte = () => {
                               {contact.phone && (
                                 <div className="flex items-center gap-1">
                                   <Phone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${contact.phone}`} className="text-xs text-primary hover:underline">
+                                  <a href={`tel:${contact.phone}`} className="text-primary hover:underline">
                                     {contact.phone}
                                   </a>
                                 </div>
@@ -1605,7 +1605,7 @@ const Kontakte = () => {
                               {contact.mobile && (
                                 <div className="flex items-center gap-1">
                                   <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${contact.mobile}`} className="text-xs text-primary hover:underline">
+                                  <a href={`tel:${contact.mobile}`} className="text-primary hover:underline">
                                     {contact.mobile}
                                   </a>
                                 </div>
@@ -1633,7 +1633,7 @@ const Kontakte = () => {
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex flex-wrap items-center gap-4">
                     {selectedItem.title && (
                       <div>
                         <span className="text-sm font-medium">Position:</span>
@@ -1647,32 +1647,32 @@ const Kontakte = () => {
                       </div>
                     )}
                     {selectedItem.email && (
-                      <div className="flex items-center gap-2">
-                        <Mail className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Mail className="h-3 w-3 text-muted-foreground" />
                         <a href={`mailto:${selectedItem.email}`} className="text-sm text-primary hover:underline">
                           {selectedItem.email}
                         </a>
                       </div>
                     )}
                     {selectedItem.phone && (
-                      <div className="flex items-center gap-2">
-                        <Phone className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Phone className="h-3 w-3 text-muted-foreground" />
                         <a href={`tel:${selectedItem.phone}`} className="text-sm text-primary hover:underline">
                           {selectedItem.phone}
                         </a>
                       </div>
                     )}
                     {selectedItem.mobile && (
-                      <div className="flex items-center gap-2">
-                        <Smartphone className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Smartphone className="h-3 w-3 text-muted-foreground" />
                         <a href={`tel:${selectedItem.mobile}`} className="text-sm text-primary hover:underline">
                           {selectedItem.mobile}
                         </a>
                       </div>
                     )}
                     {selectedItem.customer_companies?.name && (
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
+                      <div className="flex items-center gap-1">
+                        <Building2 className="h-3 w-3 text-muted-foreground" />
                         <span className="text-sm">{selectedItem.customer_companies.name}</span>
                       </div>
                     )}
