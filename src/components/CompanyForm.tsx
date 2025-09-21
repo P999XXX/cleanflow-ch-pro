@@ -6,10 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Building, MapPin, Phone, Mail, Globe, Hash, Check, ChevronDown } from 'lucide-react';
-import { swissPostalCodes, findCityByPostalCode } from '@/data/swiss-postal-codes';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Building, MapPin, Phone, Mail, Globe, Hash, Check } from 'lucide-react';
 
 interface CompanyFormProps {
   isProfile?: boolean;
@@ -17,25 +14,21 @@ interface CompanyFormProps {
 }
 
 export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFormProps) {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  
   const [formData, setFormData] = useState({
     name: '',
     address: '',
     postalCode: '',
     city: '',
-    country: 'Schweiz',
     phone: '',
     email: '',
     website: '',
     taxNumber: '',
-    vatNumber: ''
+    vatNumber: '',
   });
-  
   const [loading, setLoading] = useState(false);
   const [companyExists, setCompanyExists] = useState(false);
-  const [postalCodeOpen, setPostalCodeOpen] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (isProfile && user) {
@@ -46,58 +39,38 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
   const loadCompanyData = async () => {
     if (!user) return;
 
-    try {
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('owner_id', user.id)
-        .maybeSingle();
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*')
+      .eq('owner_id', user.id)
+      .single();
 
-      if (error) {
-        console.error('Error loading company:', error);
-        return;
-      }
-
-      if (data) {
-        setFormData({
-          name: data.name || '',
-          address: data.address || '',
-          postalCode: data.postal_code || '',
-          city: data.city || '',
-          country: data.country || 'Schweiz',
-          phone: data.phone || '',
-          email: data.email || '',
-          website: data.website || '',
-          taxNumber: data.tax_number || '',
-          vatNumber: data.vat_number || ''
-        });
-        setCompanyExists(true);
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
+    if (data && !error) {
+      setFormData({
+        name: data.name || '',
+        address: data.address || '',
+        postalCode: data.postal_code || '',
+        city: data.city || '',
+        phone: data.phone || '',
+        email: data.email || '',
+        website: data.website || '',
+        taxNumber: data.tax_number || '',
+        vatNumber: data.vat_number || '',
+      });
+      setCompanyExists(true);
     }
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [e.target.name]: e.target.value
     }));
-  };
-
-  const handlePostalCodeSelect = (selectedPlz: string) => {
-    const city = findCityByPostalCode(selectedPlz);
-    setFormData(prev => ({
-      ...prev,
-      postalCode: selectedPlz,
-      city: city
-    }));
-    setPostalCodeOpen(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!user) {
       toast({
         title: "Fehler",
@@ -108,74 +81,67 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
     }
 
     setLoading(true);
+    
+    const companyData = {
+      name: formData.name,
+      address: formData.address,
+      postal_code: formData.postalCode,
+      city: formData.city,
+      phone: formData.phone,
+      email: formData.email,
+      website: formData.website,
+      tax_number: formData.taxNumber,
+      vat_number: formData.vatNumber,
+      owner_id: user.id,
+    };
 
-    try {
-      const companyData = {
-        name: formData.name,
-        address: formData.address,
-        postal_code: formData.postalCode,
-        city: formData.city,
-        country: formData.country,
-        phone: formData.phone,
-        email: formData.email,
-        website: formData.website,
-        tax_number: formData.taxNumber,
-        vat_number: formData.vatNumber,
-        owner_id: user.id
-      };
+    let error;
+    
+    if (companyExists) {
+      // Update existing company
+      const result = await supabase
+        .from('companies')
+        .update(companyData)
+        .eq('owner_id', user.id);
+      error = result.error;
+    } else {
+      // Insert new company
+      const result = await supabase
+        .from('companies')
+        .insert([companyData]);
+      error = result.error;
+    }
 
-      if (companyExists) {
-        const { error } = await supabase
-          .from('companies')
-          .update(companyData)
-          .eq('owner_id', user.id);
-
-        if (error) throw error;
-
-        toast({
-          title: "Erfolgreich aktualisiert",
-          description: "Ihre Firmendaten wurden erfolgreich aktualisiert.",
-        });
-      } else {
-        const { error } = await supabase
-          .from('companies')
-          .insert([companyData]);
-
-        if (error) throw error;
-
-        toast({
-          title: "Erfolgreich erstellt",
-          description: "Ihre Firmendaten wurden erfolgreich gespeichert.",
-        });
-      }
-
+    if (error) {
+      toast({
+        title: "Fehler",
+        description: `Firma konnte nicht ${companyExists ? 'aktualisiert' : 'erstellt'} werden: ` + error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Erfolgreich",
+        description: `Ihre Firmendaten wurden erfolgreich ${companyExists ? 'aktualisiert' : 'erstellt'}!`,
+      });
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error: any) {
-      console.error('Error saving company:', error);
-      toast({
-        title: "Fehler beim Speichern",
-        description: error.message || "Ein unerwarteter Fehler ist aufgetreten.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
     }
+    
+    setLoading(false);
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-clean-lg">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold text-foreground">
-          {isProfile ? 'Firmendaten' : 'Firmendaten erfassen'}
+    <Card className={isProfile ? "" : "w-full max-w-2xl shadow-clean-lg"}>
+      <CardHeader className="space-y-1">
+        <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
+          {isProfile ? "Firmendaten" : "Firmendaten erfassen"}
         </CardTitle>
-        <p className="text-muted-foreground">
-          {isProfile 
-            ? 'Verwalten Sie Ihre Firmendaten' 
-            : 'Vervollständigen Sie Ihr Profil mit den Firmendaten'
-          }
-        </p>
+        {!isProfile && (
+          <p className="text-muted-foreground">
+            Vervollständigen Sie Ihr cleanflow.ai Profil mit Ihren Firmendaten
+          </p>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -214,38 +180,13 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
             </div>
             <div className="space-y-2">
               <Label htmlFor="postalCode">PLZ</Label>
-              <Popover open={postalCodeOpen} onOpenChange={setPostalCodeOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    role="combobox"
-                    aria-expanded={postalCodeOpen}
-                    className="w-full justify-between h-10"
-                  >
-                    {formData.postalCode || "PLZ wählen..."}
-                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-full p-0">
-                  <Command>
-                    <CommandInput placeholder="PLZ suchen..." />
-                    <CommandList>
-                      <CommandEmpty>Keine PLZ gefunden.</CommandEmpty>
-                      <CommandGroup>
-                        {swissPostalCodes.map((code) => (
-                          <CommandItem
-                            key={code.plz}
-                            value={code.plz}
-                            onSelect={() => handlePostalCodeSelect(code.plz)}
-                          >
-                            {code.plz} - {code.ort} ({code.kanton})
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+              <Input
+                id="postalCode"
+                name="postalCode"
+                placeholder="8000"
+                value={formData.postalCode}
+                onChange={handleInputChange}
+              />
             </div>
           </div>
 
@@ -257,8 +198,6 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
               placeholder="Zürich"
               value={formData.city}
               onChange={handleInputChange}
-              disabled
-              className="bg-muted cursor-not-allowed"
             />
           </div>
 
@@ -312,7 +251,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
             </div>
           </div>
 
-          {/* Steuerdaten */}
+          {/* Steuernummern */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="taxNumber">Steuernummer (optional)</Label>
@@ -344,23 +283,15 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
             </div>
           </div>
 
-          <Button 
-            type="submit" 
-            className="w-full h-12 text-base font-medium" 
-            disabled={loading}
-          >
-            {loading ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Speichern...
-              </>
-            ) : (
-              <>
-                <Check className="mr-2 h-4 w-4" />
-                {companyExists ? 'Aktualisieren' : isProfile ? 'Speichern' : 'Firma registrieren'}
-              </>
-            )}
-          </Button>
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loading || !formData.name}
+            >
+              {loading ? 'Speichern...' : (companyExists ? 'Aktualisieren' : (isProfile ? 'Speichern' : 'Firma erstellen'))}
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

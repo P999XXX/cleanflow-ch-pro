@@ -8,7 +8,6 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Layout/AppSidebar";
 import { AppHeader } from "@/components/Layout/AppHeader";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
-import { useCompanyGuard } from "@/hooks/useCompanyGuard";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Auth/Register";
@@ -48,9 +47,8 @@ const queryClient = new QueryClient();
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
-  const { hasCompany, loading: companyLoading } = useCompanyGuard();
   
-  if (loading || companyLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -60,11 +58,6 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   
   if (!user) {
     return <Login />;
-  }
-  
-  // If user is authenticated but has no company data, redirect to company setup
-  if (hasCompany === false) {
-    return <CompanySetup />;
   }
   
   return <>{children}</>;
