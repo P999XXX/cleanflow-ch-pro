@@ -57,18 +57,18 @@
     --gradient-secondary: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 84% 32%));
     --gradient-bg: linear-gradient(180deg, hsl(240 10% 98%), hsl(220 14% 96%));
 
-    /* Shadows - Optimized for 80% scale */
-    --shadow-sm: 0 1px 2px 0 hsl(220 43% 11% / 0.08);
-    --shadow-md: 0 3px 5px -1px hsl(220 43% 11% / 0.12);
-    --shadow-lg: 0 8px 12px -3px hsl(220 43% 11% / 0.12);
-    --shadow-primary: 0 3px 12px 0 hsl(214 84% 56% / 0.25);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 43% 11% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 43% 11% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(220 43% 11% / 0.1);
+    --shadow-primary: 0 4px 14px 0 hsl(214 84% 56% / 0.2);
 
-    /* Animations - Slightly faster for smaller scale */
-    --transition-smooth: all 0.18s ease-in-out;
-    --transition-fast: all 0.12s ease-in-out;
+    /* Animations */
+    --transition-smooth: all 0.2s ease-in-out;
+    --transition-fast: all 0.15s ease-in-out;
 
-    /* Radius - Slightly smaller for better proportion */
-    --radius: 0.45rem;
+    /* Radius */
+    --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
 
@@ -160,28 +160,7 @@
     @apply border-border;
   }
 
-  html {
-    zoom: 0.8;
-    transform-origin: top left;
-  }
-
   body {
     @apply bg-background text-foreground;
-    font-size: 0.95rem; /* Slightly larger base font to compensate for zoom */
-    line-height: 1.6;
-  }
-
-  /* Optimize container sizes for 80% zoom */
-  .container {
-    max-width: none;
-  }
-
-  /* Adjust component spacing for better proportion at 80% scale */
-  .space-compact > * + * {
-    margin-top: 0.75rem;
-  }
-
-  .space-comfortable > * + * {
-    margin-top: 1.25rem;
   }
 }

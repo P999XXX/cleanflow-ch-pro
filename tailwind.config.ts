@@ -7,13 +7,9 @@ export default {
   theme: {
     container: {
       center: true,
-      padding: "1.5rem",
+      padding: "2rem",
       screens: {
-        "sm": "100%",
-        "md": "100%", 
-        "lg": "100%",
-        "xl": "100%",
-        "2xl": "1600px",
+        "2xl": "1400px",
       },
     },
     extend: {
@@ -148,29 +144,9 @@ export default {
         "enter": "fade-in 0.3s ease-out, scale-in 0.2s ease-out",
         "exit": "fade-out 0.3s ease-out, scale-out 0.2s ease-out"
       },
-      fontSize: {
-        'xs': ['0.75rem', { lineHeight: '1.5' }],
-        'sm': ['0.875rem', { lineHeight: '1.5' }],
-        'base': ['0.95rem', { lineHeight: '1.6' }],
-        'lg': ['1.125rem', { lineHeight: '1.75' }],
-        'xl': ['1.25rem', { lineHeight: '1.75' }],
-        '2xl': ['1.5rem', { lineHeight: '2rem' }],
-        '3xl': ['1.875rem', { lineHeight: '2.25rem' }],
-        '4xl': ['2.25rem', { lineHeight: '2.5rem' }],
-      },
-      spacing: {
-        '18': '4.5rem',
-        '22': '5.5rem',
-        '26': '6.5rem',
-        '30': '7.5rem',
-        '84': '21rem',
-        '88': '22rem',
-        '92': '23rem',
-        '96': '24rem',
-      },
-      maxWidth: {
-        '8xl': '90rem',
-        '9xl': '100rem',
+      scale: {
+        '102': '1.02',
+        '103': '1.03',
       },
     },
   },
