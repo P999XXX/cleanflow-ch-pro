@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
+import { Users, Building2, Plus, Search, Edit, Trash2, Smartphone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -99,12 +99,13 @@ const Kontakte = () => {
 
   return (
     <div className="container mx-auto p-4 space-y-4">
-      {/* Header */}
-      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <Users className="h-6 w-6" />
-          <h1 className="text-2xl font-bold">Kontakte</h1>
-        </div>
+      {/* Header - Made sticky */}
+      <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
+        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Users className="h-6 w-6" />
+            <h1 className="text-2xl font-bold">Kontakte</h1>
+          </div>
         
         {/* Desktop: Single row layout */}
         <div className="hidden lg:flex items-center gap-4 w-full lg:w-auto">
@@ -215,48 +216,48 @@ const Kontakte = () => {
             </div>
           )}
           
-          <div className="flex items-center justify-between gap-4">
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-auto grid-cols-3">
-                <TabsTrigger value="all" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>Alle</span>
-                  <span className="ml-1">({totalCount})</span>
-                </TabsTrigger>
-                <TabsTrigger value="companies" className="flex items-center gap-2">
-                  <Building2 className="h-4 w-4" />
-                  <span>Unternehmen</span>
-                  <span className="ml-1">({filteredCompanies.length})</span>
-                </TabsTrigger>
-                <TabsTrigger value="persons" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  <span>Personen</span>
-                  <span className="ml-1">({filteredPersons.length})</span>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            
-            <Button
-              onClick={() => {
-                if (activeTab === 'companies') {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                } else if (activeTab === 'persons') {
-                  setSelectedPerson(null);
-                  setFormMode('person');
-                } else {
-                  // For 'all' tab, default to company
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                }
-                setIsFormOpen(true);
-              }}
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Hinzufügen
-            </Button>
-          </div>
+          {/* Full width button on mobile */}
+          <Button
+            onClick={() => {
+              if (activeTab === 'companies') {
+                setSelectedCompany(null);
+                setFormMode('company');
+              } else if (activeTab === 'persons') {
+                setSelectedPerson(null);
+                setFormMode('person');
+              } else {
+                // For 'all' tab, default to company
+                setSelectedCompany(null);
+                setFormMode('company');
+              }
+              setIsFormOpen(true);
+            }}
+            className="flex items-center justify-center gap-2 w-full"
+          >
+            <Plus className="h-4 w-4" />
+            Hinzufügen
+          </Button>
+          
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Alle</span>
+                <span className="ml-1">({totalCount})</span>
+              </TabsTrigger>
+              <TabsTrigger value="companies" className="flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
+                <span>Unternehmen</span>
+                <span className="ml-1">({filteredCompanies.length})</span>
+              </TabsTrigger>
+              <TabsTrigger value="persons" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span>Personen</span>
+                <span className="ml-1">({filteredPersons.length})</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
         </div>
       </div>
 
@@ -328,7 +329,7 @@ const Kontakte = () => {
                           )}
                           {company.phone && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <Smartphone className="h-4 w-4 text-muted-foreground" />
                               <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                 {company.phone}
                               </a>
@@ -405,7 +406,7 @@ const Kontakte = () => {
                           )}
                           {person.phone && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <Smartphone className="h-4 w-4 text-muted-foreground" />
                               <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                 {person.phone}
                               </a>
@@ -413,7 +414,7 @@ const Kontakte = () => {
                           )}
                           {person.mobile && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <Smartphone className="h-4 w-4 text-muted-foreground" />
                               <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
                                 {person.mobile}
                               </a>
@@ -552,7 +553,7 @@ const Kontakte = () => {
                         )}
                         {company.phone && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <Smartphone className="h-4 w-4 text-muted-foreground" />
                             <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                               {company.phone}
                             </a>
@@ -667,7 +668,7 @@ const Kontakte = () => {
                         )}
                         {person.phone && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <Smartphone className="h-4 w-4 text-muted-foreground" />
                             <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                               {person.phone}
                             </a>
@@ -675,7 +676,7 @@ const Kontakte = () => {
                         )}
                         {person.mobile && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <Smartphone className="h-4 w-4 text-muted-foreground" />
                             <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
                               {person.mobile}
                             </a>
@@ -755,7 +756,7 @@ const Kontakte = () => {
                             )}
                             {company.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                   {company.phone}
                                 </a>
@@ -832,7 +833,7 @@ const Kontakte = () => {
                             )}
                             {person.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
+                              <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                   {person.phone}
                                 </a>
@@ -840,7 +841,7 @@ const Kontakte = () => {
                             )}
                             {person.mobile && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
                                   {person.mobile}
                                 </a>
@@ -947,7 +948,7 @@ const Kontakte = () => {
                                 )}
                                 {company.phone && (
                                   <div className="flex items-center gap-1 text-sm">
-                                    <Phone className="h-3 w-3" />
+                                    <Smartphone className="h-3 w-3" />
                                     {company.phone}
                                   </div>
                                 )}
@@ -1070,7 +1071,7 @@ const Kontakte = () => {
                             )}
                             {company.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                   {company.phone}
                                 </a>
@@ -1154,7 +1155,7 @@ const Kontakte = () => {
                                 )}
                                 {person.phone && (
                                   <div className="flex items-center gap-1 text-sm">
-                                    <Phone className="h-3 w-3" />
+                                    <Smartphone className="h-3 w-3" />
                                     {person.phone}
                                   </div>
                                 )}
@@ -1284,7 +1285,7 @@ const Kontakte = () => {
                             )}
                             {person.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                   {person.phone}
                                 </a>
@@ -1292,7 +1293,7 @@ const Kontakte = () => {
                             )}
                             {person.mobile && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
+                                <Smartphone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
                                   {person.mobile}
                                 </a>
