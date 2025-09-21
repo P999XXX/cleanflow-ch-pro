@@ -28,6 +28,8 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
     vat_number: '',
     notes: '',
     status: 'aktiv',
+    company_type: '',
+    industry_category: '',
   });
 
   useEffect(() => {
@@ -44,6 +46,8 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         vat_number: company.vat_number || '',
         notes: company.notes || '',
         status: company.status || 'aktiv',
+        company_type: company.company_type || '',
+        industry_category: company.industry_category || '',
       });
     } else {
       setFormData({
@@ -58,6 +62,8 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         vat_number: '',
         notes: '',
         status: 'aktiv',
+        company_type: '',
+        industry_category: '',
       });
     }
   }, [company]);
@@ -89,29 +95,32 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
 
             <div className="md:col-span-2">
-              <Label htmlFor="address">Adresse</Label>
+              <Label htmlFor="address">Adresse *</Label>
               <Input
                 id="address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                required
               />
             </div>
 
             <div>
-              <Label htmlFor="postal_code">PLZ</Label>
+              <Label htmlFor="postal_code">PLZ *</Label>
               <Input
                 id="postal_code"
                 value={formData.postal_code}
                 onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
+                required
               />
             </div>
 
             <div>
-              <Label htmlFor="city">Stadt</Label>
+              <Label htmlFor="city">Ortschaft *</Label>
               <Input
                 id="city"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                required
               />
             </div>
 
@@ -125,35 +134,73 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
 
             <div>
-              <Label htmlFor="status">Status</Label>
-              <Select value={formData.status} onValueChange={(value) => setFormData({ ...formData, status: value })}>
+              <Label htmlFor="company_type">Unternehmensart</Label>
+              <Select value={formData.company_type} onValueChange={(value) => setFormData({ ...formData, company_type: value })}>
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Wählen Sie eine Unternehmensart" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="aktiv">Aktiv</SelectItem>
-                  <SelectItem value="inaktiv">Inaktiv</SelectItem>
-                  <SelectItem value="potentiell">Potentieller Kunde</SelectItem>
+                  <SelectItem value="einzelfirma">Einzelfirma</SelectItem>
+                  <SelectItem value="kollektivgesellschaft">Kollektivgesellschaft</SelectItem>
+                  <SelectItem value="gmbh">GmbH</SelectItem>
+                  <SelectItem value="ag">AG</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label htmlFor="phone">Telefon</Label>
+              <Label htmlFor="industry_category">Branchenkategorie</Label>
+              <Select value={formData.industry_category} onValueChange={(value) => setFormData({ ...formData, industry_category: value })}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Wählen Sie eine Branche" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60 overflow-y-auto">
+                  <SelectItem value="landwirtschaft">Land- und Forstwirtschaft</SelectItem>
+                  <SelectItem value="bergbau">Bergbau und Gewinnung von Steinen und Erden</SelectItem>
+                  <SelectItem value="verarbeitendes-gewerbe">Verarbeitendes Gewerbe</SelectItem>
+                  <SelectItem value="energie">Energieversorgung</SelectItem>
+                  <SelectItem value="wasser">Wasserversorgung; Abwasser- und Abfallentsorgung</SelectItem>
+                  <SelectItem value="bau">Baugewerbe</SelectItem>
+                  <SelectItem value="handel">Handel; Instandhaltung und Reparatur von Kraftfahrzeugen</SelectItem>
+                  <SelectItem value="verkehr">Verkehr und Lagerei</SelectItem>
+                  <SelectItem value="gastgewerbe">Gastgewerbe</SelectItem>
+                  <SelectItem value="information">Information und Kommunikation</SelectItem>
+                  <SelectItem value="finanz">Erbringung von Finanz- und Versicherungsdienstleistungen</SelectItem>
+                  <SelectItem value="immobilien">Grundstücks- und Wohnungswesen</SelectItem>
+                  <SelectItem value="freiberuflich">Erbringung von freiberuflichen, wissenschaftlichen und technischen Dienstleistungen</SelectItem>
+                  <SelectItem value="verwaltung">Erbringung von sonstigen wirtschaftlichen Dienstleistungen</SelectItem>
+                  <SelectItem value="oeffentlich">Öffentliche Verwaltung, Verteidigung; Sozialversicherung</SelectItem>
+                  <SelectItem value="erziehung">Erziehung und Unterricht</SelectItem>
+                  <SelectItem value="gesundheit">Gesundheits- und Sozialwesen</SelectItem>
+                  <SelectItem value="kunst">Kunst, Unterhaltung und Erholung</SelectItem>
+                  <SelectItem value="sonstige">Erbringung von sonstigen Dienstleistungen</SelectItem>
+                  <SelectItem value="haushalt">Private Haushalte mit Hauspersonal</SelectItem>
+                  <SelectItem value="reinigung">Gebäudereinigung</SelectItem>
+                  <SelectItem value="sicherheit">Wach- und Sicherheitsdienste</SelectItem>
+                  <SelectItem value="gartenbau">Garten- und Landschaftsbau</SelectItem>
+                  <SelectItem value="catering">Catering und Eventgastronomie</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="phone">Telefon *</Label>
               <Input
                 id="phone"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                required
               />
             </div>
 
             <div>
-              <Label htmlFor="email">E-Mail</Label>
+              <Label htmlFor="email">E-Mail *</Label>
               <Input
                 id="email"
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
               />
             </div>
 
@@ -167,11 +214,12 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
 
             <div>
-              <Label htmlFor="vat_number">MwSt-Nummer</Label>
+              <Label htmlFor="vat_number">MwSt-Nummer *</Label>
               <Input
                 id="vat_number"
                 value={formData.vat_number}
                 onChange={(e) => setFormData({ ...formData, vat_number: e.target.value })}
+                required
               />
             </div>
 

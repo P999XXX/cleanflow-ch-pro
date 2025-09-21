@@ -136,10 +136,12 @@ export type Database = {
           address: string | null
           city: string | null
           company_id: string
+          company_type: string | null
           country: string | null
           created_at: string
           email: string | null
           id: string
+          industry_category: string | null
           name: string
           notes: string | null
           phone: string | null
@@ -153,10 +155,12 @@ export type Database = {
           address?: string | null
           city?: string | null
           company_id: string
+          company_type?: string | null
           country?: string | null
           created_at?: string
           email?: string | null
           id?: string
+          industry_category?: string | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -170,10 +174,12 @@ export type Database = {
           address?: string | null
           city?: string | null
           company_id?: string
+          company_type?: string | null
           country?: string | null
           created_at?: string
           email?: string | null
           id?: string
+          industry_category?: string | null
           name?: string
           notes?: string | null
           phone?: string | null

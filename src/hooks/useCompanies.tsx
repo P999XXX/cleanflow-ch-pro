@@ -15,6 +15,8 @@ export interface CustomerCompany {
   vat_number?: string;
   notes?: string;
   status: string;
+  company_type?: string;
+  industry_category?: string;
   created_at: string;
   updated_at: string;
   company_id: string;
@@ -44,6 +46,8 @@ export interface CustomerCompanyInput {
   vat_number?: string;
   notes?: string;
   status?: string;
+  company_type?: string;
+  industry_category?: string;
 }
 
 export const useCompanies = () => {
