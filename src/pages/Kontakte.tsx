@@ -364,10 +364,10 @@ const Kontakte = () => {
             <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Ort</TableHead>
-                      <TableHead>Kontakt</TableHead>
-                      <TableHead className="text-right w-24"></TableHead>
+                      <TableHead className="w-1/4">Name</TableHead>
+                      <TableHead className="w-1/4">Ort</TableHead>
+                      <TableHead className="w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right w-1/4"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -377,9 +377,9 @@ const Kontakte = () => {
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(company, 'company')}
                   >
-                    <TableCell className="font-medium">{company.name}</TableCell>
-                    <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                    <TableCell>
+                        <TableCell className="w-1/4 font-medium">{company.name}</TableCell>
+                        <TableCell className="w-1/4">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
+                        <TableCell className="w-1/4">
                        <div className="flex flex-wrap items-center gap-3">
                          {company.email && (
                            <div className="flex items-center gap-1 text-sm">
@@ -399,7 +399,7 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                        <TableCell className="text-right w-24">{getStatusBadge(company.status)}</TableCell>
+                        <TableCell className="text-right w-1/4">{getStatusBadge(company.status)}</TableCell>
                       </TableRow>
                 ))}
               </TableBody>
@@ -424,10 +424,10 @@ const Kontakte = () => {
             <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Unternehmen</TableHead>
-                      <TableHead>Kontakt</TableHead>
-                      <TableHead className="text-right w-24"></TableHead>
+                      <TableHead className="w-1/4">Name</TableHead>
+                      <TableHead className="w-1/4">Unternehmen</TableHead>
+                      <TableHead className="w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right w-1/4"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -437,14 +437,14 @@ const Kontakte = () => {
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(person, 'person')}
                   >
-                    <TableCell className="font-medium">
+                    <TableCell className="w-1/4 font-medium">
                       <div>
                         <div>{`${person.first_name} ${person.last_name}`}</div>
                         {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
                       </div>
                     </TableCell>
-                    <TableCell>{person.customer_companies?.name || '-'}</TableCell>
-                    <TableCell>
+                    <TableCell className="w-1/4">{person.customer_companies?.name || '-'}</TableCell>
+                    <TableCell className="w-1/4">
                        <div className="flex flex-wrap items-center gap-3">
                          {person.email && (
                            <div className="flex items-center gap-1 text-sm">
@@ -472,7 +472,7 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                        <TableCell className="text-right w-24">
+                        <TableCell className="text-right w-1/4">
                           {person.is_primary_contact && (
                             <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
                               Primär
