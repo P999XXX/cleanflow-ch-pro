@@ -1,22 +1,10 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Trash2, AlertTriangle, Building } from "lucide-react";
+import { Settings, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-} from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useToast } from "@/hooks/use-toast";
 import CompanyForm from "@/components/CompanyForm";
 
 interface EinstellungenProps {
@@ -24,12 +12,10 @@ interface EinstellungenProps {
 }
 
 const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
-  const { user, signOut } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
   const [hasCompany, setHasCompany] = useState<boolean | null>(null);
   const [companyLoading, setCompanyLoading] = useState(true);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   useEffect(() => {
     const checkCompanyData = async () => {
@@ -61,49 +47,9 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
     checkCompanyData();
   }, [user]);
 
-  const handleDeleteAccount = async () => {
-    if (!user) return;
-    
-    setIsDeleting(true);
-    
-    try {
-      // Soft delete the user account by updating the profile status
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          account_status: 'deleted',
-          deleted_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id);
-
-      if (error) {
-        throw error;
-      }
-
-      toast({
-        title: "Account gelöscht",
-        description: "Ihr Account wurde erfolgreich gelöscht. Sie werden automatisch abgemeldet.",
-      });
-
-      // Delete auth user via backend function and sign out
-      await supabase.functions.invoke('delete-account');
-      await signOut();
-      navigate("/login");
-
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      toast({
-        variant: "destructive",
-        title: "Fehler",
-        description: "Account konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
-      });
-    } finally {
-      setIsDeleting(false);
-    }
-  };
-
   const handleCompanySuccess = () => {
     setHasCompany(true);
+    setDialogOpen(false);
   };
 
   if (companyLoading) {
@@ -122,63 +68,91 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
       </div>
       
       <div className="grid gap-6">
-        {/* Firmendaten - Priorisiert angezeigt */}
+        {/* Firmendaten Karte */}
         {!hasCompany ? (
-          <div className="space-y-4">
-            <Card className="border-primary/20 bg-primary/5">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-primary">
-                  <Building className="h-5 w-5" />
-                  Firmendaten erforderlich
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4">
-                  Bitte vervollständigen Sie Ihre Firmendaten, um CleanFlow.ai nutzen zu können.
-                </p>
-              </CardContent>
-            </Card>
-            <CompanyForm isProfile={true} isSetupMode={isSetupMode} onSuccess={handleCompanySuccess} />
-          </div>
+          <Card className="border-primary/20 bg-primary/5">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-primary">
+                <Building className="h-5 w-5" />
+                Firmendaten erforderlich
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between gap-4">
+              <p className="text-muted-foreground">
+                Bitte vervollständigen Sie Ihre Firmendaten, um CleanFlow.ai nutzen zu können.
+              </p>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90">Erfassen</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Firmendaten erfassen</DialogTitle>
+                  </DialogHeader>
+                  <CompanyForm isProfile={true} isSetupMode={isSetupMode} onSuccess={handleCompanySuccess} />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
         ) : (
-          <>
-            <CompanyForm isProfile={true} isSetupMode={false} onSuccess={handleCompanySuccess} />
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Allgemeine Einstellungen</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Hier können Sie die allgemeinen Einstellungen der Anwendung verwalten.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Benachrichtigungen</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Verwalten Sie Ihre Benachrichtigungseinstellungen.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader>
-                <CardTitle>Sicherheit</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Sicherheitseinstellungen und Passwort ändern.
-                </p>
-              </CardContent>
-            </Card>
-          </>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building className="h-5 w-5" />
+                Firmendaten
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-between gap-4">
+              <p className="text-muted-foreground">
+                Bearbeiten Sie Ihre Firmendaten und Kontaktinformationen.
+              </p>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="outline">Anpassen</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Firmendaten bearbeiten</DialogTitle>
+                  </DialogHeader>
+                  <CompanyForm isProfile={true} isSetupMode={false} onSuccess={handleCompanySuccess} />
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
         )}
 
+        <Card>
+          <CardHeader>
+            <CardTitle>Allgemeine Einstellungen</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              Hier können Sie die allgemeinen Einstellungen der Anwendung verwalten.
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Benachrichtigungen</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              Verwalten Sie Ihre Benachrichtigungseinstellungen.
+            </p>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardHeader>
+            <CardTitle>Sicherheit</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground">
+              Sicherheitseinstellungen und Passwort ändern.
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
