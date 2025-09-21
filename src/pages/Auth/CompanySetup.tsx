@@ -13,12 +13,9 @@ export default function CompanySetup() {
       <div className="w-full max-w-2xl">
         <CompanyForm onSuccess={handleSuccess} />
         <div className="mt-4 text-center">
-          <button 
-            onClick={() => navigate('/login')}
-            className="text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Später vervollständigen
-          </button>
+          <p className="text-sm text-muted-foreground">
+            Die Firmendatenerfassung ist erforderlich, um CleanFlow.ai nutzen zu können.
+          </p>
         </div>
       </div>
     </div>
