@@ -176,1347 +176,495 @@ const Kontakte = () => {
     );
   };
 
+  // Unified card component for consistent design
+  const ContactCard = ({ item, type }: { item: any, type: 'company' | 'person' }) => (
+    <Card 
+      className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+      onClick={() => handleCardClick(item, type)}
+    >
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <h3 className="font-semibold text-lg">
+              {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
+            </h3>
+            {type === 'company' ? (
+              (item.city || item.postal_code) && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                  <MapPin className="h-3 w-3" />
+                  {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                </div>
+              )
+            ) : (
+              <>
+                {item.title && (
+                  <p className="text-sm text-muted-foreground mt-1">{item.title}</p>
+                )}
+                {item.customer_companies?.name && (
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                    <Building2 className="h-3 w-3" />
+                    {item.customer_companies.name}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {type === 'company' ? (
+              getStatusBadge(item.status)
+            ) : (
+              item.is_primary_contact && (
+                <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                  Primär
+                </Badge>
+              )
+            )}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="flex flex-wrap items-center gap-4 text-sm">
+          {item.email && (
+            <div className="flex items-center gap-1">
+              <Mail className="h-3 w-3 text-muted-foreground" />
+              <a 
+                href={`mailto:${item.email}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.email}
+              </a>
+            </div>
+          )}
+          {item.phone && (
+            <div className="flex items-center gap-1">
+              <Phone className="h-3 w-3 text-muted-foreground" />
+              <a 
+                href={`tel:${item.phone}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.phone}
+              </a>
+            </div>
+          )}
+          {item.mobile && (
+            <div className="flex items-center gap-1">
+              <Smartphone className="h-3 w-3 text-muted-foreground" />
+              <a 
+                href={`tel:${item.mobile}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.mobile}
+              </a>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  // Unified cards view component
+  const CardsView = ({ companies, persons, showSections = false }: { companies: any[], persons: any[], showSections?: boolean }) => (
+    <div className="space-y-6">
+      {/* No results message */}
+      {isSearching && hasNoResults && (
+        <div className="text-center py-12 text-muted-foreground">
+          <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+          <p className="text-lg font-medium mb-2">Keine Ergebnisse gefunden</p>
+          <p className="text-sm">Versuchen Sie einen anderen Suchbegriff</p>
+          <Button variant="outline" className="mt-4" onClick={clearSearch}>
+            Suche zurücksetzen
+          </Button>
+        </div>
+      )}
+
+      {/* Companies Section */}
+      {companies.length > 0 && (
+        <div className="space-y-4">
+          {showSections && (
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Unternehmen
+              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                {companies.length}
+              </Badge>
+            </h3>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {companies.map((company) => (
+              <ContactCard key={`company-${company.id}`} item={company} type="company" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Persons Section */}
+      {persons.length > 0 && (
+        <div className="space-y-4">
+          {showSections && (
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Personen
+              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                {persons.length}
+              </Badge>
+            </h3>
+          )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {persons.map((person) => (
+              <ContactCard key={`person-${person.id}`} item={person} type="person" />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
+  // Unified table view component
+  const TableView = ({ companies, persons, showSections = false }: { companies: any[], persons: any[], showSections?: boolean }) => (
+    <div className="space-y-6">
+      {/* No results message */}
+      {isSearching && hasNoResults && (
+        <div className="text-center py-12 text-muted-foreground">
+          <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+          <p className="text-lg font-medium mb-2">Keine Ergebnisse gefunden</p>
+          <p className="text-sm">Versuchen Sie einen anderen Suchbegriff</p>
+          <Button variant="outline" className="mt-4" onClick={clearSearch}>
+            Suche zurücksetzen
+          </Button>
+        </div>
+      )}
+
+      {/* Companies Table */}
+      {companies.length > 0 && (
+        <div className="space-y-3">
+          {showSections && (
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Building2 className="h-5 w-5" />
+              Unternehmen
+              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                {companies.length}
+              </Badge>
+            </h3>
+          )}
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Ort</TableHead>
+                  <TableHead>Kontakt</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {companies.map((company) => (
+                  <TableRow 
+                    key={company.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleCardClick(company, 'company')}
+                  >
+                    <TableCell className="font-medium">{company.name}</TableCell>
+                    <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
+                    <TableCell>
+                       <div className="flex flex-wrap items-center gap-3">
+                         {company.email && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Mail className="h-3 w-3" />
+                             <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                               {company.email}
+                             </a>
+                           </div>
+                         )}
+                         {company.phone && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Phone className="h-3 w-3" />
+                             <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                               {company.phone}
+                             </a>
+                           </div>
+                         )}
+                       </div>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(company.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedCompany(company);
+                            setFormMode('company');
+                            setIsFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteCompany.mutate(company.id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
+      )}
+
+      {/* Persons Table */}
+      {persons.length > 0 && (
+        <div className="space-y-3">
+          {showSections && (
+            <h3 className="text-lg font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Personen
+              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                {persons.length}
+              </Badge>
+            </h3>
+          )}
+          <Card>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Unternehmen</TableHead>
+                  <TableHead>Kontakt</TableHead>
+                  <TableHead>Primär</TableHead>
+                  <TableHead>Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {persons.map((person) => (
+                  <TableRow 
+                    key={person.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleCardClick(person, 'person')}
+                  >
+                    <TableCell className="font-medium">
+                      <div>
+                        <div>{`${person.first_name} ${person.last_name}`}</div>
+                        {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
+                      </div>
+                    </TableCell>
+                    <TableCell>{person.customer_companies?.name || '-'}</TableCell>
+                    <TableCell>
+                       <div className="flex flex-wrap items-center gap-3">
+                         {person.email && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Mail className="h-3 w-3" />
+                             <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                               {person.email}
+                             </a>
+                           </div>
+                         )}
+                         {person.phone && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Phone className="h-3 w-3" />
+                             <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                               {person.phone}
+                             </a>
+                           </div>
+                         )}
+                         {person.mobile && (
+                           <div className="flex items-center gap-1 text-sm">
+                             <Smartphone className="h-3 w-3" />
+                             <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                               {person.mobile}
+                             </a>
+                           </div>
+                         )}
+                       </div>
+                    </TableCell>
+                    <TableCell>
+                      {person.is_primary_contact && (
+                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                          Primär
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedPerson(person);
+                            setFormMode('person');
+                            setIsFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteContactPerson.mutate(person.id);
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="container mx-auto p-4 space-y-4">
-      {/* Header - Made sticky */}
+      {/* Header - Responsive */}
       <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+        <div className="flex flex-col space-y-4">
+          {/* Title */}
           <div className="flex items-center gap-2">
             <Users className="h-6 w-6" />
             <h1 className="text-2xl font-bold">Kontakte</h1>
           </div>
         
-        {/* Desktop: Single row layout */}
-        <div className="hidden lg:flex items-center gap-4 w-full lg:w-auto">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Suchen nach Name, E-Mail, Telefon..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-9 w-80 transition-all duration-200 focus:w-96"
-            />
-            {searchTerm && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          
-          {/* Search Results Info */}
-          {isSearching && (
-            <div className="text-sm text-muted-foreground whitespace-nowrap">
-              {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
-            </div>
-          )}
-          
-           <Tabs value={activeTab} onValueChange={setActiveTab}>
-             <TabsList className="grid grid-cols-3">
-               <TabsTrigger value="all" className="flex items-center gap-2">
-                 <Users className="h-5 w-5" />
-                 <span>Alle</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'all' ? 'font-bold' : 'font-medium'}`}>
-                   {totalCount}
-                 </Badge>
-               </TabsTrigger>
-               <TabsTrigger value="companies" className="flex items-center gap-2">
-                 <Building2 className="h-5 w-5" />
-                 <span>Unternehmen</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'companies' ? 'font-bold' : 'font-medium'}`}>
-                   {filteredCompanies.length}
-                 </Badge>
-               </TabsTrigger>
-               <TabsTrigger value="persons" className="flex items-center gap-2">
-                 <Users className="h-5 w-5" />
-                 <span>Personen</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'persons' ? 'font-bold' : 'font-medium'}`}>
-                   {filteredPersons.length}
-                 </Badge>
-               </TabsTrigger>
-             </TabsList>
-           </Tabs>
-          
-               <div className="flex items-center gap-2">
-                 <Button
-                   variant="outline"
-                   size="sm"
-                   onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                   className="flex items-center gap-2"
+          {/* Search and Controls */}
+          <div className="flex flex-col lg:flex-row gap-4">
+            {/* Search */}
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Suchen nach Name, E-Mail, Telefon..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-9"
+              />
+              {searchTerm && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
-                  {viewMode === 'table' ? 'Karten' : 'Tabelle'}
-                </Button>
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
             
-            <Button
-              onClick={() => {
-                if (activeTab === 'companies') {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                } else if (activeTab === 'persons') {
-                  setSelectedPerson(null);
-                  setFormMode('person');
-                } else {
-                  // For 'all' tab, default to company
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                }
-                setIsFormOpen(true);
-              }}
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              Hinzufügen
-            </Button>
-          </div>
-        </div>
-        
-        {/* Mobile: Stacked layout */}
-        <div className="lg:hidden flex flex-col gap-4 w-full">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Suchen nach Name, E-Mail, Telefon..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-9 w-full"
-            />
-            {searchTerm && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+            {/* Search Results Info */}
+            {isSearching && (
+              <div className="text-sm text-muted-foreground flex items-center">
+                {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
+              </div>
+            )}
+            
+            {/* Controls */}
+            <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
+              {/* View Mode Toggle (Desktop only) */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
+                className="hidden lg:flex items-center gap-2"
               >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-          
-          {/* Search Results Info */}
-          {isSearching && (
-            <div className="text-sm text-muted-foreground text-center">
-              {hasNoResults ? 'Keine Ergebnisse gefunden' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''} gefunden`}
-            </div>
-          )}
-          
-          {/* Full width button on mobile */}
-          <Button
-            onClick={() => {
-              if (activeTab === 'companies') {
-                setSelectedCompany(null);
-                setFormMode('company');
-              } else if (activeTab === 'persons') {
-                setSelectedPerson(null);
-                setFormMode('person');
-              } else {
-                // For 'all' tab, default to company
-                setSelectedCompany(null);
-                setFormMode('company');
-              }
-              setIsFormOpen(true);
-            }}
-            className="flex items-center justify-center gap-2 w-full"
-          >
-            <Plus className="h-4 w-4" />
-            Hinzufügen
-          </Button>
-          
-           <Tabs value={activeTab} onValueChange={setActiveTab}>
-             <TabsList className="grid w-full grid-cols-3">
-               <TabsTrigger value="all" className="flex items-center gap-2">
-                 <Users className="h-5 w-5" />
-                 <span>Alle</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'all' ? 'font-bold' : 'font-medium'}`}>
-                   {totalCount}
-                 </Badge>
-               </TabsTrigger>
-               <TabsTrigger value="companies" className="flex items-center gap-2">
-                 <Building2 className="h-5 w-5" />
-                 <span>Unternehmen</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'companies' ? 'font-bold' : 'font-medium'}`}>
-                   {filteredCompanies.length}
-                 </Badge>
-               </TabsTrigger>
-               <TabsTrigger value="persons" className="flex items-center gap-2">
-                 <Users className="h-5 w-5" />
-                 <span>Personen</span>
-                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'persons' ? 'font-bold' : 'font-medium'}`}>
-                   {filteredPersons.length}
-                 </Badge>
-               </TabsTrigger>
-             </TabsList>
-           </Tabs>
-        </div>
-        </div>
-      </div>
-
-      {/* Mobile Only Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="lg:hidden">
-        <div className="hidden">
-          <TabsList>
-            <TabsTrigger value="all">Alle</TabsTrigger>
-            <TabsTrigger value="companies">Unternehmen</TabsTrigger>
-            <TabsTrigger value="persons">Personen</TabsTrigger>
-          </TabsList>
-        </div>
-
-        <TabsContent value="all">
-          {/* Mobile Combined View */}
-          <div className="space-y-6">
-            {/* Companies Section */}
-            {filteredCompanies.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Building2 className="h-5 w-5" />
-                  Unternehmen
-                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                    {filteredCompanies.length}
-                  </Badge>
-                </h3>
-                 <div className="space-y-4">
-                   {filteredCompanies.map((company) => (
-                     <Card 
-                       key={`company-${company.id}`} 
-                       className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                       onClick={() => handleCardClick(company, 'company')}
-                     >
-                       <CardHeader className="pb-2">
-                         <div className="flex items-start justify-between">
-                           <div className="flex-1">
-                             <h3 className="font-semibold text-lg">{company.name}</h3>
-                             {(company.city || company.postal_code) && (
-                               <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                 <MapPin className="h-3 w-3" />
-                                 {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                               </div>
-                             )}
-                           </div>
-                           <div className="flex items-center gap-2">
-                             {getStatusBadge(company.status)}
-                           </div>
-                         </div>
-                       </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="flex flex-wrap items-center gap-4 text-sm">
-                            {company.email && (
-                              <div className="flex items-center gap-1">
-                                <Mail className="h-3 w-3 text-muted-foreground" />
-                                <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                  {company.email}
-                                </a>
-                              </div>
-                            )}
-                            {company.phone && (
-                              <div className="flex items-center gap-1">
-                                <Phone className="h-3 w-3 text-muted-foreground" />
-                                <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                  {company.phone}
-                                </a>
-                              </div>
-                            )}
-                          </div>
-                        </CardContent>
-                     </Card>
-                   ))}
-                </div>
-              </div>
-            )}
-
-            {/* Persons Section */}
-            {filteredPersons.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Personen
-                  <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                    {filteredPersons.length}
-                  </Badge>
-                </h3>
-                <div className="space-y-4">
-                  {filteredPersons.map((person) => (
-                     <Card 
-                       key={`person-${person.id}`}
-                       className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                       onClick={() => handleCardClick(person, 'person')}
-                     >
-                       <CardHeader className="pb-2">
-                         <div className="flex items-start justify-between">
-                           <div className="flex-1">
-                             <h3 className="font-semibold text-lg">
-                               {`${person.first_name} ${person.last_name}`}
-                             </h3>
-                             {person.title && (
-                               <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                             )}
-                             {person.customer_companies?.name && (
-                               <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                 <Building2 className="h-3 w-3" />
-                                 {person.customer_companies.name}
-                               </div>
-                             )}
-                           </div>
-                           <div className="flex items-center gap-2">
-                             {person.is_primary_contact && (
-                               <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                                 Primär
-                               </Badge>
-                             )}
-                           </div>
-                         </div>
-                       </CardHeader>
-                       <CardContent className="pt-0">
-                         <div className="flex flex-wrap items-center gap-4 text-sm">
-                           {person.email && (
-                             <div className="flex items-center gap-1">
-                               <Mail className="h-3 w-3 text-muted-foreground" />
-                                <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                  {person.email}
-                                </a>
-                             </div>
-                           )}
-                           {person.phone && (
-                             <div className="flex items-center gap-1">
-                               <Phone className="h-3 w-3 text-muted-foreground" />
-                                <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                  {person.phone}
-                                </a>
-                             </div>
-                           )}
-                           {person.mobile && (
-                             <div className="flex items-center gap-1">
-                               <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                  {person.mobile}
-                                </a>
-                             </div>
-                           )}
-                         </div>
-                       </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Empty State */}
-            {hasNoResults && (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg mb-2">Keine Ergebnisse gefunden</p>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    Versuchen Sie andere Suchbegriffe oder{' '}
-                    <button onClick={clearSearch} className="text-primary hover:underline">
-                      löschen Sie die Suche
-                    </button>
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            {!isSearching && filteredCompanies.length === 0 && filteredPersons.length === 0 && (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground text-lg mb-2">Noch keine Kontakte</p>
-                  <p className="text-sm text-muted-foreground">
-                    Fügen Sie Ihren ersten Kontakt hinzu, um zu beginnen.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="companies">
-          {/* Mobile Companies with Title */}
-          <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                Unternehmen
-                <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                  {filteredCompanies.length}
-                </Badge>
-              </h3>
-            
-            {companiesLoading ? (
-              <Card>
-                <CardContent className="p-4">
-                  <p className="text-center">Lädt...</p>
-                </CardContent>
-              </Card>
-            ) : filteredCompanies.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  {isSearching ? (
-                    <div className="flex flex-col items-center gap-4">
-                      <Search className="h-12 w-12 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-lg mb-2">Keine Unternehmen gefunden</p>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Versuchen Sie andere Suchbegriffe oder{' '}
-                          <button onClick={clearSearch} className="text-primary hover:underline">
-                            löschen Sie die Suche
-                          </button>
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-4">
-                      <Building2 className="h-12 w-12 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-lg mb-2">Noch keine Unternehmen</p>
-                        <p className="text-sm text-muted-foreground">
-                          Fügen Sie Ihr erstes Unternehmen hinzu, um zu beginnen.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-               <div className="space-y-4">
-                 {filteredCompanies.map((company) => (
-                   <Card 
-                     key={company.id}
-                     className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                     onClick={() => handleCardClick(company, 'company')}
-                   >
-                     <CardHeader className="pb-2">
-                       <div className="flex items-start justify-between">
-                         <div className="flex-1">
-                           <h3 className="font-semibold text-lg">{company.name}</h3>
-                           {(company.city || company.postal_code) && (
-                             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                               <MapPin className="h-3 w-3" />
-                               {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                             </div>
-                           )}
-                         </div>
-                          <div className="flex items-center gap-2">
-                            {getStatusBadge(company.status)}
-                          </div>
-                       </div>
-                     </CardHeader>
-                     <CardContent className="pt-0">
-                       <div className="space-y-2">
-                         {company.email && (
-                           <div className="flex items-center gap-2 text-sm">
-                             <Mail className="h-4 w-4 text-muted-foreground" />
-                             <span className="text-muted-foreground">{company.email}</span>
-                           </div>
-                         )}
-                          {company.phone && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
-                              <span className="text-muted-foreground">{company.phone}</span>
-                            </div>
-                          )}
-                       </div>
-                     </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="persons">
-          {/* Mobile Persons with Title */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Personen
-              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                {filteredPersons.length}
-              </Badge>
-            </h3>
-            
-            {personsLoading ? (
-              <Card>
-                <CardContent className="p-4">
-                  <p className="text-center">Lädt...</p>
-                </CardContent>
-              </Card>
-            ) : filteredPersons.length === 0 ? (
-              <Card>
-                <CardContent className="p-8 text-center">
-                  {isSearching ? (
-                    <div className="flex flex-col items-center gap-4">
-                      <Search className="h-12 w-12 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-lg mb-2">Keine Personen gefunden</p>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          Versuchen Sie andere Suchbegriffe oder{' '}
-                          <button onClick={clearSearch} className="text-primary hover:underline">
-                            löschen Sie die Suche
-                          </button>
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center gap-4">
-                      <Users className="h-12 w-12 text-muted-foreground" />
-                      <div>
-                        <p className="text-muted-foreground text-lg mb-2">Noch keine Personen</p>
-                        <p className="text-sm text-muted-foreground">
-                          Fügen Sie Ihre erste Person hinzu, um zu beginnen.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                 {filteredPersons.map((person) => (
-                   <Card 
-                     key={person.id}
-                     className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                     onClick={() => handleCardClick(person, 'person')}
-                   >
-                     <CardHeader className="pb-2">
-                       <div className="flex items-start justify-between">
-                         <div className="flex-1">
-                           <h3 className="font-semibold text-lg">
-                             {`${person.first_name} ${person.last_name}`}
-                           </h3>
-                           {person.title && (
-                             <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                           )}
-                           {person.customer_companies?.name && (
-                             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                               <Building2 className="h-3 w-3" />
-                               {person.customer_companies.name}
-                             </div>
-                           )}
-                         </div>
-                         <div className="flex items-center gap-2">
-                           {person.is_primary_contact && (
-                             <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                               Primär
-                             </Badge>
-                           )}
-                         </div>
-                       </div>
-                     </CardHeader>
-                     <CardContent className="pt-0">
-                       <div className="flex flex-wrap items-center gap-4 text-sm">
-                         {person.email && (
-                           <div className="flex items-center gap-1">
-                             <Mail className="h-3 w-3 text-muted-foreground" />
-                              <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                {person.email}
-                              </a>
-                           </div>
-                         )}
-                         {person.phone && (
-                           <div className="flex items-center gap-1">
-                             <Phone className="h-3 w-3 text-muted-foreground" />
-                              <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                {person.phone}
-                              </a>
-                           </div>
-                         )}
-                         {person.mobile && (
-                           <div className="flex items-center gap-1">
-                             <Smartphone className="h-3 w-3 text-muted-foreground" />
-                              <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                {person.mobile}
-                              </a>
-                           </div>
-                         )}
-                       </div>
-                     </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
-      
-      {/* Desktop Only Tabs */}
-      <div className="hidden lg:block">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsContent value="all">
-            {/* Desktop Combined View - With Table & Card Support */}
-            <div className="space-y-6">
-              {/* Table View */}
-              <div className={`${viewMode === 'cards' ? 'hidden' : 'block'} space-y-6`}>
-                {/* Companies Table */}
-                {filteredCompanies.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Building2 className="h-5 w-5" />
-                      Unternehmen
-                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                        {filteredCompanies.length}
-                      </Badge>
-                    </h3>
-                    <Card>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Ort</TableHead>
-                            <TableHead>Kontakt</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Aktionen</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredCompanies.map((company) => (
-                            <TableRow 
-                              key={company.id}
-                              className="cursor-pointer hover:bg-muted/50"
-                              onClick={() => handleCardClick(company, 'company')}
-                            >
-                              <TableCell className="font-medium">{company.name}</TableCell>
-                              <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                              <TableCell>
-                                 <div className="flex flex-wrap items-center gap-3">
-                                   {company.email && (
-                                     <div className="flex items-center gap-1 text-sm">
-                                       <Mail className="h-3 w-3" />
-                                        <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                          {company.email}
-                                        </a>
-                                      </div>
-                                    )}
-                                    {company.phone && (
-                                      <div className="flex items-center gap-1 text-sm">
-                                        <Phone className="h-3 w-3" />
-                                        <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                          {company.phone}
-                                        </a>
-                                     </div>
-                                   )}
-                                 </div>
-                              </TableCell>
-                              <TableCell>{getStatusBadge(company.status)}</TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedCompany(company);
-                                      setFormMode('company');
-                                      setIsFormOpen(true);
-                                    }}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      deleteCompany.mutate(company.id);
-                                    }}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Card>
-                  </div>
-                )}
-
-                {/* Persons Table */}
-                {filteredPersons.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      Personen
-                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                        {filteredPersons.length}
-                      </Badge>
-                    </h3>
-                    <Card>
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Unternehmen</TableHead>
-                            <TableHead>Kontakt</TableHead>
-                            <TableHead>Primär</TableHead>
-                            <TableHead>Aktionen</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {filteredPersons.map((person) => (
-                            <TableRow 
-                              key={person.id}
-                              className="cursor-pointer hover:bg-muted/50"
-                              onClick={() => handleCardClick(person, 'person')}
-                            >
-                              <TableCell className="font-medium">
-                                <div>
-                                  <div>{`${person.first_name} ${person.last_name}`}</div>
-                                  {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
-                                </div>
-                              </TableCell>
-                              <TableCell>{person.customer_companies?.name || '-'}</TableCell>
-                              <TableCell>
-                                 <div className="flex flex-wrap items-center gap-3">
-                                   {person.email && (
-                                     <div className="flex items-center gap-1 text-sm">
-                                       <Mail className="h-3 w-3" />
-                                        <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                          {person.email}
-                                        </a>
-                                      </div>
-                                    )}
-                                    {person.phone && (
-                                      <div className="flex items-center gap-1 text-sm">
-                                        <Phone className="h-3 w-3" />
-                                        <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                          {person.phone}
-                                        </a>
-                                      </div>
-                                    )}
-                                    {person.mobile && (
-                                      <div className="flex items-center gap-1 text-sm">
-                                        <Smartphone className="h-3 w-3" />
-                                        <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
-                                          {person.mobile}
-                                        </a>
-                                     </div>
-                                   )}
-                                 </div>
-                              </TableCell>
-                              <TableCell>
-                                {person.is_primary_contact && (
-                                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                                    Primär
-                                  </Badge>
-                                )}
-                              </TableCell>
-                              <TableCell>
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      setSelectedPerson(person);
-                                      setFormMode('person');
-                                      setIsFormOpen(true);
-                                    }}
-                                  >
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      deleteContactPerson.mutate(person.id);
-                                    }}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </Card>
-                  </div>
-                )}
-              </div>
-
-              {/* Card View */}
-              <div className={`${viewMode === 'table' ? 'hidden' : 'block'} space-y-6`}>
-                {/* Companies Section */}
-                {filteredCompanies.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Building2 className="h-5 w-5" />
-                      Unternehmen
-                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                        {filteredCompanies.length}
-                      </Badge>
-                    </h3>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                      {filteredCompanies.map((company) => (
-                        <Card 
-                          key={`company-${company.id}`}
-                          className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                          onClick={() => handleCardClick(company, 'company')}
-                        >
-                          <CardHeader className="pb-2">
-                            <div className="flex items-start justify-between">
-                              <div className="flex-1">
-                                <h3 className="font-semibold text-lg">{company.name}</h3>
-                                {(company.city || company.postal_code) && (
-                                  <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                    <MapPin className="h-3 w-3" />
-                                    {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-2">
-                                {getStatusBadge(company.status)}
-                              </div>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <div className="space-y-2">
-                              {company.email && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <Mail className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">{company.email}</span>
-                                </div>
-                              )}
-                              {company.phone && (
-                                <div className="flex items-center gap-2 text-sm">
-                                  <Phone className="h-4 w-4 text-muted-foreground" />
-                                  <span className="text-muted-foreground">{company.phone}</span>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Persons Section */}
-                {filteredPersons.length > 0 && (
-                  <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center gap-2">
-                      <Users className="h-5 w-5" />
-                      Personen
-                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                        {filteredPersons.length}
-                      </Badge>
-                    </h3>
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                      {filteredPersons.map((person) => (
-                         <Card 
-                           key={`person-${person.id}`}
-                           className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                           onClick={() => handleCardClick(person, 'person')}
-                         >
-                           <CardHeader className="pb-2">
-                             <div className="flex items-start justify-between">
-                               <div className="flex-1">
-                                 <h3 className="font-semibold text-lg">
-                                   {`${person.first_name} ${person.last_name}`}
-                                 </h3>
-                                 {person.title && (
-                                   <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                                 )}
-                                 {person.customer_companies?.name && (
-                                   <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                     <Building2 className="h-3 w-3" />
-                                     {person.customer_companies.name}
-                                   </div>
-                                 )}
-                               </div>
-                               <div className="flex items-center gap-2">
-                                 {person.is_primary_contact && (
-                                   <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                                     Primär
-                                   </Badge>
-                                 )}
-                               </div>
-                             </div>
-                           </CardHeader>
-                           <CardContent className="pt-0">
-                             <div className="flex flex-wrap items-center gap-4 text-sm">
-                               {person.email && (
-                                 <div className="flex items-center gap-1">
-                                   <Mail className="h-3 w-3 text-muted-foreground" />
-                                    <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground">
-                                      {person.email}
-                                    </a>
-                                 </div>
-                               )}
-                               {person.phone && (
-                                 <div className="flex items-center gap-1">
-                                   <Phone className="h-3 w-3 text-muted-foreground" />
-                                    <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground">
-                                      {person.phone}
-                                    </a>
-                                 </div>
-                               )}
-                               {person.mobile && (
-                                 <div className="flex items-center gap-1">
-                                   <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                    <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground">
-                                      {person.mobile}
-                                    </a>
-                                 </div>
-                               )}
-                             </div>
-                           </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Empty State */}
-              {hasNoResults && (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground text-lg mb-2">Keine Ergebnisse gefunden</p>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      Versuchen Sie andere Suchbegriffe oder{' '}
-                      <button onClick={clearSearch} className="text-primary hover:underline">
-                        löschen Sie die Suche
-                      </button>
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-
-              {!isSearching && filteredCompanies.length === 0 && filteredPersons.length === 0 && (
-                <Card>
-                  <CardContent className="p-8 text-center">
-                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground text-lg mb-2">Noch keine Kontakte</p>
-                    <p className="text-sm text-muted-foreground">
-                      Fügen Sie Ihren ersten Kontakt hinzu, um zu beginnen.
-                    </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="companies">
-            {/* Desktop Companies with Title */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Building2 className="h-5 w-5" />
-                Unternehmen
-                <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
-                  {filteredCompanies.length}
-                </Badge>
-              </h3>
+                {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
+                {viewMode === 'table' ? 'Karten' : 'Tabelle'}
+              </Button>
               
-              {/* Desktop Table View */}
-              <div className={`${viewMode === 'cards' ? 'hidden' : 'block'}`}>
-                <Card>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Ort</TableHead>
-                        <TableHead>Kontakt</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Aktionen</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {companiesLoading ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center">Lädt...</TableCell>
-                        </TableRow>
-                      ) : filteredCompanies.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center py-8">
-                            {isSearching ? (
-                              <div className="flex flex-col items-center gap-2">
-                                <Search className="h-8 w-8 text-muted-foreground" />
-                                <p className="text-muted-foreground">Keine Unternehmen gefunden</p>
-                                <button onClick={clearSearch} className="text-sm text-primary hover:underline">
-                                  Suche löschen
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center gap-2">
-                                <Building2 className="h-8 w-8 text-muted-foreground" />
-                                <p className="text-muted-foreground">Noch keine Unternehmen</p>
-                              </div>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        filteredCompanies.map((company) => (
-                          <TableRow key={company.id}>
-                            <TableCell className="font-medium">{company.name}</TableCell>
-                            <TableCell>{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                            <TableCell>
-                               <div className="flex flex-wrap items-center gap-3">
-                                 {company.email && (
-                                   <div className="flex items-center gap-1 text-sm">
-                                     <Mail className="h-3 w-3" />
-                                     {company.email}
-                                   </div>
-                                 )}
-                                 {company.phone && (
-                                   <div className="flex items-center gap-1 text-sm">
-                                     <Phone className="h-3 w-3" />
-                                     {company.phone}
-                                   </div>
-                                 )}
-                               </div>
-                            </TableCell>
-                            <TableCell>{getStatusBadge(company.status)}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedCompany(company);
-                                    setFormMode('company');
-                                    setIsFormOpen(true);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => deleteCompany.mutate(company.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </div>
-
-              {/* Desktop Card View */}
-              <div className={`${viewMode === 'table' ? 'hidden' : 'block'}`}>
-                {companiesLoading ? (
-                  <Card>
-                    <CardContent className="p-4">
-                      <p className="text-center">Lädt...</p>
-                    </CardContent>
-                  </Card>
-                ) : filteredCompanies.length === 0 ? (
-                  <Card>
-                    <CardContent className="p-8 text-center">
-                      {isSearching ? (
-                        <div className="flex flex-col items-center gap-4">
-                          <Search className="h-12 w-12 text-muted-foreground" />
-                          <div>
-                            <p className="text-muted-foreground text-lg mb-2">Keine Unternehmen gefunden</p>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              Versuchen Sie andere Suchbegriffe oder{' '}
-                              <button onClick={clearSearch} className="text-primary hover:underline">
-                                löschen Sie die Suche
-                              </button>
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-4">
-                          <Building2 className="h-12 w-12 text-muted-foreground" />
-                          <div>
-                            <p className="text-muted-foreground text-lg mb-2">Noch keine Unternehmen</p>
-                            <p className="text-sm text-muted-foreground">
-                              Fügen Sie Ihr erstes Unternehmen hinzu, um zu beginnen.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                    {filteredCompanies.map((company) => (
-                      <Card key={company.id}>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg">{company.name}</h3>
-                              {(company.city || company.postal_code) && (
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                  <MapPin className="h-3 w-3" />
-                                  {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                                </div>
-                              )}
-                            </div>
-                             <div className="flex items-center gap-2">
-                               {getStatusBadge(company.status)}
-                               <Button
-                                 variant="outline"
-                                 size="sm"
-                                 onClick={() => {
-                                   setSelectedCompany(company);
-                                   setFormMode('company');
-                                   setIsFormOpen(true);
-                                 }}
-                               >
-                                 <Edit className="h-4 w-4" />
-                               </Button>
-                               <Button
-                                 variant="outline"
-                                 size="sm"
-                                 onClick={() => deleteCompany.mutate(company.id)}
-                               >
-                                 <Trash2 className="h-4 w-4" />
-                               </Button>
-                             </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <div className="space-y-2">
-                            {company.email && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Mail className="h-4 w-4 text-muted-foreground" />
-                                 <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground">
-                                   {company.email}
-                                 </a>
-                              </div>
-                            )}
-                             {company.phone && (
-                               <div className="flex items-center gap-2 text-sm">
-                                 <Phone className="h-4 w-4 text-muted-foreground" />
-                                  <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground">
-                                    {company.phone}
-                                  </a>
-                               </div>
-                             )}
-                           </div>
-                         </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </div>
+              {/* Add Button */}
+              <Button
+                onClick={() => {
+                  if (activeTab === 'companies') {
+                    setSelectedCompany(null);
+                    setFormMode('company');
+                  } else if (activeTab === 'persons') {
+                    setSelectedPerson(null);
+                    setFormMode('person');
+                  } else {
+                    setSelectedCompany(null);
+                    setFormMode('company');
+                  }
+                  setIsFormOpen(true);
+                }}
+                className="flex items-center gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Hinzufügen
+              </Button>
             </div>
-          </TabsContent>
+          </div>
 
-          <TabsContent value="persons">
-            {/* Desktop Persons with Title */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Personen
-                <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="all" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Alle</span>
+                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                  {totalCount}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="companies" className="flex items-center gap-2">
+                <Building2 className="h-4 w-4" />
+                <span className="hidden sm:inline">Unternehmen</span>
+                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                  {filteredCompanies.length}
+                </Badge>
+              </TabsTrigger>
+              <TabsTrigger value="persons" className="flex items-center gap-2">
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Personen</span>
+                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
                   {filteredPersons.length}
                 </Badge>
-              </h3>
-              
-              {/* Desktop Table View */}
-              <div className={`${viewMode === 'cards' ? 'hidden' : 'block'}`}>
-                <Card>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Name</TableHead>
-                        <TableHead>Unternehmen</TableHead>
-                        <TableHead>Kontakt</TableHead>
-                        <TableHead>Primär</TableHead>
-                        <TableHead>Aktionen</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {personsLoading ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center">Lädt...</TableCell>
-                        </TableRow>
-                      ) : filteredPersons.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={5} className="text-center py-8">
-                            {isSearching ? (
-                              <div className="flex flex-col items-center gap-2">
-                                <Search className="h-8 w-8 text-muted-foreground" />
-                                <p className="text-muted-foreground">Keine Personen gefunden</p>
-                                <button onClick={clearSearch} className="text-sm text-primary hover:underline">
-                                  Suche löschen
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="flex flex-col items-center gap-2">
-                                <Users className="h-8 w-8 text-muted-foreground" />
-                                <p className="text-muted-foreground">Noch keine Personen</p>
-                              </div>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                         filteredPersons.map((person) => (
-                           <TableRow 
-                             key={person.id}
-                             className="cursor-pointer hover:bg-muted/50 transition-colors"
-                             onClick={() => handleCardClick(person, 'person')}
-                           >
-                             <TableCell className="font-medium">
-                               <div>
-                                 {`${person.first_name} ${person.last_name}`}
-                                 {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
-                               </div>
-                             </TableCell>
-                             <TableCell>{person.customer_companies?.name || '-'}</TableCell>
-                             <TableCell>
-                                <div className="flex flex-wrap items-center gap-3">
-                                  {person.email && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Mail className="h-3 w-3" />
-                                      {person.email}
-                                    </div>
-                                  )}
-                                  {person.phone && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Phone className="h-3 w-3" />
-                                      {person.phone}
-                                    </div>
-                                  )}
-                                  {person.mobile && (
-                                    <div className="flex items-center gap-1 text-sm">
-                                      <Smartphone className="h-3 w-3" />
-                                      {person.mobile}
-                                    </div>
-                                  )}
-                                </div>
-                             </TableCell>
-                             <TableCell>
-                               {person.is_primary_contact && (
-                                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                                   Primär
-                                 </Badge>
-                               )}
-                             </TableCell>
-                           </TableRow>
-                         ))
-                      )}
-                    </TableBody>
-                  </Table>
-                </Card>
-              </div>
+              </TabsTrigger>
+            </TabsList>
 
-              {/* Desktop Card View */}
-              <div className={`${viewMode === 'table' ? 'hidden' : 'block'}`}>
-                {personsLoading ? (
-                  <Card>
-                    <CardContent className="p-4">
-                      <p className="text-center">Lädt...</p>
-                    </CardContent>
-                  </Card>
-                ) : filteredPersons.length === 0 ? (
-                  <Card>
-                    <CardContent className="p-8 text-center">
-                      {isSearching ? (
-                        <div className="flex flex-col items-center gap-4">
-                          <Search className="h-12 w-12 text-muted-foreground" />
-                          <div>
-                            <p className="text-muted-foreground text-lg mb-2">Keine Personen gefunden</p>
-                            <p className="text-sm text-muted-foreground mb-4">
-                              Versuchen Sie andere Suchbegriffe oder{' '}
-                              <button onClick={clearSearch} className="text-primary hover:underline">
-                                löschen Sie die Suche
-                              </button>
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex flex-col items-center gap-4">
-                          <Users className="h-12 w-12 text-muted-foreground" />
-                          <div>
-                            <p className="text-muted-foreground text-lg mb-2">Noch keine Personen</p>
-                            <p className="text-sm text-muted-foreground">
-                              Fügen Sie Ihre erste Person hinzu, um zu beginnen.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                     {filteredPersons.map((person) => (
-                       <Card 
-                         key={person.id}
-                         className="cursor-pointer hover:shadow-md transition-shadow duration-200"
-                         onClick={() => handleCardClick(person, 'person')}
-                       >
-                         <CardHeader className="pb-2">
-                           <div className="flex items-start justify-between">
-                             <div className="flex-1">
-                               <h3 className="font-semibold text-lg">
-                                 {`${person.first_name} ${person.last_name}`}
-                               </h3>
-                               {person.title && (
-                                 <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                               )}
-                               {person.customer_companies?.name && (
-                                 <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                   <Building2 className="h-3 w-3" />
-                                   {person.customer_companies.name}
-                                 </div>
-                               )}
-                             </div>
-                             <div className="flex items-center gap-2">
-                               {person.is_primary_contact && (
-                                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                                   Primär
-                                 </Badge>
-                               )}
-                             </div>
-                           </div>
-                         </CardHeader>
-                         <CardContent className="pt-0">
-                           <div className="flex flex-wrap items-center gap-4 text-sm">
-                             {person.email && (
-                               <div className="flex items-center gap-1">
-                                 <Mail className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground">
-                                    {person.email}
-                                  </a>
-                               </div>
-                             )}
-                             {person.phone && (
-                               <div className="flex items-center gap-1">
-                                 <Phone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground">
-                                    {person.phone}
-                                  </a>
-                               </div>
-                             )}
-                             {person.mobile && (
-                               <div className="flex items-center gap-1">
-                                 <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                  <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground">
-                                    {person.mobile}
-                                  </a>
-                               </div>
-                             )}
-                           </div>
-                         </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
+            {/* Tab Content */}
+            <TabsContent value="all" className="mt-6">
+              {viewMode === 'cards' ? (
+                <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
+              ) : (
+                <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
+              )}
+            </TabsContent>
+
+            <TabsContent value="companies" className="mt-6">
+              {viewMode === 'cards' ? (
+                <CardsView companies={filteredCompanies} persons={[]} />
+              ) : (
+                <TableView companies={filteredCompanies} persons={[]} />
+              )}
+            </TabsContent>
+
+            <TabsContent value="persons" className="mt-6">
+              {viewMode === 'cards' ? (
+                <CardsView companies={[]} persons={filteredPersons} />
+              ) : (
+                <TableView companies={[]} persons={filteredPersons} />
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
 
-      {/* Contact Form Modal */}
+      {/* Contact Form */}
       <ContactForm
         isOpen={isFormOpen}
-        onClose={() => {
-          setIsFormOpen(false);
-          setSelectedCompany(null);
-          setSelectedPerson(null);
-        }}
+        onClose={() => setIsFormOpen(false)}
         onSubmitCompany={handleCompanySubmit}
         onSubmitPerson={handlePersonSubmit}
         company={selectedCompany}
@@ -1524,21 +672,21 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog */}
+      {/* Details Dialog - Improved Mobile Layout */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-7xl w-full mx-4 max-h-[95vh] overflow-y-auto backdrop-blur-md">
+        <DialogContent className="max-w-7xl w-[95vw] mx-auto max-h-[95vh] overflow-y-auto backdrop-blur-md">
           <DialogHeader className="pb-4 border-b">
             <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 {itemType === 'company' ? (
                   <>
                     <Building2 className="h-6 w-6 text-primary" />
-                    <span className="text-2xl font-semibold">{selectedItem?.name}</span>
+                    <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
                   </>
                 ) : (
                   <>
                     <Users className="h-6 w-6 text-primary" />
-                    <span className="text-2xl font-semibold">
+                    <span className="text-xl lg:text-2xl font-semibold">
                       {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
                     </span>
                   </>
@@ -1555,12 +703,12 @@ const Kontakte = () => {
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                   <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleEditItem}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    <span className="sm:hidden">Bearbeiten</span>
+                    <Edit className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Bearbeiten</span>
                   </Button>
                   <Button variant="outline" className="flex-1 sm:flex-initial" onClick={handleDeleteItem}>
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    <span className="sm:hidden">Löschen</span>
+                    <Trash2 className="h-4 w-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Löschen</span>
                   </Button>
                 </div>
               </div>
@@ -1624,35 +772,38 @@ const Kontakte = () => {
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                         Adresse
                       </h4>
-                      <div className="flex items-start gap-2 p-2 bg-background rounded-md">
-                        <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                        <div>
-                          {selectedItem.address && <p className="text-sm font-medium">{selectedItem.address}</p>}
-                          {(selectedItem.postal_code || selectedItem.city) && (
-                            <p className="text-sm">{selectedItem.postal_code} {selectedItem.city}</p>
-                          )}
-                          {selectedItem.country && <p className="text-sm text-muted-foreground">{selectedItem.country}</p>}
+                      <div className="p-2 bg-background rounded-md">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                          <div className="text-sm">
+                            {selectedItem.address && <div>{selectedItem.address}</div>}
+                            <div>
+                              {selectedItem.postal_code && selectedItem.city 
+                                ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                : selectedItem.postal_code || selectedItem.city}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   )}
-                  
-                  {/* Tax Information */}
+
+                  {/* Additional Info */}
                   {(selectedItem.vat_number || selectedItem.tax_number) && (
                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Steuerliche Informationen
+                        Zusätzliche Informationen
                       </h4>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {selectedItem.vat_number && (
                           <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">MwSt-Nr.</p>
+                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
                             <p className="text-sm font-medium">{selectedItem.vat_number}</p>
                           </div>
                         )}
                         {selectedItem.tax_number && (
                           <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Steuer-Nr.</p>
+                            <p className="text-xs text-muted-foreground">Steuernummer</p>
                             <p className="text-sm font-medium">{selectedItem.tax_number}</p>
                           </div>
                         )}
@@ -1669,36 +820,36 @@ const Kontakte = () => {
                           Kontaktpersonen ({selectedItem.contact_persons.length})
                         </h4>
                       </div>
-                       <div className="grid gap-3">
-                         {selectedItem.contact_persons.map((contact) => (
-                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
-                             <div className="flex items-start justify-between">
-                               <div className="flex-1">
-                                 <div className="flex items-center gap-2">
-                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                     {contact.first_name} {contact.last_name}
-                                   </span>
-                                   {contact.is_primary_contact && (
-                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
-                                       Primär
-                                     </Badge>
-                                   )}
-                                 </div>
-                                 <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                   {contact.title && <span>{contact.title}</span>}
-                                   {contact.title && contact.department && <span>•</span>}
-                                   {contact.department && <span>{contact.department}</span>}
-                                 </div>
-                               </div>
-                             </div>
-                             {contact.notes && (
-                               <div className="mt-2 pt-2 border-t border-border/50">
-                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
-                               </div>
-                             )}
-                           </div>
-                         ))}
-                       </div>
+                      <div className="grid gap-3">
+                        {selectedItem.contact_persons.map((contact) => (
+                          <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                            <div className="flex items-start justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                    {contact.first_name} {contact.last_name}
+                                  </span>
+                                  {contact.is_primary_contact && (
+                                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                      Primär
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                  {contact.title && <span>{contact.title}</span>}
+                                  {contact.title && contact.department && <span>•</span>}
+                                  {contact.department && <span>{contact.department}</span>}
+                                </div>
+                              </div>
+                            </div>
+                            {contact.notes && (
+                              <div className="mt-2 pt-2 border-t border-border/50">
+                                <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </>
@@ -1707,9 +858,9 @@ const Kontakte = () => {
                   {/* Person Info */}
                   <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Persönliche Informationen
+                      Personeninformationen
                     </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {selectedItem.title && (
                         <div className="p-2 bg-background rounded-md">
                           <p className="text-xs text-muted-foreground">Position</p>
@@ -1722,7 +873,7 @@ const Kontakte = () => {
                           <p className="text-sm font-medium">{selectedItem.department}</p>
                         </div>
                       )}
-                      {selectedItem.customer_companies?.name && (
+                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
                         <div className="p-2 bg-background rounded-md">
                           <p className="text-xs text-muted-foreground">Unternehmen</p>
                           <button 
@@ -1799,24 +950,16 @@ const Kontakte = () => {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-md mx-4">
           <AlertDialogHeader>
-            <AlertDialogTitle>Kontakt löschen</AlertDialogTitle>
+            <AlertDialogTitle>Kontakt löschen?</AlertDialogTitle>
             <AlertDialogDescription>
-              Sind Sie sicher, dass Sie {itemToDelete?.type === 'company' ? 'dieses Unternehmen' : 'diese Person'} löschen möchten?
-              {itemToDelete?.type === 'company' && itemToDelete.item.contact_persons?.length > 0 && (
-                <span className="block mt-2 font-medium text-destructive">
-                  Achtung: Dieses Unternehmen hat {itemToDelete.item.contact_persons.length} verbundene Kontaktperson(en), die ebenfalls betroffen sein könnten.
-                </span>
-              )}
-              <span className="block mt-2">Diese Aktion kann nicht rückgängig gemacht werden.</span>
+              Diese Aktion kann nicht rückgängig gemacht werden. Der Kontakt wird permanent gelöscht und alle verknüpften Daten gehen verloren.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteDialogOpen(false)}>
-              Abbrechen
-            </AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="bg-destructive hover:bg-destructive/90">
+          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+            <AlertDialogCancel className="w-full sm:w-auto">Abbrechen</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete} className="w-full sm:w-auto bg-destructive hover:bg-destructive/90">
               Löschen
             </AlertDialogAction>
           </AlertDialogFooter>
