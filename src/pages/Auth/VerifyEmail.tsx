@@ -28,9 +28,9 @@ export default function VerifyEmail() {
         } else {
           setVerificationStatus('success');
           setMessage('E-Mail erfolgreich verifiziert!');
-          // Redirect to settings with setup parameter after 2 seconds
+          // Redirect to company setup after 2 seconds
           setTimeout(() => {
-            navigate('/einstellungen?setup=true');
+            navigate('/company-setup');
           }, 2000);
         }
       });

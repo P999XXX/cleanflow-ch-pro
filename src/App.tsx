@@ -8,6 +8,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/Layout/AppSidebar";
 import { AppHeader } from "@/components/Layout/AppHeader";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
+import { CompanyProvider } from "@/hooks/useCompanyData";
 import { CompanyProtectionWrapper } from "@/components/CompanyProtectionWrapper";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -15,6 +16,7 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 import ThankYou from "./pages/Auth/ThankYou";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
+import CompanySetup from "./pages/CompanySetup";
 import AGB from "./pages/Auth/AGB";
 import Datenschutz from "./pages/Auth/Datenschutz";
 import Terminkalender from "./pages/Terminkalender";
@@ -76,47 +78,54 @@ function AuthLayout() {
   
   if (user) {
     return (
-      <SidebarProvider defaultOpen={false}>
-        <div className="min-h-screen flex w-full bg-background">
-          <AppSidebar />
-          <div className="flex-1 flex flex-col min-w-0">
-            <AppHeader />
-            <main className="flex-1 overflow-auto">
-              <CompanyProtectionWrapper>
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/terminkalender" element={<Terminkalender />} />
-                  <Route path="/kontakte" element={<Kontakte />} />
-                  <Route path="/angebote" element={<Angebote />} />
-                  <Route path="/vertraege" element={<Vertraege />} />
-                  <Route path="/auftraege" element={<Auftraege />} />
-                  <Route path="/materialbestellungen" element={<Materialbestellungen />} />
-                  <Route path="/rechnungen" element={<Rechnungen />} />
-                  <Route path="/objekte" element={<Objekte />} />
-                  <Route path="/einsatzplan" element={<Einsatzplan />} />
-                  <Route path="/fahrzeuge" element={<Fahrzeuge />} />
-                  <Route path="/materialschrank" element={<Materialschrank />} />
-                  <Route path="/beschwerden" element={<Beschwerden />} />
-                  <Route path="/qs-kontrollen" element={<QSKontrollen />} />
-                  <Route path="/mitarbeiter" element={<Mitarbeiter />} />
-                  <Route path="/zeiterfassung" element={<Zeiterfassung />} />
-                  <Route path="/stundenkontrolle" element={<Stundenkontrolle />} />
-                  <Route path="/abwesenheiten" element={<Abwesenheiten />} />
-                  <Route path="/schulungen" element={<Schulungen />} />
-                  <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
-                  <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
-                  <Route path="/chat" element={<Chat />} />
-                  <Route path="/profileinstellungen" element={<Profileinstellungen />} />
-                  <Route path="/einstellungen" element={<Einstellungen />} />
-                  <Route path="/benachrichtigungen" element={<Benachrichtigungen />} />
-                  <Route path="/tickets" element={<Tickets />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </CompanyProtectionWrapper>
-            </main>
-          </div>
-        </div>
-      </SidebarProvider>
+      <CompanyProvider>
+        <Routes>
+          <Route path="/company-setup" element={<CompanySetup />} />
+          <Route path="/*" element={
+            <SidebarProvider defaultOpen={false}>
+              <div className="min-h-screen flex w-full bg-background">
+                <AppSidebar />
+                <div className="flex-1 flex flex-col min-w-0">
+                  <AppHeader />
+                  <main className="flex-1 overflow-auto">
+                    <CompanyProtectionWrapper>
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/terminkalender" element={<Terminkalender />} />
+                        <Route path="/kontakte" element={<Kontakte />} />
+                        <Route path="/angebote" element={<Angebote />} />
+                        <Route path="/vertraege" element={<Vertraege />} />
+                        <Route path="/auftraege" element={<Auftraege />} />
+                        <Route path="/materialbestellungen" element={<Materialbestellungen />} />
+                        <Route path="/rechnungen" element={<Rechnungen />} />
+                        <Route path="/objekte" element={<Objekte />} />
+                        <Route path="/einsatzplan" element={<Einsatzplan />} />
+                        <Route path="/fahrzeuge" element={<Fahrzeuge />} />
+                        <Route path="/materialschrank" element={<Materialschrank />} />
+                        <Route path="/beschwerden" element={<Beschwerden />} />
+                        <Route path="/qs-kontrollen" element={<QSKontrollen />} />
+                        <Route path="/mitarbeiter" element={<Mitarbeiter />} />
+                        <Route path="/zeiterfassung" element={<Zeiterfassung />} />
+                        <Route path="/stundenkontrolle" element={<Stundenkontrolle />} />
+                        <Route path="/abwesenheiten" element={<Abwesenheiten />} />
+                        <Route path="/schulungen" element={<Schulungen />} />
+                        <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
+                        <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
+                        <Route path="/chat" element={<Chat />} />
+                        <Route path="/profileinstellungen" element={<Profileinstellungen />} />
+                        <Route path="/einstellungen" element={<Einstellungen />} />
+                        <Route path="/benachrichtigungen" element={<Benachrichtigungen />} />
+                        <Route path="/tickets" element={<Tickets />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </CompanyProtectionWrapper>
+                  </main>
+                </div>
+              </div>
+            </SidebarProvider>
+          } />
+        </Routes>
+      </CompanyProvider>
     );
   }
   
@@ -126,7 +135,7 @@ function AuthLayout() {
       <Route path="/login" element={<Login />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      
+      <Route path="/company-setup" element={<CompanySetup />} />
       <Route path="/agb" element={<AGB />} />
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="*" element={<Login />} />

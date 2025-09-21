@@ -272,8 +272,6 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
       
       {modalOpen && (
         <CompanyForm 
-          isProfile={true} 
-          isSetupMode={isSetupMode} 
           onSuccess={handleCompanySuccess}
           isModal={true}
           onClose={() => setModalOpen(false)}
