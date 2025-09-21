@@ -18,6 +18,18 @@ export interface CustomerCompany {
   created_at: string;
   updated_at: string;
   company_id: string;
+  contact_persons?: Array<{
+    id: string;
+    first_name: string;
+    last_name: string;
+    title?: string;
+    email?: string;
+    phone?: string;
+    mobile?: string;
+    department?: string;
+    is_primary_contact: boolean;
+    notes?: string;
+  }>;
 }
 
 export interface CustomerCompanyInput {
@@ -40,7 +52,21 @@ export const useCompanies = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('customer_companies')
-        .select('*')
+        .select(`
+          *,
+          contact_persons (
+            id,
+            first_name,
+            last_name,
+            title,
+            email,
+            phone,
+            mobile,
+            department,
+            is_primary_contact,
+            notes
+          )
+        `)
         .order('name');
 
       if (error) throw error;

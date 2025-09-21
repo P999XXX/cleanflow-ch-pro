@@ -1467,7 +1467,7 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {itemType === 'company' ? (
@@ -1546,6 +1546,78 @@ const Kontakte = () => {
                             <span className="font-medium">Steuer-Nr.:</span> {selectedItem.tax_number}
                           </div>
                         )}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Contact Persons Section */}
+                  {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium flex items-center gap-2">
+                          <Users className="h-4 w-4" />
+                          Kontaktpersonen
+                          <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 font-medium">
+                            {selectedItem.contact_persons.length}
+                          </Badge>
+                        </h4>
+                      </div>
+                      <div className="space-y-3">
+                        {selectedItem.contact_persons.map((contact) => (
+                          <div key={contact.id} className="border rounded-lg p-3 bg-muted/20">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h5 className="font-medium text-sm">
+                                    {contact.first_name} {contact.last_name}
+                                  </h5>
+                                  {contact.is_primary_contact && (
+                                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                      Primär
+                                    </Badge>
+                                  )}
+                                </div>
+                                {contact.title && (
+                                  <p className="text-xs text-muted-foreground mt-1">{contact.title}</p>
+                                )}
+                                {contact.department && (
+                                  <p className="text-xs text-muted-foreground">Abteilung: {contact.department}</p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {contact.email && (
+                                <div className="flex items-center gap-1">
+                                  <Mail className="h-3 w-3 text-muted-foreground" />
+                                  <a href={`mailto:${contact.email}`} className="text-xs text-primary hover:underline">
+                                    {contact.email}
+                                  </a>
+                                </div>
+                              )}
+                              {contact.phone && (
+                                <div className="flex items-center gap-1">
+                                  <Phone className="h-3 w-3 text-muted-foreground" />
+                                  <a href={`tel:${contact.phone}`} className="text-xs text-primary hover:underline">
+                                    {contact.phone}
+                                  </a>
+                                </div>
+                              )}
+                              {contact.mobile && (
+                                <div className="flex items-center gap-1">
+                                  <Smartphone className="h-3 w-3 text-muted-foreground" />
+                                  <a href={`tel:${contact.mobile}`} className="text-xs text-primary hover:underline">
+                                    {contact.mobile}
+                                  </a>
+                                </div>
+                              )}
+                            </div>
+                            {contact.notes && (
+                              <div className="mt-2 pt-2 border-t">
+                                <p className="text-xs text-muted-foreground">{contact.notes}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   )}
