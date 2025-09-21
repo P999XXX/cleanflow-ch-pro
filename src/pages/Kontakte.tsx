@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Mail, MapPin, Grid3X3, List } from "lucide-react";
+import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -24,19 +24,42 @@ const Kontakte = () => {
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
 
-  const filteredCompanies = companies?.filter(company =>
-    company.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    company.city?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  // Optimized filtering with useMemo for performance
+  const filteredCompanies = useMemo(() => {
+    if (!companies || !searchTerm.trim()) return companies || [];
+    
+    const term = searchTerm.toLowerCase().trim();
+    return companies.filter(company =>
+      company.name.toLowerCase().includes(term) ||
+      company.email?.toLowerCase().includes(term) ||
+      company.city?.toLowerCase().includes(term) ||
+      company.address?.toLowerCase().includes(term) ||
+      company.phone?.toLowerCase().includes(term)
+    );
+  }, [companies, searchTerm]);
 
-  const filteredPersons = contactPersons?.filter(person =>
-    `${person.first_name} ${person.last_name}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    person.customer_companies?.name?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  const filteredPersons = useMemo(() => {
+    if (!contactPersons || !searchTerm.trim()) return contactPersons || [];
+    
+    const term = searchTerm.toLowerCase().trim();
+    return contactPersons.filter(person =>
+      `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
+      person.email?.toLowerCase().includes(term) ||
+      person.phone?.toLowerCase().includes(term) ||
+      person.mobile?.toLowerCase().includes(term) ||
+      person.department?.toLowerCase().includes(term) ||
+      person.customer_companies?.name?.toLowerCase().includes(term)
+    );
+  }, [contactPersons, searchTerm]);
 
   const totalCount = filteredCompanies.length + filteredPersons.length;
+  const isSearching = searchTerm.trim().length > 0;
+  const hasNoResults = isSearching && totalCount === 0;
+
+  // Clear search function
+  const clearSearch = useCallback(() => {
+    setSearchTerm('');
+  }, []);
 
   const handleCompanySubmit = (companyData) => {
     if (selectedCompany) {
@@ -88,12 +111,27 @@ const Kontakte = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Suchen..."
+              placeholder="Suchen nach Name, E-Mail, Telefon..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 w-64"
+              className="pl-9 pr-9 w-80 transition-all duration-200 focus:w-96"
             />
+            {searchTerm && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
+          
+          {/* Search Results Info */}
+          {isSearching && (
+            <div className="text-sm text-muted-foreground whitespace-nowrap">
+              {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
+            </div>
+          )}
           
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3">
@@ -155,12 +193,27 @@ const Kontakte = () => {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Suchen..."
+              placeholder="Suchen nach Name, E-Mail, Telefon..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 w-full"
+              className="pl-9 pr-9 w-full"
             />
+            {searchTerm && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
+          
+          {/* Search Results Info */}
+          {isSearching && (
+            <div className="text-sm text-muted-foreground text-center">
+              {hasNoResults ? 'Keine Ergebnisse gefunden' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''} gefunden`}
+            </div>
+          )}
           
           <div className="flex items-center justify-between gap-4">
             <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -378,10 +431,29 @@ const Kontakte = () => {
             )}
 
             {/* Empty State */}
-            {filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+            {hasNoResults && (
               <Card>
                 <CardContent className="p-8 text-center">
-                  <p className="text-muted-foreground">Keine Kontakte gefunden</p>
+                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg mb-2">Keine Ergebnisse gefunden</p>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Versuchen Sie andere Suchbegriffe oder{' '}
+                    <button onClick={clearSearch} className="text-primary hover:underline">
+                      löschen Sie die Suche
+                    </button>
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            {!isSearching && filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground text-lg mb-2">Noch keine Kontakte</p>
+                  <p className="text-sm text-muted-foreground">
+                    Fügen Sie Ihren ersten Kontakt hinzu, um zu beginnen.
+                  </p>
                 </CardContent>
               </Card>
             )}
@@ -407,10 +479,25 @@ const Kontakte = () => {
                     <TableRow>
                       <TableCell colSpan={5} className="text-center">Lädt...</TableCell>
                     </TableRow>
-                  ) : filteredCompanies.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center">Keine Unternehmen gefunden</TableCell>
-                    </TableRow>
+                    ) : filteredCompanies.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8">
+                          {isSearching ? (
+                            <div className="flex flex-col items-center gap-2">
+                              <Search className="h-8 w-8 text-muted-foreground" />
+                              <p className="text-muted-foreground">Keine Unternehmen gefunden</p>
+                              <button onClick={clearSearch} className="text-sm text-primary hover:underline">
+                                Suche löschen
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-2">
+                              <Building2 className="h-8 w-8 text-muted-foreground" />
+                              <p className="text-muted-foreground">Noch keine Unternehmen</p>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
                   ) : (
                     filteredCompanies.map((company) => (
                       <TableRow key={company.id}>
@@ -639,10 +726,25 @@ const Kontakte = () => {
                     <TableRow>
                       <TableCell colSpan={5} className="text-center">Lädt...</TableCell>
                     </TableRow>
-                  ) : filteredPersons.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center">Keine Personen gefunden</TableCell>
-                    </TableRow>
+                    ) : filteredPersons.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-8">
+                          {isSearching ? (
+                            <div className="flex flex-col items-center gap-2">
+                              <Search className="h-8 w-8 text-muted-foreground" />
+                              <p className="text-muted-foreground">Keine Personen gefunden</p>
+                              <button onClick={clearSearch} className="text-sm text-primary hover:underline">
+                                Suche löschen
+                              </button>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center gap-2">
+                              <Users className="h-8 w-8 text-muted-foreground" />
+                              <p className="text-muted-foreground">Noch keine Personen</p>
+                            </div>
+                          )}
+                        </TableCell>
+                      </TableRow>
                   ) : (
                     filteredPersons.map((person) => (
                       <TableRow key={person.id}>
@@ -1050,10 +1152,29 @@ const Kontakte = () => {
               )}
 
               {/* Empty State */}
-              {filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+              {hasNoResults && (
                 <Card>
                   <CardContent className="p-8 text-center">
-                    <p className="text-muted-foreground">Keine Kontakte gefunden</p>
+                    <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground text-lg mb-2">Keine Ergebnisse gefunden</p>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Versuchen Sie andere Suchbegriffe oder{' '}
+                      <button onClick={clearSearch} className="text-primary hover:underline">
+                        löschen Sie die Suche
+                      </button>
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
+              {!isSearching && filteredCompanies.length === 0 && filteredPersons.length === 0 && (
+                <Card>
+                  <CardContent className="p-8 text-center">
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground text-lg mb-2">Noch keine Kontakte</p>
+                    <p className="text-sm text-muted-foreground">
+                      Fügen Sie Ihren ersten Kontakt hinzu, um zu beginnen.
+                    </p>
                   </CardContent>
                 </Card>
               )}
