@@ -7,7 +7,7 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, recaptchaToken?: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
@@ -43,7 +43,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // This check is no longer needed since deleted users are completely removed from auth
 
-  const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
+  const signUp = async (email: string, password: string, firstName: string, lastName: string, recaptchaToken?: string) => {
+    // Verify reCAPTCHA if token is provided
+    if (recaptchaToken) {
+      try {
+        const { data: verificationResult, error: verificationError } = await supabase.functions.invoke('verify-recaptcha', {
+          body: { token: recaptchaToken }
+        });
+
+        if (verificationError) {
+          toast({
+            title: "Registrierung fehlgeschlagen",
+            description: "reCAPTCHA Verifizierung fehlgeschlagen.",
+            variant: "destructive",
+          });
+          return { error: verificationError };
+        }
+
+        if (!verificationResult.success) {
+          toast({
+            title: "Registrierung fehlgeschlagen",
+            description: "reCAPTCHA Verifizierung nicht erfolgreich.",
+            variant: "destructive",
+          });
+          return { error: { message: "reCAPTCHA verification failed" } };
+        }
+      } catch (error) {
+        toast({
+          title: "Registrierung fehlgeschlagen",
+          description: "Fehler bei der reCAPTCHA Verifizierung.",
+          variant: "destructive",
+        });
+        return { error };
+      }
+    }
+
     const redirectUrl = `${window.location.origin}/company-setup`;
     
     const { error } = await supabase.auth.signUp({

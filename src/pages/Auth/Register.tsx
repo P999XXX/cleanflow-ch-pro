@@ -108,7 +108,8 @@ export default function Register() {
         formData.email,
         formData.password,
         formData.firstName,
-        formData.lastName
+        formData.lastName,
+        formData.recaptchaToken
       );
 
       if (!error) {
@@ -282,7 +283,7 @@ export default function Register() {
 
               {formData.acceptTerms && (
                 <ReCAPTCHA
-                  sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Test key - ersetzen Sie dies mit Ihrem echten Site Key
+                  sitekey="6LflT9ArAAAAAGjy3n9PCbHGYQ80NoXVCck_kiLK"
                   onChange={handleRecaptchaChange}
                   theme="light"
                 />
