@@ -42,6 +42,6 @@ export function useCompanyGuard() {
   return {
     hasCompany,
     loading: loading || authLoading,
-    needsCompanySetup: user && !loading && hasCompany === false
+    needsCompanySetup: user && !loading && hasCompany === false && location.pathname !== '/einstellungen'
   };
 }

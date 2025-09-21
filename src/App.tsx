@@ -15,7 +15,6 @@ import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
 import ThankYou from "./pages/Auth/ThankYou";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
-import CompanySetup from "./pages/Auth/CompanySetup";
 import AGB from "./pages/Auth/AGB";
 import Datenschutz from "./pages/Auth/Datenschutz";
 import Terminkalender from "./pages/Terminkalender";
@@ -77,7 +76,22 @@ function AuthLayout() {
   }
   
   if (user && needsCompanySetup) {
-    return <CompanySetup />;
+    return (
+      <SidebarProvider defaultOpen={false}>
+        <div className="min-h-screen flex w-full bg-background">
+          <AppSidebar />
+          <div className="flex-1 flex flex-col min-w-0">
+            <AppHeader />
+            <main className="flex-1 overflow-auto">
+              <Routes>
+                <Route path="/einstellungen" element={<Einstellungen />} />
+                <Route path="*" element={<Einstellungen />} />
+              </Routes>
+            </main>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
   }
   
   if (user) {
@@ -90,7 +104,6 @@ function AuthLayout() {
             <main className="flex-1 overflow-auto">
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/company-setup" element={<CompanySetup />} />
                 <Route path="/terminkalender" element={<Terminkalender />} />
                 <Route path="/kontakte" element={<Kontakte />} />
                 <Route path="/angebote" element={<Angebote />} />
@@ -131,7 +144,7 @@ function AuthLayout() {
       <Route path="/login" element={<Login />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/company-setup" element={<CompanySetup />} />
+      
       <Route path="/agb" element={<AGB />} />
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="*" element={<Login />} />
