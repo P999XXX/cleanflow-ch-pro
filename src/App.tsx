@@ -12,6 +12,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Register from "./pages/Auth/Register";
 import Login from "./pages/Auth/Login";
+import ThankYou from "./pages/Auth/ThankYou";
 import VerifyEmail from "./pages/Auth/VerifyEmail";
 import CompanySetup from "./pages/Auth/CompanySetup";
 import Terminkalender from "./pages/Terminkalender";
@@ -120,6 +121,7 @@ function AuthLayout() {
     <Routes>
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
       <Route path="/company-setup" element={<CompanySetup />} />
       <Route path="*" element={<Login />} />

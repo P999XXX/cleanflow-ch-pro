@@ -83,7 +83,7 @@ export default function Register() {
     );
 
     if (!error) {
-      navigate('/verify-email');
+      navigate('/thank-you');
     }
     setLoading(false);
   };
