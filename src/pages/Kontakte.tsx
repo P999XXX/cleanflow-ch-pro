@@ -21,7 +21,7 @@ const Kontakte = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [formMode, setFormMode] = useState<'company' | 'person'>('company');
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
@@ -34,7 +34,7 @@ const Kontakte = () => {
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
 
-  // Force cards view on mobile, table view on desktop by default
+  // Force cards view on mobile and tablet by default, allow table on desktop
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
   // Optimized filtering with useMemo for performance
@@ -494,21 +494,30 @@ const Kontakte = () => {
       {/* Header - Responsive */}
       <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
         <div className="flex flex-col space-y-4">
-          {/* Title */}
-          <div className="flex items-center gap-2">
+          {/* Title with View Toggle for Tablet */}
+          <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">Kontakte</h1>
+            {/* View Mode Toggle - Tablet only (right of title) */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
+              className="hidden md:flex lg:hidden items-center gap-2"
+            >
+              {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
+            </Button>
           </div>
         
-        {/* Search and Controls - Desktop: Horizontal Layout */}
+        {/* Search and Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Search */}
-          <div className="relative flex-1 max-w-md">
+          {/* Search - Full width on mobile/tablet */}
+          <div className="relative w-full lg:flex-1 lg:max-w-md">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Suchen nach Name, E-Mail, Telefon..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-9"
+              className="pl-9 pr-9 w-full"
             />
             {searchTerm && (
               <button
@@ -567,19 +576,18 @@ const Kontakte = () => {
             </Tabs>
 
             {/* Controls */}
-            <div className="flex flex-row gap-3">
-              {/* View Mode Toggle - Hidden on mobile */}
+            <div className="flex flex-row gap-3 w-full lg:w-auto">
+              {/* View Mode Toggle - Desktop only */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="hidden md:flex items-center gap-2"
+                className="hidden lg:flex items-center gap-2"
               >
                 {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
-                {viewMode === 'table' ? 'Karten' : 'Tabelle'}
               </Button>
               
-              {/* Add Button */}
+              {/* Add Button - Full width on mobile/tablet */}
               <Button
                 onClick={() => {
                   if (activeTab === 'companies') {
@@ -594,7 +602,7 @@ const Kontakte = () => {
                   }
                   setIsFormOpen(true);
                 }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full lg:w-auto"
               >
                 <Plus className="h-4 w-4" />
                 Hinzufügen
