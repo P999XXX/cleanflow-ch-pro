@@ -24,11 +24,11 @@
     --primary-hover: 214 84% 48%;
     --primary-light: 214 84% 92%;
 
-    /* Secondary Brand - Professional Gray */
-    --secondary: 224 15% 25%;
+    /* Secondary Brand - Clean Green */
+    --secondary: 160 84% 39%;
     --secondary-foreground: 0 0% 98%;
-    --secondary-hover: 224 15% 20%;
-    --secondary-light: 224 15% 92%;
+    --secondary-hover: 160 84% 32%;
+    --secondary-light: 160 84% 92%;
 
     /* Muted/Neutral System */
     --muted: 220 14% 96%;
@@ -40,7 +40,7 @@
     --accent-foreground: 224 15% 15%;
 
     /* Status Colors */
-    --success: 214 84% 56%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 98%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
@@ -54,7 +54,7 @@
 
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(214 84% 56%), hsl(214 84% 48%));
-    --gradient-secondary: linear-gradient(135deg, hsl(224 15% 25%), hsl(224 15% 20%));
+    --gradient-secondary: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 84% 32%));
     --gradient-bg: linear-gradient(180deg, hsl(240 10% 98%), hsl(220 14% 96%));
 
     /* Shadows */
@@ -125,10 +125,10 @@
     --primary-light: 214 84% 20%;
 
     /* Dark Mode Secondary */
-    --secondary: 224 15% 35%;
+    --secondary: 160 84% 39%;
     --secondary-foreground: 0 0% 98%;
-    --secondary-hover: 224 15% 30%;
-    --secondary-light: 224 15% 20%;
+    --secondary-hover: 160 84% 32%;
+    --secondary-light: 160 84% 20%;
 
     /* Dark Mode Muted */
     --muted: 215 28% 17%;
@@ -140,7 +140,7 @@
     --accent-foreground: 220 14% 96%;
 
     /* Dark Mode Status Colors */
-    --success: 214 84% 56%;
+    --success: 160 84% 39%;
     --success-foreground: 0 0% 98%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
@@ -154,7 +154,7 @@
 
     /* Dark Mode Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(214 84% 56%), hsl(214 84% 48%));
-    --gradient-secondary: linear-gradient(135deg, hsl(224 15% 35%), hsl(224 15% 30%));
+    --gradient-secondary: linear-gradient(135deg, hsl(160 84% 39%), hsl(160 84% 32%));
     --gradient-bg: linear-gradient(180deg, hsl(224 15% 7%), hsl(215 28% 14%));
 
     /* Dark Mode Shadows */
