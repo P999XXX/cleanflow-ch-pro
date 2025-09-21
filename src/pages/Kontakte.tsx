@@ -377,45 +377,36 @@ const Kontakte = () => {
                 </h3>
                 <div className="space-y-4">
                   {filteredPersons.map((person) => (
-                    <Card key={`person-${person.id}`}>
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg">
-                              {`${person.first_name} ${person.last_name}`}
-                            </h3>
-                            {person.title && (
-                              <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                            )}
-                            {person.customer_companies?.name && (
-                              <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                <Building2 className="h-3 w-3" />
-                                {person.customer_companies.name}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedPerson(person);
-                                setFormMode('person');
-                                setIsFormOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => deleteContactPerson.mutate(person.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardHeader>
+                     <Card 
+                       key={`person-${person.id}`}
+                       className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                       onClick={() => handleCardClick(person, 'person')}
+                     >
+                       <CardHeader className="pb-2">
+                         <div className="flex items-start justify-between">
+                           <div className="flex-1">
+                             <h3 className="font-semibold text-lg">
+                               {`${person.first_name} ${person.last_name}`}
+                             </h3>
+                             {person.title && (
+                               <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                             )}
+                             {person.customer_companies?.name && (
+                               <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                 <Building2 className="h-3 w-3" />
+                                 {person.customer_companies.name}
+                               </div>
+                             )}
+                           </div>
+                           <div className="flex items-center gap-2">
+                             {person.is_primary_contact && (
+                               <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                                 Primär
+                               </Badge>
+                             )}
+                           </div>
+                         </div>
+                       </CardHeader>
                       <CardContent className="pt-0">
                         <div className="space-y-2">
                           {person.email && (
@@ -618,46 +609,37 @@ const Kontakte = () => {
               </Card>
             ) : (
               <div className="space-y-4">
-                {filteredPersons.map((person) => (
-                  <Card key={person.id}>
-                    <CardHeader className="pb-2">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg">
-                            {`${person.first_name} ${person.last_name}`}
-                          </h3>
-                          {person.title && (
-                            <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                          )}
-                          {person.customer_companies?.name && (
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                              <Building2 className="h-3 w-3" />
-                              {person.customer_companies.name}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedPerson(person);
-                              setFormMode('person');
-                              setIsFormOpen(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deleteContactPerson.mutate(person.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
+                 {filteredPersons.map((person) => (
+                   <Card 
+                     key={person.id}
+                     className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                     onClick={() => handleCardClick(person, 'person')}
+                   >
+                     <CardHeader className="pb-2">
+                       <div className="flex items-start justify-between">
+                         <div className="flex-1">
+                           <h3 className="font-semibold text-lg">
+                             {`${person.first_name} ${person.last_name}`}
+                           </h3>
+                           {person.title && (
+                             <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                           )}
+                           {person.customer_companies?.name && (
+                             <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                               <Building2 className="h-3 w-3" />
+                               {person.customer_companies.name}
+                             </div>
+                           )}
+                         </div>
+                         <div className="flex items-center gap-2">
+                           {person.is_primary_contact && (
+                             <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                               Primär
+                             </Badge>
+                           )}
+                         </div>
+                       </div>
+                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="space-y-2">
                         {person.email && (
@@ -782,45 +764,36 @@ const Kontakte = () => {
                   </h3>
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                     {filteredPersons.map((person) => (
-                      <Card key={`person-${person.id}`}>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg">
-                                {`${person.first_name} ${person.last_name}`}
-                              </h3>
-                              {person.title && (
-                                <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                              )}
-                              {person.customer_companies?.name && (
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                  <Building2 className="h-3 w-3" />
-                                  {person.customer_companies.name}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedPerson(person);
-                                  setFormMode('person');
-                                  setIsFormOpen(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteContactPerson.mutate(person.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardHeader>
+                       <Card 
+                         key={`person-${person.id}`}
+                         className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                         onClick={() => handleCardClick(person, 'person')}
+                       >
+                         <CardHeader className="pb-2">
+                           <div className="flex items-start justify-between">
+                             <div className="flex-1">
+                               <h3 className="font-semibold text-lg">
+                                 {`${person.first_name} ${person.last_name}`}
+                               </h3>
+                               {person.title && (
+                                 <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                               )}
+                               {person.customer_companies?.name && (
+                                 <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                   <Building2 className="h-3 w-3" />
+                                   {person.customer_companies.name}
+                                 </div>
+                               )}
+                             </div>
+                             <div className="flex items-center gap-2">
+                               {person.is_primary_contact && (
+                                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                                   Primär
+                                 </Badge>
+                               )}
+                             </div>
+                           </div>
+                         </CardHeader>
                         <CardContent className="pt-0">
                           <div className="space-y-2">
                             {person.email && (
@@ -1134,64 +1107,50 @@ const Kontakte = () => {
                           </TableCell>
                         </TableRow>
                       ) : (
-                        filteredPersons.map((person) => (
-                          <TableRow key={person.id}>
-                            <TableCell className="font-medium">
-                              <div>
-                                {`${person.first_name} ${person.last_name}`}
-                                {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
-                              </div>
-                            </TableCell>
-                            <TableCell>{person.customer_companies?.name || '-'}</TableCell>
-                            <TableCell>
-                              <div className="flex flex-col gap-1">
-                                {person.email && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Mail className="h-3 w-3" />
-                                    {person.email}
-                                  </div>
-                                )}
-                                {person.phone && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Phone className="h-3 w-3" />
-                                    {person.phone}
-                                  </div>
-                                )}
-                                {person.mobile && (
-                                  <div className="flex items-center gap-1 text-sm">
-                                    <Smartphone className="h-3 w-3" />
-                                    {person.mobile}
-                                  </div>
-                                )}
-                              </div>
-                            </TableCell>
-                            <TableCell>
-                              {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
-                            </TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedPerson(person);
-                                    setFormMode('person');
-                                    setIsFormOpen(true);
-                                  }}
-                                >
-                                  <Edit className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => deleteContactPerson.mutate(person.id)}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        ))
+                         filteredPersons.map((person) => (
+                           <TableRow 
+                             key={person.id}
+                             className="cursor-pointer hover:bg-muted/50 transition-colors"
+                             onClick={() => handleCardClick(person, 'person')}
+                           >
+                             <TableCell className="font-medium">
+                               <div>
+                                 {`${person.first_name} ${person.last_name}`}
+                                 {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
+                               </div>
+                             </TableCell>
+                             <TableCell>{person.customer_companies?.name || '-'}</TableCell>
+                             <TableCell>
+                               <div className="flex flex-col gap-1">
+                                 {person.email && (
+                                   <div className="flex items-center gap-1 text-sm">
+                                     <Mail className="h-3 w-3" />
+                                     {person.email}
+                                   </div>
+                                 )}
+                                 {person.phone && (
+                                   <div className="flex items-center gap-1 text-sm">
+                                     <Phone className="h-3 w-3" />
+                                     {person.phone}
+                                   </div>
+                                 )}
+                                 {person.mobile && (
+                                   <div className="flex items-center gap-1 text-sm">
+                                     <Smartphone className="h-3 w-3" />
+                                     {person.mobile}
+                                   </div>
+                                 )}
+                               </div>
+                             </TableCell>
+                             <TableCell>
+                               {person.is_primary_contact && (
+                                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                                   Primär
+                                 </Badge>
+                               )}
+                             </TableCell>
+                           </TableRow>
+                         ))
                       )}
                     </TableBody>
                   </Table>
@@ -1237,46 +1196,37 @@ const Kontakte = () => {
                   </Card>
                 ) : (
                   <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                    {filteredPersons.map((person) => (
-                      <Card key={person.id}>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-semibold text-lg">
-                                {`${person.first_name} ${person.last_name}`}
-                              </h3>
-                              {person.title && (
-                                <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
-                              )}
-                              {person.customer_companies?.name && (
-                                <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                  <Building2 className="h-3 w-3" />
-                                  {person.customer_companies.name}
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedPerson(person);
-                                  setFormMode('person');
-                                  setIsFormOpen(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteContactPerson.mutate(person.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardHeader>
+                     {filteredPersons.map((person) => (
+                       <Card 
+                         key={person.id}
+                         className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+                         onClick={() => handleCardClick(person, 'person')}
+                       >
+                         <CardHeader className="pb-2">
+                           <div className="flex items-start justify-between">
+                             <div className="flex-1">
+                               <h3 className="font-semibold text-lg">
+                                 {`${person.first_name} ${person.last_name}`}
+                               </h3>
+                               {person.title && (
+                                 <p className="text-sm text-muted-foreground mt-1">{person.title}</p>
+                               )}
+                               {person.customer_companies?.name && (
+                                 <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                   <Building2 className="h-3 w-3" />
+                                   {person.customer_companies.name}
+                                 </div>
+                               )}
+                             </div>
+                             <div className="flex items-center gap-2">
+                               {person.is_primary_contact && (
+                                 <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                                   Primär
+                                 </Badge>
+                               )}
+                             </div>
+                           </div>
+                         </CardHeader>
                         <CardContent className="pt-0">
                           <div className="space-y-2">
                             {person.email && (
@@ -1365,19 +1315,25 @@ const Kontakte = () => {
                     {selectedItem.email && (
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.email}</span>
+                        <a href={`mailto:${selectedItem.email}`} className="text-sm text-primary hover:underline">
+                          {selectedItem.email}
+                        </a>
                       </div>
                     )}
                     {selectedItem.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.phone}</span>
+                        <a href={`tel:${selectedItem.phone}`} className="text-sm text-primary hover:underline">
+                          {selectedItem.phone}
+                        </a>
                       </div>
                     )}
                     {selectedItem.website && (
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">Website:</span>
-                        <span className="text-sm">{selectedItem.website}</span>
+                        <a href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+                          {selectedItem.website}
+                        </a>
                       </div>
                     )}
                     {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
@@ -1439,19 +1395,25 @@ const Kontakte = () => {
                     {selectedItem.email && (
                       <div className="flex items-center gap-2">
                         <Mail className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.email}</span>
+                        <a href={`mailto:${selectedItem.email}`} className="text-sm text-primary hover:underline">
+                          {selectedItem.email}
+                        </a>
                       </div>
                     )}
                     {selectedItem.phone && (
                       <div className="flex items-center gap-2">
                         <Phone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.phone}</span>
+                        <a href={`tel:${selectedItem.phone}`} className="text-sm text-primary hover:underline">
+                          {selectedItem.phone}
+                        </a>
                       </div>
                     )}
                     {selectedItem.mobile && (
                       <div className="flex items-center gap-2">
                         <Smartphone className="h-4 w-4 text-muted-foreground" />
-                        <span className="text-sm">{selectedItem.mobile}</span>
+                        <a href={`tel:${selectedItem.mobile}`} className="text-sm text-primary hover:underline">
+                          {selectedItem.mobile}
+                        </a>
                       </div>
                     )}
                     {selectedItem.customer_companies?.name && (
