@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ModalOverlay } from "@/components/ui/modal-overlay";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useState, useEffect } from "react";
@@ -145,17 +144,16 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
         </Card>
       </div>
       
-      <ModalOverlay
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        title={hasCompany ? "Firmendaten bearbeiten" : "Firmendaten erfassen"}
-      >
+      {modalOpen && (
         <CompanyForm 
           isProfile={true} 
           isSetupMode={isSetupMode} 
-          onSuccess={handleCompanySuccess} 
+          onSuccess={handleCompanySuccess}
+          isModal={true}
+          onClose={() => setModalOpen(false)}
+          title={hasCompany ? "Firmendaten bearbeiten" : "Firmendaten erfassen"}
         />
-      </ModalOverlay>
+      )}
     </div>
   );
 };

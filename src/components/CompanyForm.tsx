@@ -7,15 +7,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Building, MapPin, Phone, Mail, Globe, Hash, Check, Trash2 } from 'lucide-react';
+import { Building, MapPin, Phone, Mail, Globe, Hash, Check, Trash2, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CompanyFormProps {
   isProfile?: boolean;
   isSetupMode?: boolean;
   onSuccess?: () => void;
+  isModal?: boolean;
+  onClose?: () => void;
+  title?: string;
 }
 
-export default function CompanyForm({ isProfile = false, isSetupMode = false, onSuccess }: CompanyFormProps) {
+export default function CompanyForm({ 
+  isProfile = false, 
+  isSetupMode = false, 
+  onSuccess, 
+  isModal = false, 
+  onClose,
+  title 
+}: CompanyFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -39,6 +50,24 @@ export default function CompanyForm({ isProfile = false, isSetupMode = false, on
       loadCompanyData();
     }
   }, [user]);
+
+  useEffect(() => {
+    if (isModal) {
+      const handleEscape = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && onClose) {
+          onClose();
+        }
+      };
+
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+
+      return () => {
+        document.removeEventListener('keydown', handleEscape);
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isModal, onClose]);
 
   const loadCompanyData = async () => {
     if (!user) return;
@@ -170,6 +199,8 @@ export default function CompanyForm({ isProfile = false, isSetupMode = false, on
       // Only trigger onSuccess in setup mode (first-time setup)
       if (isSetupMode && onSuccess) {
         onSuccess();
+      } else if (isModal && onClose) {
+        onClose();
       }
     } catch (error: any) {
       toast({
@@ -236,12 +267,30 @@ export default function CompanyForm({ isProfile = false, isSetupMode = false, on
     }
   };
 
-  return (
-    <Card className={isProfile ? "" : "w-full max-w-2xl shadow-clean-lg"}>
+  const formContent = (
+    <Card className={cn(
+      isModal ? "" : (isProfile ? "" : "w-full max-w-2xl shadow-clean-lg")
+    )}>
       <CardHeader className="space-y-1">
-        <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
-          {isProfile ? "Firmendaten" : "Firmendaten erfassen"}
-        </CardTitle>
+        {isModal && title && (
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl font-bold text-foreground">
+              {title}
+            </CardTitle>
+            <button
+              onClick={onClose}
+              className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Schließen</span>
+            </button>
+          </div>
+        )}
+        {!isModal && (
+          <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
+            {isProfile ? "Firmendaten" : "Firmendaten erfassen"}
+          </CardTitle>
+        )}
         {isSetupMode && (
           <p className="text-muted-foreground">
             Vervollständigen Sie Ihr cleanflow.ai Profil mit Ihren Firmendaten
@@ -428,4 +477,22 @@ export default function CompanyForm({ isProfile = false, isSetupMode = false, on
       </CardContent>
     </Card>
   );
+
+  if (isModal) {
+    return (
+      <div 
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/20"
+        onClick={onClose}
+      >
+        <div 
+          className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {formContent}
+        </div>
+      </div>
+    );
+  }
+
+  return formContent;
 }
