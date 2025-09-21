@@ -18,3 +18,6 @@ content_path = "./supabase/templates/email_change.html"
 
 [functions.delete-account]
 verify_jwt = true
+
+[functions.verify-recaptcha]
+verify_jwt = false
