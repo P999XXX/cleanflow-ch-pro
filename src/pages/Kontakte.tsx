@@ -368,7 +368,6 @@ const Kontakte = () => {
                       <TableHead>Ort</TableHead>
                       <TableHead>Kontakt</TableHead>
                       <TableHead className="text-right w-24"></TableHead>
-                      <TableHead className="text-right w-32"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -401,33 +400,7 @@ const Kontakte = () => {
                        </div>
                     </TableCell>
                         <TableCell className="text-right w-24">{getStatusBadge(company.status)}</TableCell>
-                        <TableCell className="text-right w-32">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedCompany(company);
-                            setFormMode('company');
-                            setIsFormOpen(true);
-                          }}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteCompany.mutate(company.id);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                      </TableRow>
                 ))}
               </TableBody>
             </Table>
@@ -455,7 +428,6 @@ const Kontakte = () => {
                       <TableHead>Unternehmen</TableHead>
                       <TableHead>Kontakt</TableHead>
                       <TableHead className="text-right w-24"></TableHead>
-                      <TableHead className="text-right w-32"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -507,33 +479,7 @@ const Kontakte = () => {
                             </Badge>
                           )}
                         </TableCell>
-                        <TableCell className="text-right w-32">
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedPerson(person);
-                            setFormMode('person');
-                            setIsFormOpen(true);
-                          }}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            deleteContactPerson.mutate(person.id);
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                      </TableRow>
                 ))}
               </TableBody>
             </Table>
