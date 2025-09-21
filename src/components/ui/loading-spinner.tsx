@@ -20,7 +20,7 @@ export function LoadingSpinner({ size = "md", className }: LoadingSpinnerProps) 
         className
       )}
       role="status"
-      aria-label="Loading"
+      aria-label="Laden"
     />
   );
 }
