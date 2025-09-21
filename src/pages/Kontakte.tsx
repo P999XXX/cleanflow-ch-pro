@@ -89,12 +89,31 @@ const Kontakte = () => {
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      aktiv: { label: 'Aktiv', variant: 'default' as const },
-      inaktiv: { label: 'Inaktiv', variant: 'secondary' as const },
-      potentiell: { label: 'Potentiell', variant: 'outline' as const },
+      aktiv: { 
+        label: 'Aktiv', 
+        variant: 'default' as const,
+        className: 'bg-green-500/15 text-green-700 hover:bg-green-500/25 border-green-500/20 dark:bg-green-500/10 dark:text-green-400 dark:hover:bg-green-500/20'
+      },
+      inaktiv: { 
+        label: 'Inaktiv', 
+        variant: 'secondary' as const,
+        className: 'bg-gray-500/15 text-gray-700 hover:bg-gray-500/25 border-gray-500/20 dark:bg-gray-500/10 dark:text-gray-400 dark:hover:bg-gray-500/20'
+      },
+      potentiell: { 
+        label: 'Potentiell', 
+        variant: 'outline' as const,
+        className: 'bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20'
+      },
     };
     const config = statusConfig[status] || statusConfig.aktiv;
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+    return (
+      <Badge 
+        variant={config.variant} 
+        className={`${config.className} font-medium`}
+      >
+        {config.label}
+      </Badge>
+    );
   };
 
   return (
@@ -139,17 +158,23 @@ const Kontakte = () => {
                <TabsTrigger value="all" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Alle</span>
-                 <span className="ml-1">({totalCount})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {totalCount}
+                 </Badge>
                </TabsTrigger>
                <TabsTrigger value="companies" className="flex items-center gap-2">
                  <Building2 className="h-5 w-5" />
                  <span>Unternehmen</span>
-                 <span className="ml-1">({filteredCompanies.length})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {filteredCompanies.length}
+                 </Badge>
                </TabsTrigger>
                <TabsTrigger value="persons" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Personen</span>
-                 <span className="ml-1">({filteredPersons.length})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {filteredPersons.length}
+                 </Badge>
                </TabsTrigger>
              </TabsList>
            </Tabs>
@@ -243,17 +268,23 @@ const Kontakte = () => {
                <TabsTrigger value="all" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Alle</span>
-                 <span className="ml-1">({totalCount})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {totalCount}
+                 </Badge>
                </TabsTrigger>
                <TabsTrigger value="companies" className="flex items-center gap-2">
                  <Building2 className="h-5 w-5" />
                  <span>Unternehmen</span>
-                 <span className="ml-1">({filteredCompanies.length})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {filteredCompanies.length}
+                 </Badge>
                </TabsTrigger>
                <TabsTrigger value="persons" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Personen</span>
-                 <span className="ml-1">({filteredPersons.length})</span>
+                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                   {filteredPersons.length}
+                 </Badge>
                </TabsTrigger>
              </TabsList>
            </Tabs>
