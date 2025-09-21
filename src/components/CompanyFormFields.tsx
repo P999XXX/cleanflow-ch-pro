@@ -56,7 +56,7 @@ export function CompanyFormFields({
       {/* Firmenname */}
       <div className="space-y-2">
         <Label htmlFor="name">
-          Firmenname {required.name && '*'}
+          Firmenname {required.name && <span className="text-destructive">*</span>}
         </Label>
         <div className="relative">
           <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -76,7 +76,7 @@ export function CompanyFormFields({
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="md:col-span-2 space-y-2">
           <Label htmlFor="address">
-            Adresse {required.address && '*'}
+            Adresse {required.address && <span className="text-destructive">*</span>}
           </Label>
           <div className="relative">
             <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -96,7 +96,7 @@ export function CompanyFormFields({
         </div>
         <div className="space-y-2">
           <Label htmlFor="postalCode">
-            PLZ {required.postalCode && '*'}
+            PLZ {required.postalCode && <span className="text-destructive">*</span>}
           </Label>
           <Input
             id="postalCode"
@@ -116,7 +116,7 @@ export function CompanyFormFields({
 
       <div className="space-y-2">
         <Label htmlFor="city">
-          Ort {required.city && '*'}
+          Ort {required.city && <span className="text-destructive">*</span>}
         </Label>
         <Input
           id="city"
@@ -135,7 +135,7 @@ export function CompanyFormFields({
       {/* Land */}
       <div className="space-y-2">
         <Label htmlFor="country">
-          Land {required.country && '*'}
+          Land {required.country && <span className="text-destructive">*</span>}
         </Label>
         <Input
           id="country"
@@ -155,7 +155,7 @@ export function CompanyFormFields({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phone">
-            Telefon {required.phone && '*'}
+            Telefon {required.phone && <span className="text-destructive">*</span>}
           </Label>
           <div className="relative">
             <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -177,7 +177,7 @@ export function CompanyFormFields({
         </div>
         <div className="space-y-2">
           <Label htmlFor="email">
-            E-Mail {required.email && '*'}
+            E-Mail {required.email && <span className="text-destructive">*</span>}
           </Label>
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
