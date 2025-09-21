@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { GoogleIcon } from '@/components/ui/google-icon';
+import { useToast } from '@/hooks/use-toast';
 
 // CleanFlow Login Component
 export default function Login() {
@@ -21,6 +22,23 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { signIn, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const searchParams = url.searchParams;
+    const hash = new URLSearchParams(url.hash.replace(/^#/, ''));
+    const desc = searchParams.get('error_description') || hash.get('error_description');
+    const err = searchParams.get('error') || hash.get('error');
+    if (err || desc) {
+      toast({
+        title: 'Anmeldung fehlgeschlagen',
+        description: desc || err || 'Unbekannter Fehler bei der Google-Anmeldung.',
+        variant: 'destructive',
+      });
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
