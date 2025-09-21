@@ -5,7 +5,10 @@ export default function CompanySetup() {
   const navigate = useNavigate();
 
   const handleSuccess = () => {
-    navigate('/');
+    // Kurze Verzögerung für bessere UX
+    setTimeout(() => {
+      navigate('/');
+    }, 1500);
   };
 
   return (
