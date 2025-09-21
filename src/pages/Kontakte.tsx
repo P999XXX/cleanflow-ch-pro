@@ -187,7 +187,7 @@ const Kontakte = () => {
   // Unified card component for consistent design
   const ContactCard = ({ item, type }: { item: any, type: 'company' | 'person' }) => (
     <Card 
-      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover-scale"
+      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover-scale h-full flex flex-col"
       onClick={() => handleCardClick(item, type)}
     >
       <CardHeader className="pb-3">
@@ -232,7 +232,7 @@ const Kontakte = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 flex-1 flex flex-col justify-end">
         <div className="flex flex-col gap-2 text-sm">
           {item.email && (
             <div className="flex items-center gap-2 min-w-0">
@@ -303,7 +303,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
             {companies.map((company) => (
               <ContactCard key={`company-${company.id}`} item={company} type="company" />
             ))}
@@ -323,7 +323,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
             {persons.map((person) => (
               <ContactCard key={`person-${person.id}`} item={person} type="person" />
             ))}
