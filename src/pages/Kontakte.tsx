@@ -433,10 +433,7 @@ const Kontakte = () => {
                               </a>
                             </div>
                           )}
-                          <div className="flex items-center justify-between">
-                            {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
-                          </div>
-                        </div>
+                         </div>
                       </CardContent>
                     </Card>
                   ))}
@@ -666,10 +663,7 @@ const Kontakte = () => {
                             </a>
                           </div>
                         )}
-                        <div className="flex items-center justify-between">
-                          {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
-                        </div>
-                      </div>
+                       </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -820,10 +814,7 @@ const Kontakte = () => {
                                 </a>
                               </div>
                             )}
-                            <div className="flex items-center justify-between">
-                              {person.is_primary_contact && <Badge variant="default">Primär</Badge>}
-                            </div>
-                          </div>
+                           </div>
                         </CardContent>
                       </Card>
                     ))}
