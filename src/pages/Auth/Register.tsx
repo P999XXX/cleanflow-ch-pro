@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
-import { Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react';
 import { PasswordStrength } from '@/components/ui/password-strength';
 import { GoogleIcon } from '@/components/ui/google-icon';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -86,10 +86,15 @@ export default function Register() {
       return;
     }
 
-    if (formData.password.length < 8) {
+    // Verbesserte Passwort-Validierung: Buchstaben, Zahlen UND Sonderzeichen erforderlich
+    const hasLetter = /[a-zA-Z]/.test(formData.password);
+    const hasNumber = /\d/.test(formData.password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(formData.password);
+    
+    if (formData.password.length < 8 || !hasLetter || !hasNumber || !hasSpecialChar) {
       toast({
         title: "Ungültiges Passwort",
-        description: "Das Passwort muss mindestens 8 Zeichen lang sein und sollte Buchstaben, Zahlen und Sonderzeichen enthalten.",
+        description: "Das Passwort muss mindestens 8 Zeichen lang sein und Buchstaben, Zahlen sowie Sonderzeichen enthalten.",
         variant: "destructive",
       });
       return;
@@ -198,7 +203,7 @@ export default function Register() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Mindestens 8 Zeichen (Buchstaben, Zahlen, Sonderzeichen)"
+                  placeholder="Mindestens 8 Zeichen"
                   value={formData.password}
                   onChange={handleInputChange}
                   className="pl-9 pr-9"
@@ -233,22 +238,27 @@ export default function Register() {
                   placeholder="Passwort wiederholen"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="pl-9 pr-9"
+                  className="pl-9 pr-16"
                   required
                 />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4" />
-                  ) : (
-                    <Eye className="h-4 w-4" />
+                <div className="absolute right-0 top-0 h-full flex items-center">
+                  {formData.confirmPassword && formData.password === formData.confirmPassword && (
+                    <Check className="h-4 w-4 text-green-600 mr-2" />
                   )}
-                </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="h-full px-3 py-2 hover:bg-transparent"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
               </div>
             </div>
 

@@ -1,0 +1,299 @@
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Building, MapPin, Phone, Mail, Globe, Hash, Check } from 'lucide-react';
+
+interface CompanyFormProps {
+  isProfile?: boolean;
+  onSuccess?: () => void;
+}
+
+export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFormProps) {
+  const [formData, setFormData] = useState({
+    name: '',
+    address: '',
+    postalCode: '',
+    city: '',
+    phone: '',
+    email: '',
+    website: '',
+    taxNumber: '',
+    vatNumber: '',
+  });
+  const [loading, setLoading] = useState(false);
+  const [companyExists, setCompanyExists] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  useEffect(() => {
+    if (isProfile && user) {
+      loadCompanyData();
+    }
+  }, [isProfile, user]);
+
+  const loadCompanyData = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*')
+      .eq('owner_id', user.id)
+      .single();
+
+    if (data && !error) {
+      setFormData({
+        name: data.name || '',
+        address: data.address || '',
+        postalCode: data.postal_code || '',
+        city: data.city || '',
+        phone: data.phone || '',
+        email: data.email || '',
+        website: data.website || '',
+        taxNumber: data.tax_number || '',
+        vatNumber: data.vat_number || '',
+      });
+      setCompanyExists(true);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Fehler",
+        description: "Sie müssen angemeldet sein.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setLoading(true);
+    
+    const companyData = {
+      name: formData.name,
+      address: formData.address,
+      postal_code: formData.postalCode,
+      city: formData.city,
+      phone: formData.phone,
+      email: formData.email,
+      website: formData.website,
+      tax_number: formData.taxNumber,
+      vat_number: formData.vatNumber,
+      owner_id: user.id,
+    };
+
+    let error;
+    
+    if (companyExists) {
+      // Update existing company
+      const result = await supabase
+        .from('companies')
+        .update(companyData)
+        .eq('owner_id', user.id);
+      error = result.error;
+    } else {
+      // Insert new company
+      const result = await supabase
+        .from('companies')
+        .insert([companyData]);
+      error = result.error;
+    }
+
+    if (error) {
+      toast({
+        title: "Fehler",
+        description: `Firma konnte nicht ${companyExists ? 'aktualisiert' : 'erstellt'} werden: ` + error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Erfolgreich",
+        description: `Ihre Firmendaten wurden erfolgreich ${companyExists ? 'aktualisiert' : 'erstellt'}!`,
+      });
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+    
+    setLoading(false);
+  };
+
+  return (
+    <Card className={isProfile ? "" : "w-full max-w-2xl shadow-elegant"}>
+      <CardHeader className="space-y-1">
+        <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
+          {isProfile ? "Firmendaten" : "Firmendaten erfassen"}
+        </CardTitle>
+        {!isProfile && (
+          <p className="text-muted-foreground">
+            Vervollständigen Sie Ihr cleanflow.ai Profil mit Ihren Firmendaten
+          </p>
+        )}
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Firmenname */}
+          <div className="space-y-2">
+            <Label htmlFor="name">Firmenname *</Label>
+            <div className="relative">
+              <Building className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="name"
+                name="name"
+                placeholder="cleanflow Reinigungsservice GmbH"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="pl-9"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Adresse */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2 space-y-2">
+              <Label htmlFor="address">Adresse</Label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="address"
+                  name="address"
+                  placeholder="Musterstrasse 123"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="postalCode">PLZ</Label>
+              <Input
+                id="postalCode"
+                name="postalCode"
+                placeholder="8000"
+                value={formData.postalCode}
+                onChange={handleInputChange}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="city">Ort</Label>
+            <Input
+              id="city"
+              name="city"
+              placeholder="Zürich"
+              value={formData.city}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Kontaktdaten */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">Telefon</Label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="+41 44 123 45 67"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">E-Mail</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="info@cleanflow.ai"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="website">Website (optional)</Label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="website"
+                name="website"
+                type="url"
+                placeholder="https://www.cleanflow.ai"
+                value={formData.website}
+                onChange={handleInputChange}
+                className="pl-9"
+              />
+            </div>
+          </div>
+
+          {/* Steuernummern */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="taxNumber">Steuernummer (optional)</Label>
+              <div className="relative">
+                <Hash className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="taxNumber"
+                  name="taxNumber"
+                  placeholder="CHE-123.456.789"
+                  value={formData.taxNumber}
+                  onChange={handleInputChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="vatNumber">MWST-Nummer (optional)</Label>
+              <div className="relative">
+                <Hash className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                <Input
+                  id="vatNumber"
+                  name="vatNumber"
+                  placeholder="CHE-123.456.789 MWST"
+                  value={formData.vatNumber}
+                  onChange={handleInputChange}
+                  className="pl-9"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loading || !formData.name}
+            >
+              {loading ? 'Speichern...' : (companyExists ? 'Aktualisieren' : (isProfile ? 'Speichern' : 'Firma erstellen'))}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
