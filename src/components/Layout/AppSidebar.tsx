@@ -179,7 +179,7 @@ export function AppSidebar() {
                                 collapsed ? "w-5 h-5" : "w-4 h-4 mr-3"
                               )} />
                               {!collapsed && (
-                                <span className="text-sm font-medium">
+                                <span className="text-base font-medium">
                                   {item.title}
                                 </span>
                               )}
