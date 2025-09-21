@@ -135,7 +135,6 @@ function AuthLayout() {
       <Route path="/login" element={<Login />} />
       <Route path="/thank-you" element={<ThankYou />} />
       <Route path="/verify-email" element={<VerifyEmail />} />
-      <Route path="/company-setup" element={<CompanySetup />} />
       <Route path="/agb" element={<AGB />} />
       <Route path="/datenschutz" element={<Datenschutz />} />
       <Route path="*" element={<Login />} />

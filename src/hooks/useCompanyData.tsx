@@ -33,16 +33,12 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
   const { toast } = useToast();
 
   const refreshCompanyData = async () => {
-    console.log('CompanyData: refreshCompanyData called', { hasUser: !!user, userId: user?.id });
-    
     if (!user) {
-      console.log('CompanyData: No user, setting loading to false');
       setLoading(false);
       return;
     }
 
     try {
-      console.log('CompanyData: Fetching company data for user:', user.id);
       const { data, error } = await supabase
         .from('companies')
         .select('*')
@@ -50,14 +46,11 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('CompanyData: Error loading company data:', error);
+        console.error('Error loading company data:', error);
         return;
       }
 
-      console.log('CompanyData: Query result', { data, error });
-
       if (data) {
-        console.log('CompanyData: Setting company data');
         setCompanyData({
           id: data.id,
           name: data.name || '',
@@ -71,13 +64,11 @@ export function CompanyProvider({ children }: { children: React.ReactNode }) {
           vatNumber: data.vat_number || '',
         });
       } else {
-        console.log('CompanyData: No company data found');
         setCompanyData(null);
       }
     } catch (error) {
-      console.error('CompanyData: Error loading company data:', error);
+      console.error('Error loading company data:', error);
     } finally {
-      console.log('CompanyData: Setting loading to false');
       setLoading(false);
     }
   };
