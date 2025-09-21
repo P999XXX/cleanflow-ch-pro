@@ -618,36 +618,39 @@ const Kontakte = () => {
           {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="all" className="flex items-center gap-2">
+              <TabsTrigger value="all" className="flex items-center gap-1 px-2">
                 <Contact className="h-4 w-4" />
-                <span>Alle</span>
+                <span className="text-xs sm:text-sm">Alle</span>
                 <Badge 
                   variant="secondary" 
-                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
                     activeTab === 'all' ? 'font-bold' : 'font-medium'
                   } hover:bg-primary/10`}
                 >
                   {totalCount}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="companies" className="flex items-center gap-2">
+              <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
                 <Building className="h-4 w-4" />
-                <span>Unternehmen</span>
+                <span className="text-xs sm:text-sm">
+                  <span className="hidden sm:inline">Unternehmen</span>
+                  <span className="sm:hidden">Firma</span>
+                </span>
                 <Badge 
                   variant="secondary" 
-                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
                     activeTab === 'companies' ? 'font-bold' : 'font-medium'
                   } hover:bg-primary/10`}
                 >
                   {filteredCompanies.length}
                 </Badge>
               </TabsTrigger>
-              <TabsTrigger value="persons" className="flex items-center gap-2">
+              <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
                 <Users className="h-4 w-4" />
-                <span>Personen</span>
+                <span className="text-xs sm:text-sm">Personen</span>
                 <Badge 
                   variant="secondary" 
-                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                  className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
                     activeTab === 'persons' ? 'font-bold' : 'font-medium'
                   } hover:bg-primary/10`}
                 >
