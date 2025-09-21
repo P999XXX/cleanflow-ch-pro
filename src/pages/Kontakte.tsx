@@ -780,17 +780,17 @@ const Kontakte = () => {
                                    {company.email && (
                                      <div className="flex items-center gap-1 text-sm">
                                        <Mail className="h-3 w-3" />
-                                       <a href={`mailto:${company.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                         {company.email}
-                                       </a>
-                                     </div>
-                                   )}
-                                   {company.phone && (
-                                     <div className="flex items-center gap-1 text-sm">
-                                       <Phone className="h-3 w-3" />
-                                       <a href={`tel:${company.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                         {company.phone}
-                                       </a>
+                                        <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                                          {company.email}
+                                        </a>
+                                      </div>
+                                    )}
+                                    {company.phone && (
+                                      <div className="flex items-center gap-1 text-sm">
+                                        <Phone className="h-3 w-3" />
+                                        <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                                          {company.phone}
+                                        </a>
                                      </div>
                                    )}
                                  </div>
@@ -870,25 +870,25 @@ const Kontakte = () => {
                                    {person.email && (
                                      <div className="flex items-center gap-1 text-sm">
                                        <Mail className="h-3 w-3" />
-                                       <a href={`mailto:${person.email}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                         {person.email}
-                                       </a>
-                                     </div>
-                                   )}
-                                   {person.phone && (
-                                     <div className="flex items-center gap-1 text-sm">
-                                       <Phone className="h-3 w-3" />
-                                       <a href={`tel:${person.phone}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                         {person.phone}
-                                       </a>
-                                     </div>
-                                   )}
-                                   {person.mobile && (
-                                     <div className="flex items-center gap-1 text-sm">
-                                       <Smartphone className="h-3 w-3" />
-                                       <a href={`tel:${person.mobile}`} className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                         {person.mobile}
-                                       </a>
+                                        <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                                          {person.email}
+                                        </a>
+                                      </div>
+                                    )}
+                                    {person.phone && (
+                                      <div className="flex items-center gap-1 text-sm">
+                                        <Phone className="h-3 w-3" />
+                                        <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                                          {person.phone}
+                                        </a>
+                                      </div>
+                                    )}
+                                    {person.mobile && (
+                                      <div className="flex items-center gap-1 text-sm">
+                                        <Smartphone className="h-3 w-3" />
+                                        <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                                          {person.mobile}
+                                        </a>
                                      </div>
                                    )}
                                  </div>
@@ -1039,25 +1039,25 @@ const Kontakte = () => {
                                {person.email && (
                                  <div className="flex items-center gap-1">
                                    <Mail className="h-3 w-3 text-muted-foreground" />
-                                   <a href={`mailto:${person.email}`} className="text-primary hover:underline">
-                                     {person.email}
-                                   </a>
+                                    <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground">
+                                      {person.email}
+                                    </a>
                                  </div>
                                )}
                                {person.phone && (
                                  <div className="flex items-center gap-1">
                                    <Phone className="h-3 w-3 text-muted-foreground" />
-                                   <a href={`tel:${person.phone}`} className="text-primary hover:underline">
-                                     {person.phone}
-                                   </a>
+                                    <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground">
+                                      {person.phone}
+                                    </a>
                                  </div>
                                )}
                                {person.mobile && (
                                  <div className="flex items-center gap-1">
                                    <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                   <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
-                                     {person.mobile}
-                                   </a>
+                                    <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground">
+                                      {person.mobile}
+                                    </a>
                                  </div>
                                )}
                              </div>
@@ -1279,17 +1279,17 @@ const Kontakte = () => {
                             {company.email && (
                               <div className="flex items-center gap-2 text-sm">
                                 <Mail className="h-4 w-4 text-muted-foreground" />
-                                <a href={`mailto:${company.email}`} className="text-primary hover:underline">
-                                  {company.email}
-                                </a>
+                                 <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground">
+                                   {company.email}
+                                 </a>
                               </div>
                             )}
                              {company.phone && (
                                <div className="flex items-center gap-2 text-sm">
                                  <Phone className="h-4 w-4 text-muted-foreground" />
-                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                                   {company.phone}
-                                 </a>
+                                  <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground">
+                                    {company.phone}
+                                  </a>
                                </div>
                              )}
                            </div>
@@ -1476,25 +1476,25 @@ const Kontakte = () => {
                              {person.email && (
                                <div className="flex items-center gap-1">
                                  <Mail className="h-3 w-3 text-muted-foreground" />
-                                 <a href={`mailto:${person.email}`} className="text-primary hover:underline">
-                                   {person.email}
-                                 </a>
+                                  <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground">
+                                    {person.email}
+                                  </a>
                                </div>
                              )}
                              {person.phone && (
                                <div className="flex items-center gap-1">
                                  <Phone className="h-3 w-3 text-muted-foreground" />
-                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
-                                   {person.phone}
-                                 </a>
+                                  <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground">
+                                    {person.phone}
+                                  </a>
                                </div>
                              )}
                              {person.mobile && (
                                <div className="flex items-center gap-1">
                                  <Smartphone className="h-3 w-3 text-muted-foreground" />
-                                 <a href={`tel:${person.mobile}`} className="text-primary hover:underline">
-                                   {person.mobile}
-                                 </a>
+                                  <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground">
+                                    {person.mobile}
+                                  </a>
                                </div>
                              )}
                            </div>
@@ -1576,9 +1576,9 @@ const Kontakte = () => {
                           <Mail className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">E-Mail</p>
-                            <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-primary hover:underline">
-                              {selectedItem.email}
-                            </a>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                               {selectedItem.email}
+                             </a>
                           </div>
                         </div>
                       )}
@@ -1587,9 +1587,9 @@ const Kontakte = () => {
                           <Phone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Telefon</p>
-                            <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-primary hover:underline">
-                              {selectedItem.phone}
-                            </a>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                               {selectedItem.phone}
+                             </a>
                           </div>
                         </div>
                       )}
@@ -1692,25 +1692,25 @@ const Kontakte = () => {
                               {contact.email && (
                                 <div className="flex items-center gap-1">
                                   <Mail className="h-3 w-3 text-primary" />
-                                  <a href={`mailto:${contact.email}`} className="text-xs text-primary hover:underline font-medium">
-                                    {contact.email}
-                                  </a>
+                                   <a href={`mailto:${contact.email}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
+                                     {contact.email}
+                                   </a>
                                 </div>
                               )}
                               {contact.phone && (
                                 <div className="flex items-center gap-1">
                                   <Phone className="h-3 w-3 text-primary" />
-                                  <a href={`tel:${contact.phone}`} className="text-xs text-primary hover:underline font-medium">
-                                    {contact.phone}
-                                  </a>
+                                   <a href={`tel:${contact.phone}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
+                                     {contact.phone}
+                                   </a>
                                 </div>
                               )}
                               {contact.mobile && (
                                 <div className="flex items-center gap-1">
                                   <Smartphone className="h-3 w-3 text-primary" />
-                                  <a href={`tel:${contact.mobile}`} className="text-xs text-primary hover:underline font-medium">
-                                    {contact.mobile}
-                                  </a>
+                                   <a href={`tel:${contact.mobile}`} className="text-xs text-foreground/70 hover:text-foreground font-medium">
+                                     {contact.mobile}
+                                   </a>
                                 </div>
                               )}
                             </div>
@@ -1771,9 +1771,9 @@ const Kontakte = () => {
                           <Mail className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">E-Mail</p>
-                            <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-primary hover:underline">
-                              {selectedItem.email}
-                            </a>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                               {selectedItem.email}
+                             </a>
                           </div>
                         </div>
                       )}
@@ -1782,9 +1782,9 @@ const Kontakte = () => {
                           <Phone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Telefon</p>
-                            <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-primary hover:underline">
-                              {selectedItem.phone}
-                            </a>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                               {selectedItem.phone}
+                             </a>
                           </div>
                         </div>
                       )}
@@ -1793,9 +1793,9 @@ const Kontakte = () => {
                           <Smartphone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Mobil</p>
-                            <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-primary hover:underline">
-                              {selectedItem.mobile}
-                            </a>
+                             <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                               {selectedItem.mobile}
+                             </a>
                           </div>
                         </div>
                       )}
