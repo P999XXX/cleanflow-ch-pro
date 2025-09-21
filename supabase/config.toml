@@ -1,4 +1,20 @@
 project_id = "enwlagoqpbqzmutgbjxh"
 
+[auth.email.template.confirmation]
+subject = "Bestätigen Sie Ihre Registrierung bei CleanFlow.ai"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Passwort zurücksetzen - CleanFlow.ai"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Anmelden bei CleanFlow.ai"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.email_change]
+subject = "E-Mail-Adresse bestätigen - CleanFlow.ai"
+content_path = "./supabase/templates/email_change.html"
+
 [functions.delete-account]
 verify_jwt = true

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bestätigen Sie Ihre Registrierung</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        .text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #64748b;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white !important;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .footer {
+            background: #f1f5f9;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 30px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                border-radius: 8px;
+            }
+            .header, .content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">CleanFlow.ai</div>
+            <div class="tagline">Ihre professionelle Reinigungsfirma-Lösung</div>
+        </div>
+        
+        <div class="content">
+            <h1 class="welcome">Willkommen bei CleanFlow.ai!</h1>
+            
+            <p class="text">
+                Vielen Dank für Ihre Registrierung bei CleanFlow.ai, der führenden Lösung für die Verwaltung Ihrer Reinigungsfirma.
+            </p>
+            
+            <p class="text">
+                Um Ihr Konto zu aktivieren und mit der Nutzung zu beginnen, bestätigen Sie bitte Ihre E-Mail-Adresse durch Klick auf den unten stehenden Button:
+            </p>
+            
+            <div style="text-align: center;">
+                <a href="{{ .ConfirmationURL }}" class="button">
+                    E-Mail-Adresse bestätigen
+                </a>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <p class="text">
+                <strong>Was Sie erwartet:</strong><br>
+                • Vollständige Projektverwaltung<br>
+                • Digitale Zeiterfassung<br>
+                • Automatisierte Rechnungsstellung<br>
+                • Mitarbeiterverwaltung<br>
+                • Umfassende Berichte und Analysen
+            </p>
+            
+            <p class="text">
+                Falls Sie den Button nicht verwenden können, kopieren Sie diesen Link in Ihren Browser:<br>
+                <a href="{{ .ConfirmationURL }}" style="color: #3b82f6; word-break: break-all;">{{ .ConfirmationURL }}</a>
+            </p>
+            
+            <p class="text" style="font-size: 14px; color: #94a3b8;">
+                Falls Sie sich nicht bei CleanFlow.ai registriert haben, können Sie diese E-Mail ignorieren.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <strong>CleanFlow.ai</strong><br>
+                Die moderne Lösung für Reinigungsunternehmen in der Schweiz
+            </p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

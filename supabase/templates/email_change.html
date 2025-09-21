@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Mail-Adresse bestätigen</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        .tagline {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .welcome {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+        }
+        .text {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #64748b;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white !important;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+        }
+        .info-box {
+            background: #ede9fe;
+            border: 1px solid #c4b5fd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .info-box h3 {
+            color: #5b21b6;
+            margin: 0 0 10px 0;
+            font-size: 16px;
+        }
+        .info-box p {
+            color: #5b21b6;
+            margin: 0;
+            font-size: 14px;
+        }
+        .footer {
+            background: #f1f5f9;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 30px 0;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                border-radius: 8px;
+            }
+            .header, .content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">CleanFlow.ai</div>
+            <div class="tagline">E-Mail-Adresse ändern</div>
+        </div>
+        
+        <div class="content">
+            <h1 class="welcome">E-Mail-Adresse bestätigen</h1>
+            
+            <p class="text">
+                Sie haben eine Änderung Ihrer E-Mail-Adresse für Ihr CleanFlow.ai-Konto beantragt.
+            </p>
+            
+            <p class="text">
+                Um die neue E-Mail-Adresse zu aktivieren, bestätigen Sie diese bitte durch Klick auf den unten stehenden Button:
+            </p>
+            
+            <div style="text-align: center;">
+                <a href="{{ .ConfirmationURL }}" class="button">
+                    E-Mail-Adresse bestätigen
+                </a>
+            </div>
+            
+            <div class="info-box">
+                <h3>📧 Wichtiger Hinweis</h3>
+                <p>
+                    Nach der Bestätigung wird diese E-Mail-Adresse für die Anmeldung und alle Benachrichtigungen verwendet. 
+                    Stellen Sie sicher, dass Sie weiterhin Zugriff auf diese E-Mail-Adresse haben.
+                </p>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <p class="text">
+                Falls Sie den Button nicht verwenden können, kopieren Sie diesen Link in Ihren Browser:<br>
+                <a href="{{ .ConfirmationURL }}" style="color: #8b5cf6; word-break: break-all;">{{ .ConfirmationURL }}</a>
+            </p>
+            
+            <p class="text" style="font-size: 14px; color: #94a3b8;">
+                Falls Sie diese Änderung nicht beantragt haben, ignorieren Sie diese E-Mail. 
+                Ihre bisherige E-Mail-Adresse bleibt dann unverändert.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>
+                <strong>CleanFlow.ai</strong><br>
+                Die moderne Lösung für Reinigungsunternehmen in der Schweiz
+            </p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                Diese E-Mail wurde automatisch generiert. Bitte antworten Sie nicht auf diese Nachricht.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
