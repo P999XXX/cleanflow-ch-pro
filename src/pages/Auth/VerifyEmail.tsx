@@ -45,7 +45,7 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
-      <Card className="w-full max-w-md shadow-elegant">
+      <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-foreground">
             E-Mail-Verifizierung
@@ -70,14 +70,14 @@ export default function VerifyEmail() {
 
           {verificationStatus === 'success' && (
             <>
-              <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-green-100">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-              </div>
-              <Alert className="border-green-200 bg-green-50">
-                <CheckCircle className="h-4 w-4 text-green-600" />
-                <AlertDescription className="text-green-800">
+               <div className="flex justify-center">
+                 <div className="p-4 rounded-full bg-success/10">
+                   <CheckCircle className="h-8 w-8 text-success" />
+                 </div>
+               </div>
+               <Alert className="border-success/20 bg-success/5">
+                 <CheckCircle className="h-4 w-4 text-success" />
+                 <AlertDescription className="text-success-foreground">
                   {message} Sie werden automatisch weitergeleitet...
                 </AlertDescription>
               </Alert>
@@ -86,11 +86,11 @@ export default function VerifyEmail() {
 
           {verificationStatus === 'error' && (
             <>
-              <div className="flex justify-center">
-                <div className="p-4 rounded-full bg-red-100">
-                  <AlertCircle className="h-8 w-8 text-red-600" />
-                </div>
-              </div>
+               <div className="flex justify-center">
+                 <div className="p-4 rounded-full bg-destructive/10">
+                   <AlertCircle className="h-8 w-8 text-destructive" />
+                 </div>
+               </div>
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>

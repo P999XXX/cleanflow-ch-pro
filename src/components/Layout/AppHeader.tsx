@@ -329,7 +329,7 @@ export function AppHeader() {
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
-                <AvatarFallback className="bg-gradient-primary text-white">
+                <AvatarFallback className="bg-gradient-primary text-primary-foreground">
                   MW
                 </AvatarFallback>
               </Avatar>

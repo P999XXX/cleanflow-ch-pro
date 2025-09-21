@@ -57,7 +57,7 @@ const Benachrichtigungen = () => {
       <div className="flex items-center gap-2 mb-6">
         <Bell className="h-6 w-6" />
         <h1 className="text-2xl font-bold">Benachrichtigungen</h1>
-        <Badge className="ml-2 bg-destructive text-white">
+        <Badge className="ml-2 bg-destructive text-destructive-foreground">
           {notifications.filter(n => n.unread).length}
         </Badge>
       </div>

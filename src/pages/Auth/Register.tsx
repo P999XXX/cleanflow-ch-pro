@@ -134,7 +134,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
-      <Card className="w-full max-w-md shadow-elegant">
+      <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-foreground">
             cleanflow.ai registrieren

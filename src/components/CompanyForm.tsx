@@ -132,7 +132,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
   };
 
   return (
-    <Card className={isProfile ? "" : "w-full max-w-2xl shadow-elegant"}>
+    <Card className={isProfile ? "" : "w-full max-w-2xl shadow-clean-lg"}>
       <CardHeader className="space-y-1">
         <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
           {isProfile ? "Firmendaten" : "Firmendaten erfassen"}

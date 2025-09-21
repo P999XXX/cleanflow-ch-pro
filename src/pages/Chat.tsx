@@ -21,7 +21,7 @@ const Chat = () => {
           <div className="flex-1 bg-muted/20 rounded-lg p-4 mb-4 overflow-y-auto">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-semibold">
                   MW
                 </div>
                 <div className="flex-1">
@@ -36,7 +36,7 @@ const Chat = () => {
               </div>
               
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center text-secondary-foreground text-sm font-semibold">
                   AS
                 </div>
                 <div className="flex-1">

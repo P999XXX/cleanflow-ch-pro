@@ -30,8 +30,6 @@ const Einstellungen = () => {
     setIsDeleting(true);
     
     try {
-      console.log('Starting account deletion for user:', user.id);
-      
       // Soft delete the user account by updating the profile status
       const { error } = await supabase
         .from('profiles')
@@ -41,14 +39,9 @@ const Einstellungen = () => {
         })
         .eq('user_id', user.id);
 
-      console.log('Update result:', { error });
-
       if (error) {
-        console.error('Database update error:', error);
         throw error;
       }
-
-      console.log('Account successfully marked as deleted');
 
       toast({
         title: "Account gelöscht",
