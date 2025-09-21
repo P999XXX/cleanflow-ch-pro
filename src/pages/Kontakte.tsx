@@ -158,21 +158,21 @@ const Kontakte = () => {
                <TabsTrigger value="all" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Alle</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'all' ? 'font-bold' : 'font-medium'}`}>
                    {totalCount}
                  </Badge>
                </TabsTrigger>
                <TabsTrigger value="companies" className="flex items-center gap-2">
                  <Building2 className="h-5 w-5" />
                  <span>Unternehmen</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'companies' ? 'font-bold' : 'font-medium'}`}>
                    {filteredCompanies.length}
                  </Badge>
                </TabsTrigger>
                <TabsTrigger value="persons" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Personen</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'persons' ? 'font-bold' : 'font-medium'}`}>
                    {filteredPersons.length}
                  </Badge>
                </TabsTrigger>
@@ -268,21 +268,21 @@ const Kontakte = () => {
                <TabsTrigger value="all" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Alle</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'all' ? 'font-bold' : 'font-medium'}`}>
                    {totalCount}
                  </Badge>
                </TabsTrigger>
                <TabsTrigger value="companies" className="flex items-center gap-2">
                  <Building2 className="h-5 w-5" />
                  <span>Unternehmen</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'companies' ? 'font-bold' : 'font-medium'}`}>
                    {filteredCompanies.length}
                  </Badge>
                </TabsTrigger>
                <TabsTrigger value="persons" className="flex items-center gap-2">
                  <Users className="h-5 w-5" />
                  <span>Personen</span>
-                 <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                 <Badge variant="secondary" className={`ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs hover:bg-primary/10 ${activeTab === 'persons' ? 'font-bold' : 'font-medium'}`}>
                    {filteredPersons.length}
                  </Badge>
                </TabsTrigger>
@@ -315,62 +315,60 @@ const Kontakte = () => {
                 <div className="space-y-4">
                   {filteredCompanies.map((company) => (
                     <Card key={`company-${company.id}`}>
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-lg">{company.name}</h3>
-                            {(company.city || company.postal_code) && (
-                              <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                                <MapPin className="h-3 w-3" />
-                                {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                setSelectedCompany(company);
-                                setFormMode('company');
-                                setIsFormOpen(true);
-                              }}
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => deleteCompany.mutate(company.id)}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-2">
-                          {company.email && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Mail className="h-4 w-4 text-muted-foreground" />
-                              <a href={`mailto:${company.email}`} className="text-primary hover:underline">
-                                {company.email}
-                              </a>
-                            </div>
-                          )}
-                          {company.phone && (
-                            <div className="flex items-center gap-2 text-sm">
-                              <Phone className="h-4 w-4 text-muted-foreground" />
-                              <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                                {company.phone}
-                              </a>
-                            </div>
-                          )}
-                          <div className="flex items-center justify-between">
-                            {getStatusBadge(company.status)}
-                          </div>
-                        </div>
-                      </CardContent>
+                       <CardHeader className="pb-2">
+                         <div className="flex items-start justify-between">
+                           <div className="flex-1">
+                             <h3 className="font-semibold text-lg">{company.name}</h3>
+                             {(company.city || company.postal_code) && (
+                               <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                                 <MapPin className="h-3 w-3" />
+                                 {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
+                               </div>
+                             )}
+                           </div>
+                           <div className="flex items-center gap-2">
+                             {getStatusBadge(company.status)}
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={() => {
+                                 setSelectedCompany(company);
+                                 setFormMode('company');
+                                 setIsFormOpen(true);
+                               }}
+                             >
+                               <Edit className="h-4 w-4" />
+                             </Button>
+                             <Button
+                               variant="outline"
+                               size="sm"
+                               onClick={() => deleteCompany.mutate(company.id)}
+                             >
+                               <Trash2 className="h-4 w-4" />
+                             </Button>
+                           </div>
+                         </div>
+                       </CardHeader>
+                       <CardContent className="pt-0">
+                         <div className="space-y-2">
+                           {company.email && (
+                             <div className="flex items-center gap-2 text-sm">
+                               <Mail className="h-4 w-4 text-muted-foreground" />
+                               <a href={`mailto:${company.email}`} className="text-primary hover:underline">
+                                 {company.email}
+                               </a>
+                             </div>
+                           )}
+                           {company.phone && (
+                             <div className="flex items-center gap-2 text-sm">
+                               <Phone className="h-4 w-4 text-muted-foreground" />
+                               <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                 {company.phone}
+                               </a>
+                             </div>
+                           )}
+                         </div>
+                       </CardContent>
                     </Card>
                   ))}
                 </div>
@@ -550,26 +548,27 @@ const Kontakte = () => {
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              setSelectedCompany(company);
-                              setFormMode('company');
-                              setIsFormOpen(true);
-                            }}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => deleteCompany.mutate(company.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                         <div className="flex items-center gap-2">
+                           {getStatusBadge(company.status)}
+                           <Button
+                             variant="outline"
+                             size="sm"
+                             onClick={() => {
+                               setSelectedCompany(company);
+                               setFormMode('company');
+                               setIsFormOpen(true);
+                             }}
+                           >
+                             <Edit className="h-4 w-4" />
+                           </Button>
+                           <Button
+                             variant="outline"
+                             size="sm"
+                             onClick={() => deleteCompany.mutate(company.id)}
+                           >
+                             <Trash2 className="h-4 w-4" />
+                           </Button>
+                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
@@ -582,19 +581,16 @@ const Kontakte = () => {
                             </a>
                           </div>
                         )}
-                        {company.phone && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-muted-foreground" />
-                            <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                              {company.phone}
-                            </a>
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between">
-                          {getStatusBadge(company.status)}
-                        </div>
-                      </div>
-                    </CardContent>
+                         {company.phone && (
+                           <div className="flex items-center gap-2 text-sm">
+                             <Phone className="h-4 w-4 text-muted-foreground" />
+                             <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                               {company.phone}
+                             </a>
+                           </div>
+                         )}
+                       </div>
+                     </CardContent>
                   </Card>
                 ))}
               </div>
@@ -753,26 +749,27 @@ const Kontakte = () => {
                                 </div>
                               )}
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedCompany(company);
-                                  setFormMode('company');
-                                  setIsFormOpen(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteCompany.mutate(company.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                             <div className="flex items-center gap-2">
+                               {getStatusBadge(company.status)}
+                               <Button
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => {
+                                   setSelectedCompany(company);
+                                   setFormMode('company');
+                                   setIsFormOpen(true);
+                                 }}
+                               >
+                                 <Edit className="h-4 w-4" />
+                               </Button>
+                               <Button
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => deleteCompany.mutate(company.id)}
+                               >
+                                 <Trash2 className="h-4 w-4" />
+                               </Button>
+                             </div>
                           </div>
                         </CardHeader>
                         <CardContent className="pt-0">
@@ -785,19 +782,16 @@ const Kontakte = () => {
                                 </a>
                               </div>
                             )}
-                            {company.phone && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
-                                <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                                  {company.phone}
-                                </a>
-                              </div>
-                            )}
-                            <div className="flex items-center justify-between">
-                              {getStatusBadge(company.status)}
-                            </div>
-                          </div>
-                        </CardContent>
+                             {company.phone && (
+                               <div className="flex items-center gap-2 text-sm">
+                                 <Phone className="h-4 w-4 text-muted-foreground" />
+                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                   {company.phone}
+                                 </a>
+                               </div>
+                             )}
+                           </div>
+                         </CardContent>
                       </Card>
                     ))}
                   </div>
@@ -1068,26 +1062,27 @@ const Kontakte = () => {
                                 </div>
                               )}
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedCompany(company);
-                                  setFormMode('company');
-                                  setIsFormOpen(true);
-                                }}
-                              >
-                                <Edit className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => deleteCompany.mutate(company.id)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+                             <div className="flex items-center gap-2">
+                               {getStatusBadge(company.status)}
+                               <Button
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => {
+                                   setSelectedCompany(company);
+                                   setFormMode('company');
+                                   setIsFormOpen(true);
+                                 }}
+                               >
+                                 <Edit className="h-4 w-4" />
+                               </Button>
+                               <Button
+                                 variant="outline"
+                                 size="sm"
+                                 onClick={() => deleteCompany.mutate(company.id)}
+                               >
+                                 <Trash2 className="h-4 w-4" />
+                               </Button>
+                             </div>
                           </div>
                         </CardHeader>
                         <CardContent className="pt-0">
@@ -1100,19 +1095,16 @@ const Kontakte = () => {
                                 </a>
                               </div>
                             )}
-                            {company.phone && (
-                              <div className="flex items-center gap-2 text-sm">
-                                <Phone className="h-4 w-4 text-muted-foreground" />
-                                <a href={`tel:${company.phone}`} className="text-primary hover:underline">
-                                  {company.phone}
-                                </a>
-                              </div>
-                            )}
-                            <div className="flex items-center justify-between">
-                              {getStatusBadge(company.status)}
-                            </div>
-                          </div>
-                        </CardContent>
+                             {company.phone && (
+                               <div className="flex items-center gap-2 text-sm">
+                                 <Phone className="h-4 w-4 text-muted-foreground" />
+                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
+                                   {company.phone}
+                                 </a>
+                               </div>
+                             )}
+                           </div>
+                         </CardContent>
                       </Card>
                     ))}
                   </div>
