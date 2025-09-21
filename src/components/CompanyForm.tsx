@@ -139,7 +139,7 @@ export default function CompanyForm({
   if (isModal) {
     return (
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm bg-black/20"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-white/20"
         onClick={onClose}
       >
         <div 

@@ -113,7 +113,7 @@ export const patterns = {
   ),
   
   // Loading states
-  loadingOverlay: "fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50",
+  loadingOverlay: "fixed inset-0 bg-white/20 backdrop-blur-md flex items-center justify-center z-50",
   
   // Icon containers
   iconContainer: "p-3 rounded-full bg-muted/50",
