@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Progress } from "@/components/ui/progress";
+import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface PasswordStrengthProps {
@@ -88,58 +89,46 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
           )}
         />
         
-        {/* Anforderungen-Liste */}
+        {/* Anforderungen-Liste - nur unerfüllte Anforderungen anzeigen */}
         <div className="space-y-1">
-          <div className="flex items-center gap-2 text-xs">
-            <div className={cn("w-1.5 h-1.5 rounded-full", 
-              strength.requirements.length ? "bg-success" : "bg-muted"
-            )} />
-            <span className={cn(
-              strength.requirements.length ? "text-success" : "text-muted-foreground"
-            )}>
-              Mindestens 8 Zeichen
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className={cn("w-1.5 h-1.5 rounded-full", 
-              strength.requirements.lowercase ? "bg-success" : "bg-muted"
-            )} />
-            <span className={cn(
-              strength.requirements.lowercase ? "text-success" : "text-muted-foreground"
-            )}>
-              Kleinbuchstaben (a-z)
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className={cn("w-1.5 h-1.5 rounded-full", 
-              strength.requirements.uppercase ? "bg-success" : "bg-muted"
-            )} />
-            <span className={cn(
-              strength.requirements.uppercase ? "text-success" : "text-muted-foreground"
-            )}>
-              Großbuchstaben (A-Z)
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className={cn("w-1.5 h-1.5 rounded-full", 
-              strength.requirements.numbers ? "bg-success" : "bg-muted"
-            )} />
-            <span className={cn(
-              strength.requirements.numbers ? "text-success" : "text-muted-foreground"
-            )}>
-              Zahlen (0-9)
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs">
-            <div className={cn("w-1.5 h-1.5 rounded-full", 
-              strength.requirements.symbols ? "bg-success" : "bg-muted"
-            )} />
-            <span className={cn(
-              strength.requirements.symbols ? "text-success" : "text-muted-foreground"
-            )}>
-              Sonderzeichen (!@#$%^&*)
-            </span>
-          </div>
+          {!strength.requirements.length && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+              <span>Mindestens 8 Zeichen</span>
+            </div>
+          )}
+          {!strength.requirements.lowercase && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+              <span>Kleinbuchstaben (a-z)</span>
+            </div>
+          )}
+          {!strength.requirements.uppercase && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+              <span>Großbuchstaben (A-Z)</span>
+            </div>
+          )}
+          {!strength.requirements.numbers && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+              <span>Zahlen (0-9)</span>
+            </div>
+          )}
+          {!strength.requirements.symbols && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+              <span>Sonderzeichen (!@#$%^&*)</span>
+            </div>
+          )}
+          
+          {/* Erfolgsmeldung wenn alle Anforderungen erfüllt sind */}
+          {strength.score === 100 && (
+            <div className="flex items-center gap-2 text-xs text-success">
+              <Check className="w-3 h-3" />
+              <span>Alle Anforderungen erfüllt!</span>
+            </div>
+          )}
         </div>
       </div>
     );
