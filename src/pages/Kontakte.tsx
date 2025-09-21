@@ -602,6 +602,7 @@ const Kontakte = () => {
                   }
                   setIsFormOpen(true);
                 }}
+                size="sm"
                 className="flex items-center gap-2 w-full lg:w-auto"
               >
                 <Plus className="h-4 w-4" />
