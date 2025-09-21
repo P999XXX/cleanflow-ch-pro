@@ -91,9 +91,11 @@ const Kontakte = () => {
   }, [companies]);
 
   const handleNavigateToPerson = useCallback((person: any) => {
-    setSelectedItem(person);
+    // Find the full person data from contactPersons to ensure consistency
+    const fullPersonData = contactPersons?.find(p => p.id === person.id);
+    setSelectedItem(fullPersonData || person);
     setItemType('person');
-  }, []);
+  }, [contactPersons]);
 
   // Handle edit actions
   const handleEditItem = useCallback(() => {
