@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Mail, Lock, User, Eye, EyeOff, Check } from 'lucide-react';
 import { PasswordStrength } from '@/components/ui/password-strength';
 import { GoogleIcon } from '@/components/ui/google-icon';
-import ReCAPTCHA from 'react-google-recaptcha';
+import { GoogleReCaptchaProvider, GoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Register() {
@@ -134,7 +134,8 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
+    <GoogleReCaptchaProvider reCaptchaKey="6LflT9ArAAAAAGjy3n9PCbHGYQ80NoXVCck_kiLK">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">
           <CardTitle className="text-2xl font-bold text-foreground">
@@ -281,13 +282,12 @@ export default function Register() {
                 </Label>
               </div>
 
-              {formData.acceptTerms && (
-                <ReCAPTCHA
-                  sitekey="6LflT9ArAAAAAGjy3n9PCbHGYQ80NoXVCck_kiLK"
-                  onChange={handleRecaptchaChange}
-                  theme="light"
-                />
-              )}
+{formData.acceptTerms && (
+  <>
+    <GoogleReCaptcha onVerify={handleRecaptchaChange} action="register" />
+    <p className="text-xs text-muted-foreground">Sicherheitsprüfung aktiv.</p>
+  </>
+)}
             </div>
 
             <Button
@@ -331,6 +331,7 @@ export default function Register() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </GoogleReCaptchaProvider>
   );
 }
