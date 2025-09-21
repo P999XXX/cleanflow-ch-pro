@@ -55,11 +55,10 @@ const Einstellungen = () => {
         description: "Ihr Account wurde erfolgreich gelöscht. Sie werden automatisch abgemeldet.",
       });
 
-      // Sign out the user after successful soft delete
-      setTimeout(async () => {
-        await signOut();
-        navigate("/login");
-      }, 2000);
+      // Delete auth user via backend function and sign out
+      await supabase.functions.invoke('delete-account');
+      await signOut();
+      navigate("/login");
 
     } catch (error) {
       console.error('Error deleting account:', error);
@@ -115,11 +114,11 @@ const Einstellungen = () => {
         </Card>
 
         {/* Account Deletion Section */}
-        <Card className="border-destructive/20">
+        <Card>
           <CardHeader>
             <CardTitle className="text-destructive flex items-center gap-2">
               <AlertTriangle className="h-5 w-5" />
-              Gefahrenzone
+              Konto löschen
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">

@@ -41,6 +41,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Enforce blocked access for deleted accounts
+  useEffect(() => {
+    if (!session?.user) return;
+    const uid = session.user.id;
+    const timer = setTimeout(async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('account_status')
+        .eq('user_id', uid)
+        .maybeSingle();
+
+      if (!error && data && data.account_status === 'deleted') {
+        toast({
+          title: 'Konto deaktiviert',
+          description: 'Ihr Konto wurde gelöscht. Bitte registrieren Sie sich neu.',
+          variant: 'destructive',
+        });
+        await supabase.auth.signOut();
+      }
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [session?.user?.id]);
+
   const signUp = async (email: string, password: string, firstName: string, lastName: string) => {
     const redirectUrl = `${window.location.origin}/verify-email`;
     
@@ -65,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } else {
       toast({
         title: "Registrierung erfolgreich",
-        description: "Bitte überprüfen Sie Ihre E-Mail zur Bestätigung.",
+        description: "Neues Konto erstellt. Bitte bestätigen Sie Ihre E-Mail.",
       });
     }
 
