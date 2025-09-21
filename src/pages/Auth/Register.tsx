@@ -203,7 +203,7 @@ export default function Register() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Mindestens 8 Zeichen"
+                  placeholder="Passwort erstellen"
                   value={formData.password}
                   onChange={handleInputChange}
                   className="pl-9 pr-9"

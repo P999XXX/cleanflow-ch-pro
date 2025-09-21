@@ -10,15 +10,30 @@ interface PasswordStrengthProps {
 const calculatePasswordStrength = (password: string): { 
   score: number; 
   text: string; 
-  color: string; 
+  color: string;
+  requirements: {
+    length: boolean;
+    lowercase: boolean;
+    uppercase: boolean;
+    numbers: boolean;
+    symbols: boolean;
+  };
 } => {
+  const requirements = {
+    length: password.length >= 8,
+    lowercase: /[a-z]/.test(password),
+    uppercase: /[A-Z]/.test(password),
+    numbers: /[0-9]/.test(password),
+    symbols: /[^A-Za-z0-9]/.test(password),
+  };
+
   let score = 0;
   
-  if (password.length >= 8) score += 25;
-  if (/[a-z]/.test(password)) score += 25;
-  if (/[A-Z]/.test(password)) score += 25;
-  if (/[0-9]/.test(password)) score += 15;
-  if (/[^A-Za-z0-9]/.test(password)) score += 10;
+  if (requirements.length) score += 20;
+  if (requirements.lowercase) score += 20;
+  if (requirements.uppercase) score += 20;
+  if (requirements.numbers) score += 20;
+  if (requirements.symbols) score += 20;
 
   let text = "";
   let color = "";
@@ -26,10 +41,10 @@ const calculatePasswordStrength = (password: string): {
   if (score === 0) {
     text = "";
     color = "bg-transparent";
-  } else if (score <= 33) {
+  } else if (score < 80) {
     text = "Schwach";
     color = "bg-destructive";
-  } else if (score <= 66) {
+  } else if (score < 100) {
     text = "Mittel";
     color = "bg-warning";
   } else {
@@ -37,7 +52,7 @@ const calculatePasswordStrength = (password: string): {
     color = "bg-success";
   }
 
-  return { score: Math.min(score, 100), text, color };
+  return { score, text, color, requirements };
 };
 
 export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengthProps>(
@@ -52,9 +67,9 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
           <span className="text-sm text-muted-foreground">Passwort-Stärke:</span>
           <span
             className={cn("text-sm font-medium", {
-              "text-destructive": strength.score > 0 && strength.score <= 33,
-              "text-warning": strength.score > 33 && strength.score <= 66,
-              "text-success": strength.score > 66,
+              "text-destructive": strength.score > 0 && strength.score < 80,
+              "text-warning": strength.score >= 80 && strength.score < 100,
+              "text-success": strength.score === 100,
             })}
           >
             {strength.text}
@@ -66,13 +81,66 @@ export const PasswordStrength = React.forwardRef<HTMLDivElement, PasswordStrengt
             "h-2 bg-muted",
             {
               "[&>div]:bg-transparent": strength.score === 0,
-              "[&>div]:!bg-destructive": strength.score > 0 && strength.score <= 33,
-              "[&>div]:!bg-warning": strength.score > 33 && strength.score <= 66,
-              "[&>div]:!bg-success": strength.score > 66,
+              "[&>div]:!bg-destructive": strength.score > 0 && strength.score < 80,
+              "[&>div]:!bg-warning": strength.score >= 80 && strength.score < 100,
+              "[&>div]:!bg-success": strength.score === 100,
             }
           )}
         />
-        <p className="text-xs text-muted-foreground">Min: 8 Zeichen, a–z, A–Z, 0–9</p>
+        
+        {/* Anforderungen-Liste */}
+        <div className="space-y-1">
+          <div className="flex items-center gap-2 text-xs">
+            <div className={cn("w-1.5 h-1.5 rounded-full", 
+              strength.requirements.length ? "bg-success" : "bg-muted"
+            )} />
+            <span className={cn(
+              strength.requirements.length ? "text-success" : "text-muted-foreground"
+            )}>
+              Mindestens 8 Zeichen
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className={cn("w-1.5 h-1.5 rounded-full", 
+              strength.requirements.lowercase ? "bg-success" : "bg-muted"
+            )} />
+            <span className={cn(
+              strength.requirements.lowercase ? "text-success" : "text-muted-foreground"
+            )}>
+              Kleinbuchstaben (a-z)
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className={cn("w-1.5 h-1.5 rounded-full", 
+              strength.requirements.uppercase ? "bg-success" : "bg-muted"
+            )} />
+            <span className={cn(
+              strength.requirements.uppercase ? "text-success" : "text-muted-foreground"
+            )}>
+              Großbuchstaben (A-Z)
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className={cn("w-1.5 h-1.5 rounded-full", 
+              strength.requirements.numbers ? "bg-success" : "bg-muted"
+            )} />
+            <span className={cn(
+              strength.requirements.numbers ? "text-success" : "text-muted-foreground"
+            )}>
+              Zahlen (0-9)
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs">
+            <div className={cn("w-1.5 h-1.5 rounded-full", 
+              strength.requirements.symbols ? "bg-success" : "bg-muted"
+            )} />
+            <span className={cn(
+              strength.requirements.symbols ? "text-success" : "text-muted-foreground"
+            )}>
+              Sonderzeichen (!@#$%^&*)
+            </span>
+          </div>
+        </div>
       </div>
     );
   }
