@@ -115,6 +115,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
 
     if (error) {
+      // Enhanced security logging for failed authentication attempts
+      console.warn('Authentication attempt failed:', {
+        error: error.message,
+        timestamp: new Date().toISOString(),
+        email: email.substring(0, 3) + '***' // Log partial email for security monitoring
+      });
+      
       toast({
         title: "Anmeldung fehlgeschlagen",
         description: error.message,

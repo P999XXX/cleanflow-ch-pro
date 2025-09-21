@@ -161,7 +161,7 @@ export default function Register() {
   };
 
   return (
-    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "6LflT9ArAAAAAGjy3n9PCbHGYQ80NoXVCck_kiLK"}>
+    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-accent/5 p-4">
       <Card className="w-full max-w-md shadow-clean-lg">
         <CardHeader className="space-y-1 text-center">

@@ -24,20 +24,36 @@ export default function GoogleCallback() {
           return;
         }
 
-        // Check if this is a new user by looking at the created_at timestamp
+        // Enhanced new user detection using database timestamp
         const user = session.user;
+        
+        // Check if user was created very recently (within 2 minutes for better reliability)
         const createdAt = new Date(user.created_at);
         const now = new Date();
         const timeDiff = now.getTime() - createdAt.getTime();
-        const isNewUser = timeDiff < 60000; // User created within last minute
+        const isNewUser = timeDiff < 120000; // User created within last 2 minutes
+        
+        // Additional security check: verify user exists in profiles table
+        let hasExistingProfile = false;
+        try {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('user_id', user.id)
+            .single();
+          hasExistingProfile = !!profile;
+        } catch (error) {
+          console.log('Profile check during OAuth callback:', error);
+        }
 
         // Wait for company data to load
         if (!loading) {
-          if (isNewUser || !hasCompany) {
-            // New user or user without company data - redirect to company setup
+          // Enhanced logic: redirect to company setup if new user OR no profile OR no company data
+          if (isNewUser || !hasExistingProfile || !hasCompany) {
+            // New user or user without complete setup - redirect to company setup
             navigate('/company-setup');
           } else {
-            // Existing user with company data - redirect to dashboard
+            // Existing user with complete setup - redirect to dashboard
             navigate('/');
           }
         }
