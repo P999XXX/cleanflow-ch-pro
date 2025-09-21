@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Settings, User } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import CompanyForm from "@/components/CompanyForm";
+
 
 const Profileinstellungen = () => {
   const { user } = useAuth();
@@ -59,8 +59,6 @@ const Profileinstellungen = () => {
             </div>
           </CardContent>
         </Card>
-        
-        <CompanyForm isProfile={true} />
       </div>
     </div>
   );

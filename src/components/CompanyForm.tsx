@@ -150,12 +150,14 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
       }
 
       // Verifizieren, dass die Firma lesbar ist (RLS/Propagation) bevor wir weiterleiten
-      const confirmed = await waitForCompany();
+      const confirmed = await waitForCompany(10, 400);
       if (!confirmed) {
         toast({
           title: "Hinweis",
           description: "Firmendaten gespeichert, bitte einen Moment...",
         });
+        // Abbrechen, bis die Daten sicher lesbar sind, um Endlosschleifen im Guard zu vermeiden
+        return;
       }
 
       setCompanyExists(true);

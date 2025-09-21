@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Settings, Trash2, AlertTriangle } from "lucide-react";
+import { Settings, Trash2, AlertTriangle, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { 
   AlertDialog, 
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -84,6 +84,24 @@ const Einstellungen = () => {
           </CardContent>
         </Card>
         
+        {/* Firmendaten Karte */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Building className="h-5 w-5" />
+              Firmendaten
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex items-center justify-between gap-4">
+            <p className="text-muted-foreground">
+              Erfassen oder bearbeiten Sie Ihre Firmendaten.
+            </p>
+            <Button asChild>
+              <Link to="/company-setup">Öffnen</Link>
+            </Button>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader>
             <CardTitle>Benachrichtigungen</CardTitle>

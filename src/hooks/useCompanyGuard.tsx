@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -6,6 +7,7 @@ export function useCompanyGuard() {
   const { user, loading: authLoading } = useAuth();
   const [hasCompany, setHasCompany] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     const checkCompanyData = async () => {
@@ -35,7 +37,7 @@ export function useCompanyGuard() {
     };
 
     checkCompanyData();
-  }, [user, authLoading]);
+  }, [user, authLoading, location.pathname]);
 
   return {
     hasCompany,
