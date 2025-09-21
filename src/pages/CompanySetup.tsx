@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CompanyFormFields } from '@/components/CompanyFormFields';
@@ -7,7 +7,7 @@ import { useCompanyData } from '@/hooks/useCompanyData';
 import { useAuth } from '@/hooks/useAuth';
 import { Building, CheckCircle } from 'lucide-react';
 
-export default function CompanySetup() {
+function CompanySetupInner() {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -63,9 +63,9 @@ export default function CompanySetup() {
     if (!user) return;
 
     setLoading(true);
-    const success = await saveCompany(formData);
+    const ok = await saveCompany(formData);
     
-    if (success) {
+    if (ok) {
       setSuccess(true);
       // Redirect to dashboard after short delay
       setTimeout(() => {
@@ -155,4 +155,19 @@ export default function CompanySetup() {
       </Card>
     </div>
   );
+}
+
+export default function CompanySetup() {
+  const { user, loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  return <CompanySetupInner />;
 }
