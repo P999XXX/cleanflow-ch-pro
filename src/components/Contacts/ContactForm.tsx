@@ -159,13 +159,13 @@ export const ContactForm = ({
         {canSwitchMode && (
           <Tabs value={mode} onValueChange={(value) => setMode(value as ContactFormMode)} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="company" className="flex items-center gap-2">
+              <TabsTrigger value="company" className="flex flex-col items-center gap-1 py-3">
                 <Building2 className="h-4 w-4" />
-                <span className="hidden sm:inline">Unternehmen</span>
+                <span className="text-xs">Unternehmen</span>
               </TabsTrigger>
-              <TabsTrigger value="person" className="flex items-center gap-2">
+              <TabsTrigger value="person" className="flex flex-col items-center gap-1 py-3">
                 <User className="h-4 w-4" />
-                <span className="hidden sm:inline">Person</span>
+                <span className="text-xs">Person</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
