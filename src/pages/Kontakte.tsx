@@ -361,13 +361,13 @@ const Kontakte = () => {
             </h3>
           )}
           <Card>
-            <Table>
+            <Table className="lg:table-fixed">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/4">Name</TableHead>
-                      <TableHead className="w-1/4">Ort</TableHead>
-                      <TableHead className="w-1/4">Kontakt</TableHead>
-                      <TableHead className="text-right w-1/4"></TableHead>
+                      <TableHead className="lg:w-1/4">Name</TableHead>
+                      <TableHead className="lg:w-1/4">Ort</TableHead>
+                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right lg:w-1/4"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -377,10 +377,10 @@ const Kontakte = () => {
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(company, 'company')}
                   >
-                        <TableCell className="w-1/4 font-medium whitespace-nowrap">{company.name}</TableCell>
-                        <TableCell className="w-1/4 whitespace-nowrap">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                        <TableCell className="w-1/4 whitespace-nowrap">
-                           <div className="flex items-center gap-3 whitespace-nowrap">
+                        <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">{company.name}</TableCell>
+                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
+                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                           <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
                          {company.email && (
                            <div className="flex items-center gap-1 text-sm">
                              <Mail className="h-3 w-3" />
@@ -399,7 +399,7 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                        <TableCell className="text-right w-1/4 whitespace-nowrap">{getStatusBadge(company.status)}</TableCell>
+                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">{getStatusBadge(company.status)}</TableCell>
                       </TableRow>
                 ))}
               </TableBody>
@@ -421,13 +421,13 @@ const Kontakte = () => {
             </h3>
           )}
           <Card>
-            <Table>
+            <Table className="lg:table-fixed">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="w-1/4">Name</TableHead>
-                      <TableHead className="w-1/4">Unternehmen</TableHead>
-                      <TableHead className="w-1/4">Kontakt</TableHead>
-                      <TableHead className="text-right w-1/4"></TableHead>
+                      <TableHead className="lg:w-1/4">Name</TableHead>
+                      <TableHead className="lg:w-1/4">Unternehmen</TableHead>
+                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                      <TableHead className="text-right lg:w-1/4"></TableHead>
                     </TableRow>
                   </TableHeader>
               <TableBody>
@@ -437,15 +437,15 @@ const Kontakte = () => {
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(person, 'person')}
                   >
-                    <TableCell className="w-1/4 font-medium whitespace-nowrap">
+                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
                       <div>
                         <div>{`${person.first_name} ${person.last_name}`}</div>
                         {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
                       </div>
                     </TableCell>
-                    <TableCell className="w-1/4 whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
-                    <TableCell className="w-1/4 whitespace-nowrap">
-                       <div className="flex items-center gap-3 whitespace-nowrap">
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                       <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
                          {person.email && (
                            <div className="flex items-center gap-1 text-sm">
                              <Mail className="h-3 w-3" />
@@ -472,7 +472,7 @@ const Kontakte = () => {
                          )}
                        </div>
                     </TableCell>
-                        <TableCell className="text-right w-1/4 whitespace-nowrap">
+                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
                           {person.is_primary_contact && (
                             <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
                               Primär
