@@ -19,7 +19,11 @@ import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import CompanyForm from "@/components/CompanyForm";
 
-const Einstellungen = () => {
+interface EinstellungenProps {
+  isSetupMode?: boolean;
+}
+
+const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -134,11 +138,11 @@ const Einstellungen = () => {
                 </p>
               </CardContent>
             </Card>
-            <CompanyForm isProfile={true} onSuccess={handleCompanySuccess} />
+            <CompanyForm isProfile={true} isSetupMode={isSetupMode} onSuccess={handleCompanySuccess} />
           </div>
         ) : (
           <>
-            <CompanyForm isProfile={true} onSuccess={handleCompanySuccess} />
+            <CompanyForm isProfile={true} isSetupMode={false} onSuccess={handleCompanySuccess} />
             
             <Card>
               <CardHeader>
@@ -175,60 +179,6 @@ const Einstellungen = () => {
           </>
         )}
 
-        {/* Account Deletion Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-destructive flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5" />
-              Konto löschen
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <p className="text-muted-foreground mb-4">
-                Wenn Sie Ihr Konto löschen, werden alle Ihre Daten unwiderruflich entfernt und 
-                Sie können sich nicht mehr anmelden. Diese Aktion kann nicht rückgängig gemacht werden.
-              </p>
-              
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="destructive" 
-                    className="gap-2"
-                    disabled={isDeleting}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    Account dauerhaft löschen
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle className="flex items-center gap-2">
-                      <AlertTriangle className="h-5 w-5 text-destructive" />
-                      Account wirklich löschen?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Diese Aktion löscht Ihr Konto und alle damit verbundenen Daten unwiderruflich. 
-                      Sie verlieren den Zugang zu allen Ihren Projekten, Kunden und Mitarbeiterdaten.
-                      <br /><br />
-                      <strong>Diese Aktion kann nicht rückgängig gemacht werden.</strong>
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                    <AlertDialogAction 
-                      onClick={handleDeleteAccount}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? "Wird gelöscht..." : "Ja, Account dauerhaft löschen"}
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </div>
   );

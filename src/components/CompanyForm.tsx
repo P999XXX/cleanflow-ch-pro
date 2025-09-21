@@ -11,10 +11,11 @@ import { Building, MapPin, Phone, Mail, Globe, Hash, Check, Trash2 } from 'lucid
 
 interface CompanyFormProps {
   isProfile?: boolean;
+  isSetupMode?: boolean;
   onSuccess?: () => void;
 }
 
-export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFormProps) {
+export default function CompanyForm({ isProfile = false, isSetupMode = false, onSuccess }: CompanyFormProps) {
   const [formData, setFormData] = useState({
     name: '',
     address: '',
@@ -62,8 +63,8 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
       });
       setCompanyExists(true);
       
-      // If this is the company setup flow and company exists, trigger onSuccess
-      if (!isProfile && onSuccess && data.name) {
+      // If this is the setup mode (first-time from email verification) and company exists, trigger onSuccess
+      if (isSetupMode && onSuccess && data.name) {
         setTimeout(() => {
           onSuccess();
         }, 500);
@@ -166,7 +167,8 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
         description: `Ihre Firmendaten wurden erfolgreich ${companyExists ? 'aktualisiert' : 'erstellt'}!`,
       });
 
-      if (onSuccess) {
+      // Only trigger onSuccess in setup mode (first-time setup)
+      if (isSetupMode && onSuccess) {
         onSuccess();
       }
     } catch (error: any) {
@@ -240,7 +242,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
         <CardTitle className={`${isProfile ? "text-xl" : "text-2xl"} font-bold text-foreground`}>
           {isProfile ? "Firmendaten" : "Firmendaten erfassen"}
         </CardTitle>
-        {!isProfile && (
+        {isSetupMode && (
           <p className="text-muted-foreground">
             Vervollständigen Sie Ihr cleanflow.ai Profil mit Ihren Firmendaten
           </p>
@@ -397,7 +399,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
           </div>
         </form>
 
-        {!isProfile && (
+        {isSetupMode && (
           <div className="mt-6 pt-4 border-t border-border">
             <div className="flex flex-col gap-3">
               <Button

@@ -84,8 +84,8 @@ function AuthLayout() {
             <AppHeader />
             <main className="flex-1 overflow-auto">
               <Routes>
-                <Route path="/einstellungen" element={<Einstellungen />} />
-                <Route path="*" element={<Einstellungen />} />
+                <Route path="/einstellungen" element={<Einstellungen isSetupMode={true} />} />
+                <Route path="*" element={<Einstellungen isSetupMode={true} />} />
               </Routes>
             </main>
           </div>
