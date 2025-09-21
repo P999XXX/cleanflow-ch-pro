@@ -69,7 +69,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>
             {company ? 'Unternehmen bearbeiten' : 'Neues Unternehmen'}

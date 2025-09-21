@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
@@ -19,7 +19,7 @@ const Kontakte = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [formMode, setFormMode] = useState<'company' | 'person'>('company');
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
@@ -179,37 +179,39 @@ const Kontakte = () => {
   // Unified card component for consistent design
   const ContactCard = ({ item, type }: { item: any, type: 'company' | 'person' }) => (
     <Card 
-      className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover-scale"
       onClick={() => handleCardClick(item, type)}
     >
-      <CardHeader className="pb-2">
+      <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-lg truncate">
               {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
             </h3>
             {type === 'company' ? (
               (item.city || item.postal_code) && (
                 <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                  <MapPin className="h-3 w-3" />
-                  {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">
+                    {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                  </span>
                 </div>
               )
             ) : (
-              <>
+              <div className="space-y-1 mt-1">
                 {item.title && (
-                  <p className="text-sm text-muted-foreground mt-1">{item.title}</p>
+                  <p className="text-sm text-muted-foreground truncate">{item.title}</p>
                 )}
                 {item.customer_companies?.name && (
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
-                    <Building2 className="h-3 w-3" />
-                    {item.customer_companies.name}
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Building2 className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{item.customer_companies.name}</span>
                   </div>
                 )}
-              </>
+              </div>
             )}
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0 ml-2">
             {type === 'company' ? (
               getStatusBadge(item.status)
             ) : (
@@ -223,14 +225,15 @@ const Kontakte = () => {
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <div className="flex flex-wrap items-center gap-4 text-sm">
+        <div className="flex flex-wrap items-center gap-3 text-sm">
           {item.email && (
-            <div className="flex items-center gap-1">
-              <Mail className="h-3 w-3 text-muted-foreground" />
+            <div className="flex items-center gap-1 min-w-0">
+              <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`mailto:${item.email}`} 
-                className="text-foreground/70 hover:text-foreground transition-colors"
+                className="text-foreground/70 hover:text-foreground transition-colors truncate"
                 onClick={(e) => e.stopPropagation()}
+                title={item.email}
               >
                 {item.email}
               </a>
@@ -238,7 +241,7 @@ const Kontakte = () => {
           )}
           {item.phone && (
             <div className="flex items-center gap-1">
-              <Phone className="h-3 w-3 text-muted-foreground" />
+              <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.phone}`} 
                 className="text-foreground/70 hover:text-foreground transition-colors"
@@ -250,7 +253,7 @@ const Kontakte = () => {
           )}
           {item.mobile && (
             <div className="flex items-center gap-1">
-              <Smartphone className="h-3 w-3 text-muted-foreground" />
+              <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.mobile}`} 
                 className="text-foreground/70 hover:text-foreground transition-colors"
@@ -267,10 +270,10 @@ const Kontakte = () => {
 
   // Unified cards view component
   const CardsView = ({ companies, persons, showSections = false }: { companies: any[], persons: any[], showSections?: boolean }) => (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* No results message */}
       {isSearching && hasNoResults && (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-12 text-muted-foreground animate-fade-in">
           <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
           <p className="text-lg font-medium mb-2">Keine Ergebnisse gefunden</p>
           <p className="text-sm">Versuchen Sie einen anderen Suchbegriff</p>
@@ -292,7 +295,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {companies.map((company) => (
               <ContactCard key={`company-${company.id}`} item={company} type="company" />
             ))}
@@ -312,7 +315,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {persons.map((person) => (
               <ContactCard key={`person-${person.id}`} item={person} type="person" />
             ))}
@@ -324,10 +327,10 @@ const Kontakte = () => {
 
   // Unified table view component
   const TableView = ({ companies, persons, showSections = false }: { companies: any[], persons: any[], showSections?: boolean }) => (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* No results message */}
       {isSearching && hasNoResults && (
-        <div className="text-center py-12 text-muted-foreground">
+        <div className="text-center py-12 text-muted-foreground animate-fade-in">
           <Search className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
           <p className="text-lg font-medium mb-2">Keine Ergebnisse gefunden</p>
           <p className="text-sm">Versuchen Sie einen anderen Suchbegriff</p>
@@ -364,7 +367,7 @@ const Kontakte = () => {
                 {companies.map((company) => (
                   <TableRow 
                     key={company.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(company, 'company')}
                   >
                     <TableCell className="font-medium">{company.name}</TableCell>
@@ -374,7 +377,7 @@ const Kontakte = () => {
                          {company.email && (
                            <div className="flex items-center gap-1 text-sm">
                              <Mail className="h-3 w-3" />
-                             <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                             <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
                                {company.email}
                              </a>
                            </div>
@@ -382,7 +385,7 @@ const Kontakte = () => {
                          {company.phone && (
                            <div className="flex items-center gap-1 text-sm">
                              <Phone className="h-3 w-3" />
-                             <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                             <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
                                {company.phone}
                              </a>
                            </div>
@@ -451,7 +454,7 @@ const Kontakte = () => {
                 {persons.map((person) => (
                   <TableRow 
                     key={person.id}
-                    className="cursor-pointer hover:bg-muted/50"
+                    className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => handleCardClick(person, 'person')}
                   >
                     <TableCell className="font-medium">
@@ -466,7 +469,7 @@ const Kontakte = () => {
                          {person.email && (
                            <div className="flex items-center gap-1 text-sm">
                              <Mail className="h-3 w-3" />
-                             <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                             <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
                                {person.email}
                              </a>
                            </div>
@@ -474,7 +477,7 @@ const Kontakte = () => {
                          {person.phone && (
                            <div className="flex items-center gap-1 text-sm">
                              <Phone className="h-3 w-3" />
-                             <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                             <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
                                {person.phone}
                              </a>
                            </div>
@@ -482,7 +485,7 @@ const Kontakte = () => {
                          {person.mobile && (
                            <div className="flex items-center gap-1 text-sm">
                              <Smartphone className="h-3 w-3" />
-                             <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground" onClick={(e) => e.stopPropagation()}>
+                             <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
                                {person.mobile}
                              </a>
                            </div>
@@ -573,12 +576,12 @@ const Kontakte = () => {
             
             {/* Controls */}
             <div className="flex flex-col sm:flex-row gap-3 lg:ml-auto">
-              {/* View Mode Toggle (Desktop only) */}
+              {/* View Mode Toggle */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="hidden lg:flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
                 {viewMode === 'table' ? 'Karten' : 'Tabelle'}
@@ -613,21 +616,36 @@ const Kontakte = () => {
               <TabsTrigger value="all" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span className="hidden sm:inline">Alle</span>
-                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                <Badge 
+                  variant="secondary" 
+                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                    activeTab === 'all' ? 'font-bold' : 'font-medium'
+                  }`}
+                >
                   {totalCount}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="companies" className="flex items-center gap-2">
                 <Building2 className="h-4 w-4" />
                 <span className="hidden sm:inline">Unternehmen</span>
-                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                <Badge 
+                  variant="secondary" 
+                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                    activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                  }`}
+                >
                   {filteredCompanies.length}
                 </Badge>
               </TabsTrigger>
               <TabsTrigger value="persons" className="flex items-center gap-2">
                 <Users className="h-4 w-4" />
                 <span className="hidden sm:inline">Personen</span>
-                <Badge variant="secondary" className="ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                <Badge 
+                  variant="secondary" 
+                  className={`ml-1 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs ${
+                    activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                  }`}
+                >
                   {filteredPersons.length}
                 </Badge>
               </TabsTrigger>
@@ -672,9 +690,9 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Improved Mobile Layout */}
+      {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-7xl w-[95vw] mx-auto max-h-[95vh] overflow-y-auto backdrop-blur-md">
+        <DialogContent className="max-w-6xl">
           <DialogHeader className="pb-4 border-b">
             <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -716,7 +734,7 @@ const Kontakte = () => {
           </DialogHeader>
           
           {selectedItem && (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-fade-in">
               {itemType === 'company' ? (
                 <>
                   {/* Company Basic Info */}
@@ -730,7 +748,7 @@ const Kontakte = () => {
                           <Mail className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
                                {selectedItem.email}
                              </a>
                           </div>
@@ -741,7 +759,7 @@ const Kontakte = () => {
                           <Phone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
                                {selectedItem.phone}
                              </a>
                           </div>
@@ -756,7 +774,7 @@ const Kontakte = () => {
                               href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
                               target="_blank" 
                               rel="noopener noreferrer" 
-                              className="text-sm font-medium text-primary hover:underline"
+                              className="text-sm font-medium text-primary hover:underline transition-colors"
                             >
                               {selectedItem.website}
                             </a>
@@ -878,7 +896,7 @@ const Kontakte = () => {
                           <p className="text-xs text-muted-foreground">Unternehmen</p>
                           <button 
                             onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer"
+                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
                           >
                             <Building2 className="h-3 w-3" />
                             {selectedItem.customer_companies.name}
@@ -899,7 +917,7 @@ const Kontakte = () => {
                           <Mail className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
                                {selectedItem.email}
                              </a>
                           </div>
@@ -910,7 +928,7 @@ const Kontakte = () => {
                           <Phone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
                                {selectedItem.phone}
                              </a>
                           </div>
@@ -921,7 +939,7 @@ const Kontakte = () => {
                           <Smartphone className="h-4 w-4 text-primary" />
                           <div>
                             <p className="text-xs text-muted-foreground">Mobil</p>
-                             <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-foreground/70 hover:text-foreground">
+                             <a href={`tel:${selectedItem.mobile}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
                                {selectedItem.mobile}
                              </a>
                           </div>
@@ -950,7 +968,7 @@ const Kontakte = () => {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="max-w-md mx-4">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Kontakt löschen?</AlertDialogTitle>
             <AlertDialogDescription>

@@ -139,11 +139,11 @@ export default function CompanyForm({
   if (isModal) {
     return (
       <div 
-        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-white/20"
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-md bg-white/30"
         onClick={onClose}
       >
         <div 
-          className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
+          className="relative bg-background rounded-xl shadow-2xl max-w-4xl w-[95vw] max-h-[90vh] overflow-y-auto border border-border/20"
           onClick={(e) => e.stopPropagation()}
         >
           {formContent}

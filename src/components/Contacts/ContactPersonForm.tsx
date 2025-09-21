@@ -69,7 +69,7 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>
             {contactPerson ? 'Kontaktperson bearbeiten' : 'Neue Kontaktperson'}
