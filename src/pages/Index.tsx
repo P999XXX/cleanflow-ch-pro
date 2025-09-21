@@ -9,8 +9,7 @@ import {
   CheckCircle2,
   AlertCircle,
   DollarSign,
-  Plus,
-  LogOut
+  Plus
 } from "lucide-react";
 import { StatsCard } from "@/components/Dashboard/StatsCard";
 import { ActivityCard } from "@/components/Dashboard/ActivityCard";
@@ -21,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const stats = [
     {
       title: "Aktive Projekte",
@@ -82,10 +81,6 @@ const Index = () => {
               <Plus className="mr-1 md:mr-2 h-4 w-4" />
               <span className="hidden sm:inline">Neues Projekt</span>
               <span className="sm:hidden">Neu</span>
-            </Button>
-            <Button variant="outline" onClick={signOut} size="sm">
-              <LogOut className="mr-1 md:mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Abmelden</span>
             </Button>
           </div>
         </div>

@@ -34,6 +34,9 @@ import Abwesenheiten from "./pages/Abwesenheiten";
 import Schulungen from "./pages/Schulungen";
 import MitarbeiterChat from "./pages/MitarbeiterChat";
 import MitarbeiterApp from "./pages/MitarbeiterApp";
+import Chat from "./pages/Chat";
+import Profileinstellungen from "./pages/Profileinstellungen";
+import Einstellungen from "./pages/Einstellungen";
 
 const queryClient = new QueryClient();
 
@@ -97,6 +100,9 @@ function AuthLayout() {
                 <Route path="/schulungen" element={<Schulungen />} />
                 <Route path="/mitarbeiter-chat" element={<MitarbeiterChat />} />
                 <Route path="/mitarbeiter-app" element={<MitarbeiterApp />} />
+                <Route path="/chat" element={<Chat />} />
+                <Route path="/profileinstellungen" element={<Profileinstellungen />} />
+                <Route path="/einstellungen" element={<Einstellungen />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

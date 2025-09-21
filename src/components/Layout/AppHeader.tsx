@@ -1,4 +1,4 @@
-import { Bell, Search, Settings, User, LogOut, Moon, Sun, Home, CalendarDays, Users, FileText, Building, UserCheck } from "lucide-react";
+import { Bell, Search, Settings, User, LogOut, Moon, Sun, Home, CalendarDays, Users, FileText, Building, UserCheck, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { 
@@ -20,11 +20,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTheme } from "next-themes";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
 
   return (
     <header className="h-16 border-b border-border bg-background backdrop-blur-sm px-4 flex items-center justify-between">
@@ -275,6 +283,13 @@ export function AppHeader() {
 
       {/* Right Section */}
       <div className="flex items-center gap-1 md:gap-3">
+        {/* Chat */}
+        <Button variant="ghost" size="sm" asChild>
+          <NavLink to="/chat">
+            <MessageCircle className="w-4 h-4" />
+          </NavLink>
+        </Button>
+
         {/* Notifications */}
         <Button variant="ghost" size="sm" className="relative">
           <Bell className="w-4 h-4" />
@@ -303,7 +318,7 @@ export function AppHeader() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="end" forceMount>
+          <DropdownMenuContent className="w-56 bg-background border shadow-lg" align="end" forceMount>
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
                 <p className="font-medium">Max Weber</p>
@@ -313,16 +328,20 @@ export function AppHeader() {
               </div>
             </div>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profil</span>
+            <DropdownMenuItem asChild>
+              <NavLink to="/profileinstellungen" className="flex w-full">
+                <User className="mr-2 h-4 w-4" />
+                <span>Profil</span>
+              </NavLink>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Einstellungen</span>
+            <DropdownMenuItem asChild>
+              <NavLink to="/einstellungen" className="flex w-full">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Einstellungen</span>
+              </NavLink>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive cursor-pointer" onClick={handleSignOut}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Abmelden</span>
             </DropdownMenuItem>
