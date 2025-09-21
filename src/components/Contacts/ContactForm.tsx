@@ -329,14 +329,14 @@ export const ContactForm = ({
               <div>
                 <Label htmlFor="customer_company_id">Unternehmen</Label>
                 <Select 
-                  value={personData.customer_company_id} 
-                  onValueChange={(value) => setPersonData({ ...personData, customer_company_id: value || undefined })}
+                  value={personData.customer_company_id || "none"} 
+                  onValueChange={(value) => setPersonData({ ...personData, customer_company_id: value === "none" ? undefined : value })}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Unternehmen auswählen (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Kein Unternehmen</SelectItem>
+                    <SelectItem value="none">Kein Unternehmen</SelectItem>
                     {companies?.map((company) => (
                       <SelectItem key={company.id} value={company.id}>
                         {company.name}
