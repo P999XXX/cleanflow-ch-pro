@@ -870,69 +870,28 @@ const Kontakte = () => {
                     </div>
                   )}
 
-                  {/* Company Type and Industry Info */}
-                  {(selectedItem.company_type || selectedItem.industry_category || selectedItem.contact_type) && (
+                  {/* Additional Info */}
+                  {(selectedItem.vat_number || selectedItem.tax_number) && (
                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Firmeninformationen
+                        Zusätzliche Informationen
                       </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {selectedItem.company_type && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedItem.vat_number && (
                           <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Gesellschaftsart</p>
-                            <p className="text-sm font-medium">{selectedItem.company_type}</p>
+                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
                           </div>
                         )}
-                        {selectedItem.industry_category && (
+                        {selectedItem.tax_number && (
                           <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Branche</p>
-                            <p className="text-sm font-medium">{selectedItem.industry_category}</p>
-                          </div>
-                        )}
-                        {selectedItem.contact_type && (
-                          <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Kontaktart</p>
-                            <p className="text-sm font-medium">{selectedItem.contact_type}</p>
+                            <p className="text-xs text-muted-foreground">Steuernummer</p>
+                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
                           </div>
                         )}
                       </div>
                     </div>
                   )}
-
-                   {/* Additional Info */}
-                   {(selectedItem.vat_number || selectedItem.tax_number) && (
-                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                         Zusätzliche Informationen
-                       </h4>
-                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                         {selectedItem.vat_number && (
-                           <div className="p-2 bg-background rounded-md">
-                             <p className="text-xs text-muted-foreground">USt-IdNr.</p>
-                             <p className="text-sm font-medium">{selectedItem.vat_number}</p>
-                           </div>
-                         )}
-                         {selectedItem.tax_number && (
-                           <div className="p-2 bg-background rounded-md">
-                             <p className="text-xs text-muted-foreground">Steuernummer</p>
-                             <p className="text-sm font-medium">{selectedItem.tax_number}</p>
-                           </div>
-                         )}
-                       </div>
-                     </div>
-                   )}
-
-                   {/* Notes */}
-                   {selectedItem.notes && (
-                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
-                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                         Notizen
-                       </h4>
-                       <div className="p-2 bg-background rounded-md">
-                         <p className="text-sm">{selectedItem.notes}</p>
-                       </div>
-                     </div>
-                   )}
                 </>
               ) : (
                 <>
