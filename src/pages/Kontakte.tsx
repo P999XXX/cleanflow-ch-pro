@@ -21,7 +21,7 @@ const Kontakte = () => {
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [formMode, setFormMode] = useState<'company' | 'person'>('company');
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
+  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
@@ -34,7 +34,7 @@ const Kontakte = () => {
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
 
-  // Force cards view on mobile
+  // Force cards view on mobile, table view on desktop by default
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
   // Optimized filtering with useMemo for performance
@@ -233,9 +233,9 @@ const Kontakte = () => {
         </div>
       </CardHeader>
       <CardContent className="pt-0">
-        <div className="flex flex-wrap items-center gap-3 text-sm">
+        <div className="flex flex-col gap-2 text-sm">
           {item.email && (
-            <div className="flex items-center gap-1 min-w-0">
+            <div className="flex items-center gap-2 min-w-0">
               <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`mailto:${item.email}`} 
@@ -248,7 +248,7 @@ const Kontakte = () => {
             </div>
           )}
           {item.phone && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.phone}`} 
@@ -260,7 +260,7 @@ const Kontakte = () => {
             </div>
           )}
           {item.mobile && (
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.mobile}`} 
@@ -303,7 +303,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {companies.map((company) => (
               <ContactCard key={`company-${company.id}`} item={company} type="company" />
             ))}
@@ -323,7 +323,7 @@ const Kontakte = () => {
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {persons.map((person) => (
               <ContactCard key={`person-${person.id}`} item={person} type="person" />
             ))}
