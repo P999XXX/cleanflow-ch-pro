@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +31,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
   const [companyExists, setCompanyExists] = useState(false);
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isProfile && user) {
@@ -132,6 +134,11 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
     setLoading(false);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
   const handleDeleteAccount = async () => {
     if (!user) return;
 
@@ -166,9 +173,9 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
           description: "Ihr Konto wurde erfolgreich gelöscht.",
         });
         
-        // Sign out and redirect
+        // Sign out and redirect to register
         await signOut();
-        window.location.href = '/login';
+        navigate('/register');
       }
     } catch (err) {
       toast({
@@ -350,7 +357,7 @@ export default function CompanyForm({ isProfile = false, onSuccess }: CompanyFor
               <Button
                 type="button"
                 variant="ghost"
-                onClick={() => signOut()}
+                onClick={handleSignOut}
                 disabled={loading || deleting}
                 className="text-muted-foreground hover:text-foreground"
               >
