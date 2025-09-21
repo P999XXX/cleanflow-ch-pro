@@ -667,6 +667,13 @@ const Kontakte = () => {
               </TabsTrigger>
             </TabsList>
 
+            {/* Dynamic Subtitle */}
+            <div className="mt-4 mb-2">
+              <h2 className="text-lg font-medium text-muted-foreground">
+                {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
+              </h2>
+            </div>
+
             {/* Tab Content */}
             <TabsContent value="all" className="mt-6">
               {effectiveViewMode === 'cards' ? (
