@@ -134,25 +134,25 @@ const Kontakte = () => {
             </div>
           )}
           
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid grid-cols-3">
-              <TabsTrigger value="all" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span>Alle</span>
-                <span className="ml-1">({totalCount})</span>
-              </TabsTrigger>
-              <TabsTrigger value="companies" className="flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                <span>Unternehmen</span>
-                <span className="ml-1">({filteredCompanies.length})</span>
-              </TabsTrigger>
-              <TabsTrigger value="persons" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span>Personen</span>
-                <span className="ml-1">({filteredPersons.length})</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+           <Tabs value={activeTab} onValueChange={setActiveTab}>
+             <TabsList className="grid grid-cols-3">
+               <TabsTrigger value="all" className="flex items-center gap-2">
+                 <Users className="h-5 w-5" />
+                 <span>Alle</span>
+                 <span className="ml-1">({totalCount})</span>
+               </TabsTrigger>
+               <TabsTrigger value="companies" className="flex items-center gap-2">
+                 <Building2 className="h-5 w-5" />
+                 <span>Unternehmen</span>
+                 <span className="ml-1">({filteredCompanies.length})</span>
+               </TabsTrigger>
+               <TabsTrigger value="persons" className="flex items-center gap-2">
+                 <Users className="h-5 w-5" />
+                 <span>Personen</span>
+                 <span className="ml-1">({filteredPersons.length})</span>
+               </TabsTrigger>
+             </TabsList>
+           </Tabs>
           
           <div className="flex items-center gap-2">
             <Button
@@ -238,25 +238,25 @@ const Kontakte = () => {
             Hinzufügen
           </Button>
           
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="all" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span>Alle</span>
-                <span className="ml-1">({totalCount})</span>
-              </TabsTrigger>
-              <TabsTrigger value="companies" className="flex items-center gap-2">
-                <Building2 className="h-4 w-4" />
-                <span>Unternehmen</span>
-                <span className="ml-1">({filteredCompanies.length})</span>
-              </TabsTrigger>
-              <TabsTrigger value="persons" className="flex items-center gap-2">
-                <Users className="h-4 w-4" />
-                <span>Personen</span>
-                <span className="ml-1">({filteredPersons.length})</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+           <Tabs value={activeTab} onValueChange={setActiveTab}>
+             <TabsList className="grid w-full grid-cols-3">
+               <TabsTrigger value="all" className="flex items-center gap-2">
+                 <Users className="h-5 w-5" />
+                 <span>Alle</span>
+                 <span className="ml-1">({totalCount})</span>
+               </TabsTrigger>
+               <TabsTrigger value="companies" className="flex items-center gap-2">
+                 <Building2 className="h-5 w-5" />
+                 <span>Unternehmen</span>
+                 <span className="ml-1">({filteredCompanies.length})</span>
+               </TabsTrigger>
+               <TabsTrigger value="persons" className="flex items-center gap-2">
+                 <Users className="h-5 w-5" />
+                 <span>Personen</span>
+                 <span className="ml-1">({filteredPersons.length})</span>
+               </TabsTrigger>
+             </TabsList>
+           </Tabs>
         </div>
         </div>
       </div>
@@ -329,7 +329,7 @@ const Kontakte = () => {
                           )}
                           {company.phone && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Smartphone className="h-4 w-4 text-muted-foreground" />
+                              <Phone className="h-4 w-4 text-muted-foreground" />
                               <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                 {company.phone}
                               </a>
@@ -406,7 +406,7 @@ const Kontakte = () => {
                           )}
                           {person.phone && (
                             <div className="flex items-center gap-2 text-sm">
-                              <Smartphone className="h-4 w-4 text-muted-foreground" />
+                              <Phone className="h-4 w-4 text-muted-foreground" />
                               <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                 {person.phone}
                               </a>
@@ -553,7 +553,7 @@ const Kontakte = () => {
                         )}
                         {company.phone && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Smartphone className="h-4 w-4 text-muted-foreground" />
+                            <Phone className="h-4 w-4 text-muted-foreground" />
                             <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                               {company.phone}
                             </a>
@@ -668,7 +668,7 @@ const Kontakte = () => {
                         )}
                         {person.phone && (
                           <div className="flex items-center gap-2 text-sm">
-                            <Smartphone className="h-4 w-4 text-muted-foreground" />
+                            <Phone className="h-4 w-4 text-muted-foreground" />
                             <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                               {person.phone}
                             </a>
@@ -756,7 +756,7 @@ const Kontakte = () => {
                             )}
                             {company.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Smartphone className="h-4 w-4 text-muted-foreground" />
+                                <Phone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                   {company.phone}
                                 </a>
@@ -833,7 +833,7 @@ const Kontakte = () => {
                             )}
                             {person.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                              <Smartphone className="h-4 w-4 text-muted-foreground" />
+                              <Phone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                   {person.phone}
                                 </a>
@@ -948,7 +948,7 @@ const Kontakte = () => {
                                 )}
                                 {company.phone && (
                                   <div className="flex items-center gap-1 text-sm">
-                                    <Smartphone className="h-3 w-3" />
+                                    <Phone className="h-3 w-3" />
                                     {company.phone}
                                   </div>
                                 )}
@@ -1071,7 +1071,7 @@ const Kontakte = () => {
                             )}
                             {company.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Smartphone className="h-4 w-4 text-muted-foreground" />
+                                <Phone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${company.phone}`} className="text-primary hover:underline">
                                   {company.phone}
                                 </a>
@@ -1155,8 +1155,14 @@ const Kontakte = () => {
                                 )}
                                 {person.phone && (
                                   <div className="flex items-center gap-1 text-sm">
-                                    <Smartphone className="h-3 w-3" />
+                                    <Phone className="h-3 w-3" />
                                     {person.phone}
+                                  </div>
+                                )}
+                                {person.mobile && (
+                                  <div className="flex items-center gap-1 text-sm">
+                                    <Smartphone className="h-3 w-3" />
+                                    {person.mobile}
                                   </div>
                                 )}
                               </div>
@@ -1285,7 +1291,7 @@ const Kontakte = () => {
                             )}
                             {person.phone && (
                               <div className="flex items-center gap-2 text-sm">
-                                <Smartphone className="h-4 w-4 text-muted-foreground" />
+                                <Phone className="h-4 w-4 text-muted-foreground" />
                                 <a href={`tel:${person.phone}`} className="text-primary hover:underline">
                                   {person.phone}
                                 </a>
