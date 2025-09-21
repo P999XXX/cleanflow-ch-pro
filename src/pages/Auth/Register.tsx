@@ -69,8 +69,8 @@ export default function Register() {
       return;
     }
 
-    if (formData.password.length < 6) {
-      alert('Passwort muss mindestens 6 Zeichen lang sein.');
+    if (formData.password.length < 8) {
+      alert('Passwort muss mindestens 8 Zeichen lang sein und sollte Buchstaben, Zahlen und Sonderzeichen enthalten.');
       return;
     }
 
@@ -165,12 +165,12 @@ export default function Register() {
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Mindestens 6 Zeichen"
+                  placeholder="Mindestens 8 Zeichen (Buchstaben, Zahlen, Sonderzeichen)"
                   value={formData.password}
                   onChange={handleInputChange}
                   className="pl-9 pr-9"
                   required
-                  minLength={6}
+                  minLength={8}
                 />
                 <Button
                   type="button"

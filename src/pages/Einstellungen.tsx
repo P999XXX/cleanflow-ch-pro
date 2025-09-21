@@ -30,6 +30,8 @@ const Einstellungen = () => {
     setIsDeleting(true);
     
     try {
+      console.log('Starting account deletion for user:', user.id);
+      
       // Soft delete the user account by updating the profile status
       const { error } = await supabase
         .from('profiles')
@@ -39,13 +41,18 @@ const Einstellungen = () => {
         })
         .eq('user_id', user.id);
 
+      console.log('Update result:', { error });
+
       if (error) {
+        console.error('Database update error:', error);
         throw error;
       }
 
+      console.log('Account successfully marked as deleted');
+
       toast({
         title: "Account gelöscht",
-        description: "Ihr Account wurde erfolgreich deaktiviert. Sie werden automatisch abgemeldet.",
+        description: "Ihr Account wurde erfolgreich gelöscht. Sie werden automatisch abgemeldet.",
       });
 
       // Sign out the user after successful soft delete
@@ -118,8 +125,8 @@ const Einstellungen = () => {
           <CardContent className="space-y-4">
             <div>
               <p className="text-muted-foreground mb-4">
-                Wenn Sie Ihr Konto löschen, wird es deaktiviert und Sie können sich nicht mehr anmelden. 
-                Ihre Daten bleiben für administrative Zwecke erhalten.
+                Wenn Sie Ihr Konto löschen, werden alle Ihre Daten unwiderruflich entfernt und 
+                Sie können sich nicht mehr anmelden. Diese Aktion kann nicht rückgängig gemacht werden.
               </p>
               
               <AlertDialog>
@@ -130,7 +137,7 @@ const Einstellungen = () => {
                     disabled={isDeleting}
                   >
                     <Trash2 className="h-4 w-4" />
-                    Account löschen
+                    Account dauerhaft löschen
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -140,8 +147,8 @@ const Einstellungen = () => {
                       Account wirklich löschen?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      Diese Aktion deaktiviert Ihr Konto dauerhaft. Sie können sich danach nicht mehr anmelden, 
-                      aber Ihre Daten bleiben zu administrativen Zwecken erhalten.
+                      Diese Aktion löscht Ihr Konto und alle damit verbundenen Daten unwiderruflich. 
+                      Sie verlieren den Zugang zu allen Ihren Projekten, Kunden und Mitarbeiterdaten.
                       <br /><br />
                       <strong>Diese Aktion kann nicht rückgängig gemacht werden.</strong>
                     </AlertDialogDescription>
@@ -153,7 +160,7 @@ const Einstellungen = () => {
                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                       disabled={isDeleting}
                     >
-                      {isDeleting ? "Wird gelöscht..." : "Ja, Account löschen"}
+                      {isDeleting ? "Wird gelöscht..." : "Ja, Account dauerhaft löschen"}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
