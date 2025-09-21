@@ -94,13 +94,8 @@ export function AppHeader() {
               <div className="flex flex-col space-y-1 leading-none">
                 <p className="font-medium">{getDisplayName()}</p>
                 <p className="w-[200px] truncate text-sm text-muted-foreground">
-                  {getEmail()}
+                  {companyData?.name || 'Kein Unternehmen'}
                 </p>
-                {companyData?.name && (
-                  <p className="w-[200px] truncate text-xs text-muted-foreground/80">
-                    {companyData.name}
-                  </p>
-                )}
               </div>
             </div>
             <DropdownMenuSeparator />
