@@ -529,6 +529,30 @@ const Kontakte = () => {
             )}
           </div>
 
+          {/* Add Button - Mobile/Tablet only - After search, before tabs */}
+          <div className="lg:hidden">
+            <Button
+              onClick={() => {
+                if (activeTab === 'companies') {
+                  setSelectedCompany(null);
+                  setFormMode('company');
+                } else if (activeTab === 'persons') {
+                  setSelectedPerson(null);
+                  setFormMode('person');
+                } else {
+                  setSelectedCompany(null);
+                  setFormMode('company');
+                }
+                setIsFormOpen(true);
+              }}
+              size="sm"
+              className="flex items-center gap-2 w-full"
+            >
+              <Plus className="h-4 w-4" />
+              Hinzufügen
+            </Button>
+          </div>
+
           {/* Tabs - Desktop: Inline with controls */}
           <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full lg:w-auto">
@@ -575,19 +599,19 @@ const Kontakte = () => {
               </TabsList>
             </Tabs>
 
-            {/* Controls */}
-            <div className="flex flex-row gap-3 w-full lg:w-auto">
+            {/* Controls - Desktop only */}
+            <div className="hidden lg:flex flex-row gap-3">
               {/* View Mode Toggle - Desktop only */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="hidden lg:flex items-center gap-2"
+                className="flex items-center gap-2"
               >
                 {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
               </Button>
               
-              {/* Add Button - Full width on mobile/tablet */}
+              {/* Add Button - Desktop only */}
               <Button
                 onClick={() => {
                   if (activeTab === 'companies') {
@@ -603,7 +627,7 @@ const Kontakte = () => {
                   setIsFormOpen(true);
                 }}
                 size="sm"
-                className="flex items-center gap-2 w-full lg:w-auto"
+                className="flex items-center gap-2"
               >
                 <Plus className="h-4 w-4" />
                 Hinzufügen
