@@ -99,7 +99,7 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
             </div>
 
             <div>
-              <Label htmlFor="title">Titel</Label>
+              <Label htmlFor="title">Position</Label>
               <Input
                 id="title"
                 value={formData.title}
