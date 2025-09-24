@@ -235,8 +235,8 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
           </div>
 
           <div className="flex flex-col items-center gap-3 pt-4">
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
-              {isLoading ? 'Speichere...' : company ? 'Aktualisieren' : 'Erstellen'}
+            <Button type="submit" disabled={isLoading} className="w-full">
+              {isLoading ? 'Speichere...' : company ? 'Speichern' : 'Speichern'}
             </Button>
             <button 
               type="button" 

@@ -594,7 +594,7 @@ export const ContactForm = ({
           )}
 
           <div className="flex flex-col items-center gap-3 pt-4">
-            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
+            <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? 'Speichere...' : 'Speichern'}
             </Button>
             <button 

@@ -1063,16 +1063,10 @@ const Kontakte = () => {
           
           {/* Action Buttons at Bottom */}
           <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6">
-            <div className="flex justify-center gap-2 w-full sm:w-auto">
-              <Button variant="outline" onClick={handleEditItem} className="flex items-center gap-2">
-                <Edit className="h-4 w-4" />
-                Bearbeiten
-              </Button>
-              <Button variant="outline" onClick={handleDeleteItem} className="flex items-center gap-2">
-                <Trash2 className="h-4 w-4" />
-                Löschen
-              </Button>
-            </div>
+            <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Button>
             <button 
               type="button" 
               onClick={() => setDetailsOpen(false)}
@@ -1094,11 +1088,9 @@ const Kontakte = () => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex flex-col items-center gap-3 pt-4">
-            <div className="flex justify-center gap-2 w-full sm:w-auto">
-              <AlertDialogAction onClick={confirmDelete} className="w-full sm:w-auto bg-destructive hover:bg-destructive/90">
-                Löschen
-              </AlertDialogAction>
-            </div>
+            <AlertDialogAction onClick={confirmDelete} className="w-full bg-destructive hover:bg-destructive/90">
+              Löschen
+            </AlertDialogAction>
             <button 
               type="button" 
               onClick={() => setDeleteDialogOpen(false)}
