@@ -253,15 +253,19 @@ const Einstellungen = ({ isSetupMode = false }: EinstellungenProps) => {
                       <strong>Diese Aktion kann nicht rückgängig gemacht werden.</strong>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                    <AlertDialogAction 
-                      onClick={handleDeleteAccount}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                      disabled={isDeleting}
-                    >
-                      {isDeleting ? "Wird gelöscht..." : "Ja, Account dauerhaft löschen"}
-                    </AlertDialogAction>
+                  <AlertDialogFooter className="flex flex-col items-center gap-3 pt-4">
+                    <div className="flex justify-center gap-2 w-full sm:w-auto">
+                      <AlertDialogAction 
+                        onClick={handleDeleteAccount}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        disabled={isDeleting}
+                      >
+                        {isDeleting ? "Wird gelöscht..." : "Ja, Account dauerhaft löschen"}
+                      </AlertDialogAction>
+                    </div>
+                    <AlertDialogCancel className="text-muted-foreground hover:text-foreground transition-colors text-sm bg-transparent border-0 shadow-none p-0 h-auto">
+                      Abbrechen
+                    </AlertDialogCancel>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

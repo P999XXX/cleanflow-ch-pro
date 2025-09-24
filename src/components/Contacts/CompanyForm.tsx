@@ -234,13 +234,17 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Abbrechen
-            </Button>
-            <Button type="submit" disabled={isLoading}>
+          <div className="flex flex-col items-center gap-3 pt-4">
+            <Button type="submit" disabled={isLoading} className="w-full sm:w-auto">
               {isLoading ? 'Speichere...' : company ? 'Aktualisieren' : 'Erstellen'}
             </Button>
+            <button 
+              type="button" 
+              onClick={onClose}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              Abbrechen
+            </button>
           </div>
         </form>
       </DialogContent>

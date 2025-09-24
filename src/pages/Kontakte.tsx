@@ -1062,15 +1062,24 @@ const Kontakte = () => {
           )}
           
           {/* Action Buttons at Bottom */}
-          <div className="flex justify-end gap-2 pt-4 border-t mt-6">
-            <Button variant="outline" onClick={handleEditItem} className="flex items-center gap-2">
-              <Edit className="h-4 w-4" />
-              Bearbeiten
-            </Button>
-            <Button variant="outline" onClick={handleDeleteItem} className="flex items-center gap-2">
-              <Trash2 className="h-4 w-4" />
-              Löschen
-            </Button>
+          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6">
+            <div className="flex justify-center gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={handleEditItem} className="flex items-center gap-2">
+                <Edit className="h-4 w-4" />
+                Bearbeiten
+              </Button>
+              <Button variant="outline" onClick={handleDeleteItem} className="flex items-center gap-2">
+                <Trash2 className="h-4 w-4" />
+                Löschen
+              </Button>
+            </div>
+            <button 
+              type="button" 
+              onClick={() => setDetailsOpen(false)}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              Schließen
+            </button>
           </div>
         </DialogContent>
       </Dialog>
@@ -1084,11 +1093,19 @@ const Kontakte = () => {
               Diese Aktion kann nicht rückgängig gemacht werden. Der Kontakt wird permanent gelöscht und alle verknüpften Daten gehen verloren.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-row gap-2">
-            <AlertDialogCancel className="w-full sm:w-auto">Abbrechen</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete} className="w-full sm:w-auto bg-destructive hover:bg-destructive/90">
-              Löschen
-            </AlertDialogAction>
+          <AlertDialogFooter className="flex flex-col items-center gap-3 pt-4">
+            <div className="flex justify-center gap-2 w-full sm:w-auto">
+              <AlertDialogAction onClick={confirmDelete} className="w-full sm:w-auto bg-destructive hover:bg-destructive/90">
+                Löschen
+              </AlertDialogAction>
+            </div>
+            <button 
+              type="button" 
+              onClick={() => setDeleteDialogOpen(false)}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              Abbrechen
+            </button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
