@@ -60,11 +60,10 @@ export const ContactForm = ({
   const [personData, setPersonData] = useState<ContactPersonInput>({
     first_name: '',
     last_name: '',
-    title: '',
+    position: '',
     email: '',
     phone: '',
     mobile: '',
-    department: '',
     is_primary_contact: false,
     notes: '',
     customer_company_id: '',
@@ -118,11 +117,10 @@ export const ContactForm = ({
       setPersonData({
         first_name: contactPerson.first_name,
         last_name: contactPerson.last_name,
-        title: contactPerson.title || '',
+        position: contactPerson.position || '',
         email: contactPerson.email || '',
         phone: contactPerson.phone || '',
         mobile: contactPerson.mobile || '',
-        department: contactPerson.department || '',
         is_primary_contact: contactPerson.is_primary_contact || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id || '',
@@ -132,11 +130,10 @@ export const ContactForm = ({
       setPersonData({
         first_name: '',
         last_name: '',
-        title: '',
+        position: '',
         email: '',
         phone: '',
         mobile: '',
-        department: '',
         is_primary_contact: false,
         notes: '',
         customer_company_id: '',
@@ -504,23 +501,13 @@ export const ContactForm = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="title">Titel</Label>
-                  <Input
-                    id="title"
-                    value={personData.title}
-                    onChange={(e) => setPersonData({ ...personData, title: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="department">Abteilung</Label>
-                  <Input
-                    id="department"
-                    value={personData.department}
-                    onChange={(e) => setPersonData({ ...personData, department: e.target.value })}
-                  />
-                </div>
+              <div>
+                <Label htmlFor="position">Position</Label>
+                <Input
+                  id="position"
+                  value={personData.position}
+                  onChange={(e) => setPersonData({ ...personData, position: e.target.value })}
+                />
               </div>
 
               <div>

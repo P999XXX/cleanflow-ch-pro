@@ -68,7 +68,7 @@ const Kontakte = () => {
       person.email?.toLowerCase().includes(term) ||
       person.phone?.toLowerCase().includes(term) ||
       person.mobile?.toLowerCase().includes(term) ||
-      person.department?.toLowerCase().includes(term) ||
+      person.position?.toLowerCase().includes(term) ||
       person.customer_companies?.name?.toLowerCase().includes(term)
     );
   }, [contactPersons, searchTerm]);
@@ -956,11 +956,9 @@ const Kontakte = () => {
                                      </Badge>
                                    )}
                                  </div>
-                                 <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                   {contact.title && <span>{contact.title}</span>}
-                                   {contact.title && contact.department && <span>•</span>}
-                                   {contact.department && <span>{contact.department}</span>}
-                                 </div>
+                                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                    {contact.position && <span>{contact.position}</span>}
+                                  </div>
                                </div>
                              </div>
                              {contact.notes && (
@@ -1044,16 +1042,10 @@ const Kontakte = () => {
                       Personeninformationen
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.title && (
+                      {selectedItem.position && (
                         <div className="p-2 bg-background rounded-md">
                           <p className="text-xs text-muted-foreground">Position</p>
-                          <p className="text-sm font-medium">{selectedItem.title}</p>
-                        </div>
-                      )}
-                      {selectedItem.department && (
-                        <div className="p-2 bg-background rounded-md">
-                          <p className="text-xs text-muted-foreground">Abteilung</p>
-                          <p className="text-sm font-medium">{selectedItem.department}</p>
+                          <p className="text-sm font-medium">{selectedItem.position}</p>
                         </div>
                       )}
                       {selectedItem.customer_company_id && selectedItem.customer_companies && (

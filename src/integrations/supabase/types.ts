@@ -70,7 +70,6 @@ export type Database = {
           company_id: string
           created_at: string
           customer_company_id: string | null
-          department: string | null
           email: string | null
           first_name: string
           id: string
@@ -79,14 +78,13 @@ export type Database = {
           mobile: string | null
           notes: string | null
           phone: string | null
-          title: string | null
+          position: string | null
           updated_at: string
         }
         Insert: {
           company_id: string
           created_at?: string
           customer_company_id?: string | null
-          department?: string | null
           email?: string | null
           first_name: string
           id?: string
@@ -95,14 +93,13 @@ export type Database = {
           mobile?: string | null
           notes?: string | null
           phone?: string | null
-          title?: string | null
+          position?: string | null
           updated_at?: string
         }
         Update: {
           company_id?: string
           created_at?: string
           customer_company_id?: string | null
-          department?: string | null
           email?: string | null
           first_name?: string
           id?: string
@@ -111,7 +108,7 @@ export type Database = {
           mobile?: string | null
           notes?: string | null
           phone?: string | null
-          title?: string | null
+          position?: string | null
           updated_at?: string
         }
         Relationships: [

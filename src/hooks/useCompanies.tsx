@@ -25,11 +25,10 @@ export interface CustomerCompany {
     id: string;
     first_name: string;
     last_name: string;
-    title?: string;
+    position?: string;
     email?: string;
     phone?: string;
     mobile?: string;
-    department?: string;
     is_primary_contact: boolean;
     notes?: string;
   }>;
@@ -64,11 +63,10 @@ export const useCompanies = () => {
             id,
             first_name,
             last_name,
-            title,
+            position,
             email,
             phone,
             mobile,
-            department,
             is_primary_contact,
             notes
           )

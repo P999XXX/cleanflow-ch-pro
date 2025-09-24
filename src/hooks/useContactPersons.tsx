@@ -6,11 +6,10 @@ export interface ContactPerson {
   id: string;
   first_name: string;
   last_name: string;
-  title?: string;
+  position?: string;
   email?: string;
   phone?: string;
   mobile?: string;
-  department?: string;
   is_primary_contact: boolean;
   notes?: string;
   customer_company_id?: string;
@@ -25,11 +24,10 @@ export interface ContactPerson {
 export interface ContactPersonInput {
   first_name: string;
   last_name: string;
-  title?: string;
+  position?: string;
   email?: string;
   phone?: string;
   mobile?: string;
-  department?: string;
   is_primary_contact?: boolean;
   notes?: string;
   customer_company_id?: string;
@@ -42,7 +40,19 @@ export const useContactPersons = () => {
       const { data, error } = await supabase
         .from('contact_persons')
         .select(`
-          *,
+          id,
+          first_name,
+          last_name,
+          position,
+          email,
+          phone,
+          mobile,
+          is_primary_contact,
+          notes,
+          customer_company_id,
+          company_id,
+          created_at,
+          updated_at,
           customer_companies (
             name
           )

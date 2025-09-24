@@ -22,11 +22,10 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
   const [formData, setFormData] = useState<ContactPersonInput>({
     first_name: '',
     last_name: '',
-    title: '',
+    position: '',
     email: '',
     phone: '',
     mobile: '',
-    department: '',
     is_primary_contact: false,
     notes: '',
     customer_company_id: '',
@@ -37,11 +36,10 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
       setFormData({
         first_name: contactPerson.first_name,
         last_name: contactPerson.last_name,
-        title: contactPerson.title || '',
+        position: contactPerson.position || '',
         email: contactPerson.email || '',
         phone: contactPerson.phone || '',
         mobile: contactPerson.mobile || '',
-        department: contactPerson.department || '',
         is_primary_contact: contactPerson.is_primary_contact || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id || '',
@@ -50,11 +48,10 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
       setFormData({
         first_name: '',
         last_name: '',
-        title: '',
+        position: '',
         email: '',
         phone: '',
         mobile: '',
-        department: '',
         is_primary_contact: false,
         notes: '',
         customer_company_id: '',
@@ -101,21 +98,12 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
               />
             </div>
 
-            <div>
-              <Label htmlFor="title">Position</Label>
+            <div className="md:col-span-2">
+              <Label htmlFor="position">Position</Label>
               <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="department">Abteilung</Label>
-              <Input
-                id="department"
-                value={formData.department}
-                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                id="position"
+                value={formData.position}
+                onChange={(e) => setFormData({ ...formData, position: e.target.value })}
               />
             </div>
 
