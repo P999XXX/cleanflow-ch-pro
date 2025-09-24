@@ -258,6 +258,23 @@ const Kontakte = () => {
     );
   };
 
+  // Company type mapping function
+  const getFullCompanyType = (type: string): string => {
+    const companyTypeMap: Record<string, string> = {
+      'AG': 'Aktiengesellschaft',
+      'GmbH': 'Gesellschaft mit beschränkter Haftung',
+      'KG': 'Kommanditgesellschaft',
+      'OHG': 'Offene Handelsgesellschaft',
+      'Einzelunternehmen': 'Einzelunternehmen',
+      'Genossenschaft': 'Genossenschaft',
+      'Verein': 'Verein',
+      'Stiftung': 'Stiftung',
+      'Öffentlich': 'Öffentliche Einrichtung',
+      'Sonstige': 'Sonstige'
+    };
+    return companyTypeMap[type] || type;
+  };
+
   // Unified card component for consistent design
   const ContactCard = ({ item, type }: { item: any, type: 'company' | 'person' }) => (
     <Card 
@@ -827,7 +844,7 @@ const Kontakte = () => {
                       <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
                       {selectedItem?.company_type && (
                         <span className="text-sm font-normal text-muted-foreground mt-1">
-                          {selectedItem.company_type}
+                          ({getFullCompanyType(selectedItem.company_type)})
                         </span>
                       )}
                     </div>
@@ -871,10 +888,7 @@ const Kontakte = () => {
               </div>
             </DialogTitle>
             <DialogDescription>
-              {itemType === 'company' 
-                ? 'Detaillierte Informationen zum Unternehmen' 
-                : 'Detaillierte Informationen zur Kontaktperson'
-              }
+              {/* Removed detailed information description */}
             </DialogDescription>
           </DialogHeader>
           
@@ -882,52 +896,47 @@ const Kontakte = () => {
             <div className="space-y-6 animate-fade-in">
               {itemType === 'company' ? (
                 <>
-                  {/* Company Basic Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Kontaktinformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.email && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Mail className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.email}
-                             </a>
-                          </div>
+                  {/* Company Basic Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">E-Mail</p>
+                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.email}
+                           </a>
                         </div>
-                      )}
-                      {selectedItem.phone && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Phone className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.phone}
-                             </a>
-                          </div>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Phone className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Telefon</p>
+                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.phone}
+                           </a>
                         </div>
-                      )}
-                      {selectedItem.website && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Building2 className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Website</p>
-                            <a 
-                              href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-sm font-medium text-primary hover:underline transition-colors"
-                            >
-                              {selectedItem.website}
-                            </a>
-                          </div>
+                      </div>
+                    )}
+                    {selectedItem.website && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Building2 className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Website</p>
+                          <a 
+                            href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-sm font-medium text-primary hover:underline transition-colors"
+                          >
+                            {selectedItem.website}
+                          </a>
                         </div>
-                      )}
-                    </div>
-                   </div>
+                      </div>
+                    )}
+                  </div>
 
                    {/* Contact Persons */}
                    {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
@@ -1036,78 +1045,68 @@ const Kontakte = () => {
                 </>
               ) : (
                 <>
-                  {/* Person Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Personeninformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.position && (
-                        <div className="p-2 bg-background rounded-md">
-                          <p className="text-xs text-muted-foreground">Position</p>
-                          <p className="text-sm font-medium">{selectedItem.position}</p>
-                        </div>
-                      )}
-                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                        <div className="p-2 bg-background rounded-md">
-                          <p className="text-xs text-muted-foreground">Unternehmen</p>
-                          <button 
-                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
-                          >
-                            <Building2 className="h-3 w-3" />
-                            {selectedItem.customer_companies.name}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                  {/* Person Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.position && (
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-xs text-muted-foreground">Position</p>
+                        <p className="text-sm font-medium">{selectedItem.position}</p>
+                      </div>
+                    )}
+                    {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-xs text-muted-foreground">Unternehmen</p>
+                        <button 
+                          onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                          className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
+                        >
+                          <Building2 className="h-3 w-3" />
+                          {selectedItem.customer_companies.name}
+                        </button>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Contact Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Kontaktinformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.email && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Mail className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.email}
-                             </a>
-                          </div>
+                  {/* Contact Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">E-Mail</p>
+                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.email}
+                           </a>
                         </div>
-                      )}
-                      {selectedItem.phone && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Phone className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.phone}
-                             </a>
-                          </div>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Phone className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Telefon</p>
+                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.phone}
+                           </a>
                         </div>
-                      )}
-                      {selectedItem.mobile && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <MessageCircle className="h-4 w-4 text-green-600" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">WhatsApp</p>
-                             <a 
-                               href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                             >
-                               {selectedItem.mobile}
-                             </a>
-                          </div>
+                      </div>
+                    )}
+                    {selectedItem.mobile && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <MessageCircle className="h-4 w-4 text-green-600" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">WhatsApp</p>
+                           <a 
+                             href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
+                             target="_blank" 
+                             rel="noopener noreferrer"
+                             className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                           >
+                             {selectedItem.mobile}
+                           </a>
                         </div>
-                      )}
-                    </div>
+                      </div>
+                    )}
                   </div>
                   
                   {/* Notes */}
