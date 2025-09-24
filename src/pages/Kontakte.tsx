@@ -870,6 +870,12 @@ const Kontakte = () => {
                 )}
               </div>
             </DialogTitle>
+            <DialogDescription>
+              {itemType === 'company' 
+                ? 'Detaillierte Informationen zum Unternehmen' 
+                : 'Detaillierte Informationen zur Kontaktperson'
+              }
+            </DialogDescription>
           </DialogHeader>
           
           {selectedItem && (

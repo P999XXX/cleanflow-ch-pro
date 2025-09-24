@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -80,6 +80,9 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
           <DialogTitle>
             {company ? 'Unternehmen bearbeiten' : 'Neues Unternehmen'}
           </DialogTitle>
+          <DialogDescription>
+            {company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu'}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
