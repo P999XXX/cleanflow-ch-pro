@@ -810,7 +810,7 @@ const Kontakte = () => {
               {itemType === 'company' ? (
                 <>
                   {/* Company Basic Info */}
-                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                  <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                       Kontaktinformationen
                     </h4>
@@ -858,7 +858,7 @@ const Kontakte = () => {
 
                    {/* Contact Persons */}
                    {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                     <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                     <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                         <div className="flex items-center justify-between">
                           <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
                             <Users className="h-4 w-4" />
@@ -903,7 +903,7 @@ const Kontakte = () => {
 
                    {/* Address */}
                   {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                         Adresse
                       </h4>
@@ -925,7 +925,7 @@ const Kontakte = () => {
 
                   {/* Google Maps - Show company location */}
                   {(selectedItem.address || selectedItem.city) && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
                         Standort
@@ -942,7 +942,7 @@ const Kontakte = () => {
 
                   {/* Additional Info */}
                   {(selectedItem.vat_number || selectedItem.tax_number) && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                         Zusätzliche Informationen
                       </h4>
@@ -966,7 +966,7 @@ const Kontakte = () => {
               ) : (
                 <>
                   {/* Person Info */}
-                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                  <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                       Personeninformationen
                     </h4>
@@ -999,7 +999,7 @@ const Kontakte = () => {
                   </div>
 
                   {/* Contact Info */}
-                  <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                  <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                       Kontaktinformationen
                     </h4>
@@ -1047,7 +1047,7 @@ const Kontakte = () => {
                   
                   {/* Notes */}
                   {selectedItem.notes && (
-                    <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                    <div className="bg-muted/40 rounded-lg p-4 space-y-3">
                       <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
                         Notizen
                       </h4>
