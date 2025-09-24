@@ -25,6 +25,7 @@ const Kontakte = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
+  const [navigationStack, setNavigationStack] = useState<Array<{item: any, type: 'company' | 'person'}>>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
 
@@ -85,6 +86,7 @@ const Kontakte = () => {
   const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
     setSelectedItem(item);
     setItemType(type);
+    setNavigationStack([]); // Clear navigation stack for new entry point
     setDetailsOpen(true);
   }, []);
 
@@ -92,17 +94,35 @@ const Kontakte = () => {
   const handleNavigateToCompany = useCallback((companyId: string) => {
     const company = companies?.find(c => c.id === companyId);
     if (company) {
+      // Push current item to navigation stack before navigating
+      setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
       setSelectedItem(company);
       setItemType('company');
     }
-  }, [companies]);
+  }, [companies, selectedItem, itemType]);
 
   const handleNavigateToPerson = useCallback((person: any) => {
     // Find the full person data from contactPersons to ensure consistency
     const fullPersonData = contactPersons?.find(p => p.id === person.id);
+    // Push current item to navigation stack before navigating
+    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
     setSelectedItem(fullPersonData || person);
     setItemType('person');
-  }, [contactPersons]);
+  }, [contactPersons, selectedItem, itemType]);
+
+  // Handle going back in navigation
+  const handleGoBack = useCallback(() => {
+    if (navigationStack.length > 0) {
+      const previousItem = navigationStack[navigationStack.length - 1];
+      setNavigationStack(prev => prev.slice(0, -1)); // Remove last item from stack
+      setSelectedItem(previousItem.item);
+      setItemType(previousItem.type);
+    } else {
+      // No previous item, close the dialog
+      setDetailsOpen(false);
+      setNavigationStack([]);
+    }
+  }, [navigationStack]);
 
   // Handle edit actions
   const handleEditItem = useCallback(() => {
@@ -1069,10 +1089,10 @@ const Kontakte = () => {
             </Button>
             <button 
               type="button" 
-              onClick={() => setDetailsOpen(false)}
+              onClick={handleGoBack}
               className="text-muted-foreground hover:text-foreground transition-colors text-sm"
             >
-              Schliessen
+              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
             </button>
           </div>
         </DialogContent>
