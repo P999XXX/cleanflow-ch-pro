@@ -189,7 +189,7 @@ export const ContactPersonForm = ({ isOpen, onClose, onSubmit, contactPerson, is
               Abbrechen
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Speichere...' : contactPerson ? 'Aktualisieren' : 'Erstellen'}
+              {isLoading ? 'Speichere...' : 'Speichern'}
             </Button>
           </div>
         </form>
