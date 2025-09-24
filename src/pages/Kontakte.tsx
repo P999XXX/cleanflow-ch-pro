@@ -35,6 +35,23 @@ const Kontakte = () => {
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
 
+  // Company type mapping function - defined early to avoid hoisting issues
+  const getFullCompanyType = (type: string): string => {
+    const companyTypeMap: Record<string, string> = {
+      'AG': 'Aktiengesellschaft',
+      'GmbH': 'Gesellschaft mit beschränkter Haftung',
+      'KG': 'Kommanditgesellschaft',
+      'OHG': 'Offene Handelsgesellschaft',
+      'Einzelunternehmen': 'Einzelunternehmen',
+      'Genossenschaft': 'Genossenschaft',
+      'Verein': 'Verein',
+      'Stiftung': 'Stiftung',
+      'Öffentlich': 'Öffentliche Einrichtung',
+      'Sonstige': 'Sonstige'
+    };
+    return companyTypeMap[type] || type;
+  };
+
   // Set default view mode based on device type
   React.useEffect(() => {
     if (!isMobile && viewMode === 'cards') {
@@ -256,23 +273,6 @@ const Kontakte = () => {
         {config.label}
       </Badge>
     );
-  };
-
-  // Company type mapping function
-  const getFullCompanyType = (type: string): string => {
-    const companyTypeMap: Record<string, string> = {
-      'AG': 'Aktiengesellschaft',
-      'GmbH': 'Gesellschaft mit beschränkter Haftung',
-      'KG': 'Kommanditgesellschaft',
-      'OHG': 'Offene Handelsgesellschaft',
-      'Einzelunternehmen': 'Einzelunternehmen',
-      'Genossenschaft': 'Genossenschaft',
-      'Verein': 'Verein',
-      'Stiftung': 'Stiftung',
-      'Öffentlich': 'Öffentliche Einrichtung',
-      'Sonstige': 'Sonstige'
-    };
-    return companyTypeMap[type] || type;
   };
 
   // Unified card component for consistent design
