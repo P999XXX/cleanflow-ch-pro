@@ -68,7 +68,7 @@ const Datenschutz = () => {
             <section>
               <h2 className="text-xl font-semibold mb-3">5. Datensicherheit</h2>
               <p className="text-muted-foreground">
-                Wir verwenden moderne Verschlüsselungstechnologien und Sicherheitsmaßnahmen zum Schutz Ihrer Daten. 
+                Wir verwenden moderne Verschlüsselungstechnologien und Sicherheitsmassnahmen zum Schutz Ihrer Daten. 
                 Die Datenübertragung erfolgt über SSL-verschlüsselte Verbindungen.
               </p>
             </section>

@@ -41,7 +41,7 @@ export function CompanyProtectionWrapper({ children }: CompanyProtectionWrapperP
               <p className="font-medium">Vervollständigen Sie Ihr Profil</p>
             </div>
             <p className="text-muted-foreground">
-              Bevor Sie CleanFlow.ai nutzen können, müssen Sie Ihre Firmendaten vervollständigen. 
+              Bevor Sie CleanFlow.ai nutzen können, müssen Sie Ihre Firmendaten vervollständigen.
               Dies ist nur einmalig erforderlich.
             </p>
             <Button 

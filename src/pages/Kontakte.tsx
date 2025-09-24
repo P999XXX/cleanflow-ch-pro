@@ -1072,7 +1072,7 @@ const Kontakte = () => {
               onClick={() => setDetailsOpen(false)}
               className="text-muted-foreground hover:text-foreground transition-colors text-sm"
             >
-              Schließen
+              Schliessen
             </button>
           </div>
         </DialogContent>
