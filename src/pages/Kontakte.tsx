@@ -126,6 +126,9 @@ const Kontakte = () => {
 
   // Handle edit actions
   const handleEditItem = useCallback(() => {
+    // Push current detail state to navigation stack before opening edit form
+    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
+    
     if (itemType === 'company') {
       setSelectedCompany(selectedItem);
       setFormMode('company');
@@ -136,6 +139,22 @@ const Kontakte = () => {
     setDetailsOpen(false);
     setIsFormOpen(true);
   }, [selectedItem, itemType]);
+
+  // Handle form close - go back to details if there's a navigation stack
+  const handleFormClose = useCallback(() => {
+    setIsFormOpen(false);
+    setSelectedCompany(null);
+    setSelectedPerson(null);
+    
+    if (navigationStack.length > 0) {
+      // Go back to the previous detail view
+      const previousItem = navigationStack[navigationStack.length - 1];
+      setNavigationStack(prev => prev.slice(0, -1));
+      setSelectedItem(previousItem.item);
+      setItemType(previousItem.type);
+      setDetailsOpen(true);
+    }
+  }, [navigationStack]);
 
   // Handle delete actions
   const handleDeleteItem = useCallback(() => {
@@ -160,7 +179,21 @@ const Kontakte = () => {
     if (selectedCompany) {
       updateCompany.mutate(
         { id: selectedCompany.id, company: companyData },
-        { onSuccess: () => { setIsFormOpen(false); setSelectedCompany(null); } }
+        { 
+          onSuccess: () => { 
+            setIsFormOpen(false); 
+            setSelectedCompany(null);
+            
+            // Go back to details if there's a navigation stack
+            if (navigationStack.length > 0) {
+              const previousItem = navigationStack[navigationStack.length - 1];
+              setNavigationStack(prev => prev.slice(0, -1));
+              setSelectedItem(previousItem.item);
+              setItemType(previousItem.type);
+              setDetailsOpen(true);
+            }
+          } 
+        }
       );
     } else {
       createCompany.mutate(companyData, {
@@ -173,7 +206,21 @@ const Kontakte = () => {
     if (selectedPerson) {
       updateContactPerson.mutate(
         { id: selectedPerson.id, contactPerson: personData },
-        { onSuccess: () => { setIsFormOpen(false); setSelectedPerson(null); } }
+        { 
+          onSuccess: () => { 
+            setIsFormOpen(false); 
+            setSelectedPerson(null);
+            
+            // Go back to details if there's a navigation stack
+            if (navigationStack.length > 0) {
+              const previousItem = navigationStack[navigationStack.length - 1];
+              setNavigationStack(prev => prev.slice(0, -1));
+              setSelectedItem(previousItem.item);
+              setItemType(previousItem.type);
+              setDetailsOpen(true);
+            }
+          } 
+        }
       );
     } else {
       createContactPerson.mutate(personData, {
@@ -759,7 +806,7 @@ const Kontakte = () => {
       {/* Contact Form */}
       <ContactForm
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleFormClose}
         onSubmitCompany={handleCompanySubmit}
         onSubmitPerson={handlePersonSubmit}
         company={selectedCompany}
