@@ -890,6 +890,19 @@ const Kontakte = () => {
             <DialogDescription>
               {/* Removed detailed information description */}
             </DialogDescription>
+            
+            {/* Google Maps in Header - Only for companies with address */}
+            {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) && (
+              <div className="mt-4">
+                <GoogleMap
+                  address={selectedItem.address}
+                  postal_code={selectedItem.postal_code}
+                  city={selectedItem.city}
+                  country={selectedItem.country}
+                  className="w-full h-48 rounded-lg border"
+                />
+              </div>
+            )}
           </DialogHeader>
           
           {selectedItem && (
@@ -1003,22 +1016,6 @@ const Kontakte = () => {
                     </div>
                   )}
 
-                  {/* Google Maps - Show company location */}
-                  {(selectedItem.address || selectedItem.city) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Standort
-                      </h4>
-                      <GoogleMap
-                        address={selectedItem.address}
-                        postal_code={selectedItem.postal_code}
-                        city={selectedItem.city}
-                        country={selectedItem.country}
-                        className="w-full h-64 rounded-lg"
-                      />
-                    </div>
-                  )}
 
                   {/* Additional Info */}
                   {(selectedItem.vat_number || selectedItem.tax_number) && (
