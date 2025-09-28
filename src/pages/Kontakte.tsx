@@ -833,22 +833,22 @@ const Kontakte = () => {
 
       {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-6xl p-0 overflow-hidden">
+        <DialogContent className="max-w-6xl p-0">
           {/* Maps Header with Overlay Title and Badges */}
           {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) ? (
-            <div className="relative h-48 overflow-hidden">
+            <div className="relative h-48">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
                 city={selectedItem.city}
                 country={selectedItem.country}
-                className="absolute inset-0 w-full h-full"
+                className="w-full h-48 rounded-none border-0"
               />
               {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
               
               {/* Title and Badges Overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-6">
+              <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <Building2 className="h-6 w-6 text-white drop-shadow-lg" />
