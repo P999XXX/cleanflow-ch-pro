@@ -833,7 +833,7 @@ const Kontakte = () => {
 
       {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-6xl p-0 overflow-hidden">
+        <DialogContent className="max-w-6xl p-0">
           {/* Google Maps at full width without any margin - Only for companies with address */}
           {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) && (
             <GoogleMap
@@ -845,8 +845,9 @@ const Kontakte = () => {
             />
           )}
           
-          <DialogHeader className="pb-4 border-b px-6 pt-6">
-            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+          <div className="max-h-[70vh] overflow-y-auto">
+            <DialogHeader className="pb-4 border-b px-6 pt-6">
+              <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
               <div className="flex items-center gap-3">
                 {itemType === 'company' ? (
                   <>
@@ -1120,19 +1121,20 @@ const Kontakte = () => {
             </div>
           )}
           
-          {/* Action Buttons at Bottom */}
-          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6 px-6 pb-6">
-            <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
-              <Edit className="h-4 w-4" />
-              Bearbeiten
-            </Button>
-            <button 
-              type="button" 
-              onClick={handleGoBack}
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-            >
-              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
-            </button>
+            {/* Action Buttons at Bottom */}
+            <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6 px-6 pb-6">
+              <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
+                <Edit className="h-4 w-4" />
+                Bearbeiten
+              </Button>
+              <button 
+                type="button" 
+                onClick={handleGoBack}
+                className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+              >
+                {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
+              </button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
