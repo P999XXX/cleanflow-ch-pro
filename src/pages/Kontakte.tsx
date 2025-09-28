@@ -7,7 +7,8 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building, MessageCircle } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building, MessageCircle, Globe, FileText, AlertTriangle, Star, Filter } from "lucide-react";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -17,6 +18,7 @@ import GoogleMap from '@/components/ui/google-map';
 const Kontakte = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
+  const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -47,31 +49,61 @@ const Kontakte = () => {
 
   // Optimized filtering with useMemo for performance
   const filteredCompanies = useMemo(() => {
-    if (!companies || !searchTerm.trim()) return companies || [];
+    if (!companies) return [];
     
-    const term = searchTerm.toLowerCase().trim();
-    return companies.filter(company =>
-      company.name.toLowerCase().includes(term) ||
-      company.email?.toLowerCase().includes(term) ||
-      company.city?.toLowerCase().includes(term) ||
-      company.address?.toLowerCase().includes(term) ||
-      company.phone?.toLowerCase().includes(term)
-    );
-  }, [companies, searchTerm]);
+    let filtered = companies;
+    
+    // Filter by contact type
+    if (contactTypeFilter !== 'all') {
+      filtered = filtered.filter(company => 
+        company.contact_type === contactTypeFilter
+      );
+    }
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(company =>
+        company.name.toLowerCase().includes(term) ||
+        company.email?.toLowerCase().includes(term) ||
+        company.city?.toLowerCase().includes(term) ||
+        company.address?.toLowerCase().includes(term) ||
+        company.phone?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [companies, searchTerm, contactTypeFilter]);
 
   const filteredPersons = useMemo(() => {
-    if (!contactPersons || !searchTerm.trim()) return contactPersons || [];
+    if (!contactPersons) return [];
     
-    const term = searchTerm.toLowerCase().trim();
-    return contactPersons.filter(person =>
-      `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
-      person.email?.toLowerCase().includes(term) ||
-      person.phone?.toLowerCase().includes(term) ||
-      person.mobile?.toLowerCase().includes(term) ||
-      person.position?.toLowerCase().includes(term) ||
-      person.customer_companies?.name?.toLowerCase().includes(term)
-    );
-  }, [contactPersons, searchTerm]);
+    let filtered = contactPersons;
+    
+    // Filter by contact type - use the company's contact type (check if the property exists)
+    if (contactTypeFilter !== 'all') {
+      filtered = filtered.filter(person => {
+        // Find the full company data to get contact_type
+        const fullCompany = companies?.find(company => company.id === person.customer_company_id);
+        return fullCompany?.contact_type === contactTypeFilter;
+      });
+    }
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(person =>
+        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
+        person.email?.toLowerCase().includes(term) ||
+        person.phone?.toLowerCase().includes(term) ||
+        person.mobile?.toLowerCase().includes(term) ||
+        person.position?.toLowerCase().includes(term) ||
+        person.customer_companies?.name?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [contactPersons, searchTerm, contactTypeFilter, companies]);
 
   const totalCount = filteredCompanies.length + filteredPersons.length;
   const isSearching = searchTerm.trim().length > 0;
@@ -627,23 +659,43 @@ const Kontakte = () => {
         
         {/* Search and Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Search - Full width on mobile/tablet */}
-          <div className="relative w-full lg:flex-1 lg:max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Suchen nach Name, E-Mail, Telefon..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-9 w-full"
-            />
-            {searchTerm && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+          {/* Search and Filter Row */}
+          <div className="flex flex-col sm:flex-row gap-4 w-full lg:flex-1">
+            {/* Search - Full width on mobile/tablet */}
+            <div className="relative flex-1 lg:max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Suchen nach Name, E-Mail, Telefon..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9 pr-9 w-full"
+              />
+              {searchTerm && (
+                <button
+                  onClick={clearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Contact Type Filter */}
+            <div className="flex items-center gap-2 sm:min-w-[200px]">
+              <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Select value={contactTypeFilter} onValueChange={setContactTypeFilter}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Kontaktart" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alle Kontaktarten</SelectItem>
+                  <SelectItem value="kunde">Kunde</SelectItem>
+                  <SelectItem value="interessent">Interessent</SelectItem>
+                  <SelectItem value="lieferant">Lieferant</SelectItem>
+                  <SelectItem value="partner">Partner</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Add Button - Mobile/Tablet only - After search, before tabs */}
@@ -814,332 +866,677 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Large and Enhanced */}
+      {/* Details Dialog - Redesigned with Map Header */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-6xl">
-          <DialogHeader className="pb-4 border-b">
-            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
-              <div className="flex items-center gap-3">
-                {itemType === 'company' ? (
-                  <>
-                    <Building2 className="h-6 w-6 text-primary" />
-                    <div className="flex flex-col">
-                      <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
-                      {selectedItem?.company_type && (
-                        <span className="text-sm font-normal text-muted-foreground mt-1">
-                          {selectedItem.company_type}
-                        </span>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Users className="h-6 w-6 text-primary" />
-                    <span className="text-xl lg:text-2xl font-semibold">
-                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
-                    </span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
-                {itemType === 'company' && selectedItem && (
-                  <>
-                    {getStatusBadge(selectedItem.status)}
-                    {selectedItem.industry_category && (
-                      <Badge 
-                        variant="outline" 
-                        className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
-                      >
-                        {selectedItem.industry_category}
-                      </Badge>
-                    )}
-                    {selectedItem.contact_type && (
-                      <Badge 
-                        variant="outline" 
-                        className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
-                      >
-                        {selectedItem.contact_type}
-                      </Badge>
-                    )}
-                  </>
-                )}
-                {itemType === 'person' && selectedItem?.is_primary_contact && (
-                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                    Primärkontakt
-                  </Badge>
-                )}
-              </div>
-            </DialogTitle>
-            <DialogDescription>
-              {itemType === 'company' 
-                ? 'Detaillierte Informationen zum Unternehmen' 
-                : 'Detaillierte Informationen zur Kontaktperson'
-              }
-            </DialogDescription>
-          </DialogHeader>
-          
+        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-hidden flex flex-col">
           {selectedItem && (
-            <div className="space-y-6 animate-fade-in">
-              {itemType === 'company' ? (
-                <>
-                  {/* Company Basic Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Kontaktinformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.email && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Mail className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.email}
-                             </a>
+            <>
+              {/* Map Header - Full width, no margins */}
+              {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
+                <div className="relative h-48 sm:h-64 flex-shrink-0">
+                  <GoogleMap
+                    address={selectedItem.address}
+                    postal_code={selectedItem.postal_code}
+                    city={selectedItem.city}
+                    country={selectedItem.country}
+                    className="w-full h-full rounded-t-lg"
+                  />
+                  {/* Overlay for better text readability */}
+                  <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
+                </div>
+              )}
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto">
+                {/* Title and Badges Section */}
+                <div className="p-6 pb-4 border-b">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    {/* Title - Left */}
+                    <div className="flex items-center gap-3">
+                      {itemType === 'company' ? (
+                        <>
+                          <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
+                          <div className="flex flex-col min-w-0">
+                            <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem?.name}</h2>
+                            {selectedItem?.company_type && (
+                              <span className="text-sm font-normal text-muted-foreground mt-1">
+                                {selectedItem.company_type}
+                              </span>
+                            )}
                           </div>
-                        </div>
-                      )}
-                      {selectedItem.phone && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Phone className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.phone}
-                             </a>
+                        </>
+                      ) : (
+                        <>
+                          <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                          <div className="flex flex-col min-w-0">
+                            <h2 className="text-xl sm:text-2xl font-semibold">
+                              {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                            </h2>
+                            {selectedItem?.position && (
+                              <span className="text-sm font-normal text-muted-foreground mt-1">
+                                {selectedItem.position}
+                              </span>
+                            )}
                           </div>
-                        </div>
-                      )}
-                      {selectedItem.website && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Building2 className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Website</p>
-                            <a 
-                              href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
-                              target="_blank" 
-                              rel="noopener noreferrer" 
-                              className="text-sm font-medium text-primary hover:underline transition-colors"
-                            >
-                              {selectedItem.website}
-                            </a>
-                          </div>
-                        </div>
+                        </>
                       )}
                     </div>
-                   </div>
 
-                   {/* Contact Persons */}
-                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                     <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                            <Users className="h-4 w-4" />
-                            Kontaktpersonen
-                            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                              {selectedItem.contact_persons.length}
+                    {/* Badges - Right */}
+                    <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+                      {itemType === 'company' && selectedItem && (
+                        <>
+                          {getStatusBadge(selectedItem.status)}
+                          {selectedItem.industry_category && (
+                            <Badge 
+                              variant="outline" 
+                              className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                            >
+                              {selectedItem.industry_category}
                             </Badge>
-                          </h4>
-                        </div>
-                       <div className="grid gap-3">
-                         {selectedItem.contact_persons.map((contact) => (
-                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
-                             <div className="flex items-start justify-between">
-                               <div className="flex-1">
-                                 <div className="flex items-center justify-between">
-                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                     {contact.first_name} {contact.last_name}
-                                   </span>
-                                   {contact.is_primary_contact && (
-                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
-                                       Primär
-                                     </Badge>
-                                   )}
-                                 </div>
-                                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                    {contact.position && <span>{contact.position}</span>}
-                                  </div>
-                               </div>
-                             </div>
-                             {contact.notes && (
-                               <div className="mt-2 pt-2 border-t border-border/50">
-                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
-                               </div>
-                             )}
-                           </div>
-                         ))}
-                       </div>
-                     </div>
-                   )}
+                          )}
+                          {selectedItem.contact_type && (
+                            <Badge 
+                              variant="outline" 
+                              className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                            >
+                              {selectedItem.contact_type}
+                            </Badge>
+                          )}
+                        </>
+                      )}
+                      {itemType === 'person' && selectedItem?.is_primary_contact && (
+                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                          Primärkontakt
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
 
-                   {/* Address */}
-                  {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Adresse
-                      </h4>
-                      <div className="p-2 bg-background rounded-md">
-                        <div className="flex items-start gap-2">
-                          <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                          <div className="text-sm">
-                            {selectedItem.address && <div>{selectedItem.address}</div>}
-                            <div>
-                              {selectedItem.postal_code && selectedItem.city 
-                                ? `${selectedItem.postal_code} ${selectedItem.city}` 
-                                : selectedItem.postal_code || selectedItem.city}
+                  {/* Quick Action Icons - Round buttons */}
+                  <div className="flex items-center gap-3 mt-4">
+                    {selectedItem.website && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full h-10 w-10"
+                        onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                      >
+                        <Globe className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {selectedItem.phone && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full h-10 w-10"
+                        onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                      >
+                        <Phone className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {selectedItem.email && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full h-10 w-10"
+                        onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                      >
+                        <Mail className="h-4 w-4" />
+                      </Button>
+                    )}
+                    {(selectedItem.address || selectedItem.city) && (
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="rounded-full h-10 w-10"
+                        onClick={() => {
+                          const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                          window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                        }}
+                      >
+                        <MapPin className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Tabs - Only for customers */}
+                {itemType === 'company' && selectedItem.contact_type === 'kunde' && (
+                  <div className="px-6 py-4 border-b">
+                    <Tabs defaultValue="kontakt" className="w-full">
+                      <TabsList className="grid w-full grid-cols-4">
+                        <TabsTrigger value="kontakt" className="flex items-center gap-2">
+                          <Contact className="h-4 w-4" />
+                          <span className="hidden sm:inline">Kontakt</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="objekte" className="flex items-center gap-2">
+                          <Building className="h-4 w-4" />
+                          <span className="hidden sm:inline">Objekte</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="reklamationen" className="flex items-center gap-2">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span className="hidden sm:inline">Reklamationen</span>
+                          <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
+                        </TabsTrigger>
+                        <TabsTrigger value="dokumente" className="flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          <span className="hidden sm:inline">Dokumente</span>
+                        </TabsTrigger>
+                      </TabsList>
+
+                      <TabsContent value="kontakt" className="mt-4">
+                        {/* Kontakt Content */}
+                        <div className="space-y-6">
+                          {itemType === 'company' ? (
+                            <>
+                              {/* Contact Information Cards */}
+                              <div className="space-y-4">
+                                <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                  Kontaktinformationen
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                  {selectedItem.email && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                                    >
+                                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">E-Mail</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                  {selectedItem.phone && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                                    >
+                                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">Telefon</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                  {selectedItem.website && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                                    >
+                                      <Globe className="h-5 w-5 text-primary flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">Website</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Contact Persons */}
+                              {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                                <div className="space-y-4">
+                                  <div className="flex items-center justify-between">
+                                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                                      <Users className="h-4 w-4" />
+                                      Kontaktpersonen
+                                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                                        {selectedItem.contact_persons.length}
+                                      </Badge>
+                                    </h4>
+                                  </div>
+                                  <div className="grid gap-3">
+                                    {selectedItem.contact_persons.map((contact) => (
+                                      <Button
+                                        key={contact.id}
+                                        variant="outline"
+                                        className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
+                                        onClick={() => handleNavigateToPerson(contact)}
+                                      >
+                                        <div className="flex-1 text-left">
+                                          <div className="flex items-center justify-between">
+                                            <span className="font-medium text-sm text-foreground">
+                                              {contact.first_name} {contact.last_name}
+                                            </span>
+                                            {contact.is_primary_contact && (
+                                              <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs ml-2">
+                                                Primär
+                                              </Badge>
+                                            )}
+                                          </div>
+                                          <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                            {contact.position && <span>{contact.position}</span>}
+                                          </div>
+                                          {contact.notes && (
+                                            <div className="mt-2 pt-2 border-t border-border/50">
+                                              <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                                            </div>
+                                          )}
+                                        </div>
+                                      </Button>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Address */}
+                              {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                                <div className="space-y-4">
+                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                    Adresse
+                                  </h4>
+                                  <Button
+                                    variant="outline"
+                                    className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                                    onClick={() => {
+                                      const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                                      window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                                    }}
+                                  >
+                                    <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+                                    <div className="text-left">
+                                      {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
+                                      <div className="text-sm font-medium">
+                                        {selectedItem.postal_code && selectedItem.city 
+                                          ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                          : selectedItem.postal_code || selectedItem.city}
+                                      </div>
+                                    </div>
+                                  </Button>
+                                </div>
+                              )}
+
+                              {/* Additional Info */}
+                              {(selectedItem.vat_number || selectedItem.tax_number) && (
+                                <div className="space-y-4">
+                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                    Zusätzliche Informationen
+                                  </h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {selectedItem.vat_number && (
+                                      <div className="p-4 bg-muted/50 rounded-lg">
+                                        <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                                        <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                                      </div>
+                                    )}
+                                    {selectedItem.tax_number && (
+                                      <div className="p-4 bg-muted/50 rounded-lg">
+                                        <p className="text-xs text-muted-foreground">Steuernummer</p>
+                                        <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              {/* Person Contact Information */}
+                              <div className="space-y-4">
+                                <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                  Kontaktinformationen
+                                </h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                                  {selectedItem.email && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                                    >
+                                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">E-Mail</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                  {selectedItem.phone && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                                    >
+                                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">Telefon</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                  {selectedItem.mobile && (
+                                    <Button
+                                      variant="outline"
+                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                      onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
+                                    >
+                                      <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                      <div className="text-left min-w-0">
+                                        <p className="text-xs text-muted-foreground">WhatsApp</p>
+                                        <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+                                      </div>
+                                    </Button>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Company Information */}
+                              {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                                <div className="space-y-4">
+                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                    Unternehmen
+                                  </h4>
+                                  <Button
+                                    variant="outline"
+                                    className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                                    onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                                  >
+                                    <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+                                    <div className="text-left">
+                                      <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
+                                    </div>
+                                  </Button>
+                                </div>
+                              )}
+
+                              {/* Notes */}
+                              {selectedItem.notes && (
+                                <div className="space-y-4">
+                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                                    Notizen
+                                  </h4>
+                                  <div className="p-4 bg-muted/50 rounded-lg">
+                                    <p className="text-sm">{selectedItem.notes}</p>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="objekte" className="mt-4">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Objekte werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="reklamationen" className="mt-4">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Reklamationen werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
+
+                      <TabsContent value="dokumente" className="mt-4">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Dokumente werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                )}
+
+                {/* Non-customer content (no tabs) */}
+                {!(itemType === 'company' && selectedItem.contact_type === 'kunde') && (
+                  <div className="p-6 space-y-6">
+                    {itemType === 'company' ? (
+                      <>
+                        {/* Contact Information Cards */}
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                            Kontaktinformationen
+                          </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {selectedItem.email && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                              >
+                                <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">E-Mail</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                                </div>
+                              </Button>
+                            )}
+                            {selectedItem.phone && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                              >
+                                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">Telefon</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                                </div>
+                              </Button>
+                            )}
+                            {selectedItem.website && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                              >
+                                <Globe className="h-5 w-5 text-primary flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">Website</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+                                </div>
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Contact Persons */}
+                        {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                              <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                                <Users className="h-4 w-4" />
+                                Kontaktpersonen
+                                <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                                  {selectedItem.contact_persons.length}
+                                </Badge>
+                              </h4>
+                            </div>
+                            <div className="grid gap-3">
+                              {selectedItem.contact_persons.map((contact) => (
+                                <Button
+                                  key={contact.id}
+                                  variant="outline"
+                                  className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
+                                  onClick={() => handleNavigateToPerson(contact)}
+                                >
+                                  <div className="flex-1 text-left">
+                                    <div className="flex items-center justify-between">
+                                      <span className="font-medium text-sm text-foreground">
+                                        {contact.first_name} {contact.last_name}
+                                      </span>
+                                      {contact.is_primary_contact && (
+                                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs ml-2">
+                                          Primär
+                                        </Badge>
+                                      )}
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                      {contact.position && <span>{contact.position}</span>}
+                                    </div>
+                                  </div>
+                                </Button>
+                              ))}
                             </div>
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                        )}
 
-                  {/* Google Maps - Show company location */}
-                  {(selectedItem.address || selectedItem.city) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Standort
-                      </h4>
-                      <GoogleMap
-                        address={selectedItem.address}
-                        postal_code={selectedItem.postal_code}
-                        city={selectedItem.city}
-                        country={selectedItem.country}
-                        className="w-full h-64 rounded-lg"
-                      />
-                    </div>
-                  )}
-
-                  {/* Additional Info */}
-                  {(selectedItem.vat_number || selectedItem.tax_number) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Zusätzliche Informationen
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {selectedItem.vat_number && (
-                          <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
-                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                        {/* Address */}
+                        {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                              Adresse
+                            </h4>
+                            <Button
+                              variant="outline"
+                              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                              onClick={() => {
+                                const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                                window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                              }}
+                            >
+                              <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+                              <div className="text-left">
+                                {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
+                                <div className="text-sm font-medium">
+                                  {selectedItem.postal_code && selectedItem.city 
+                                    ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                    : selectedItem.postal_code || selectedItem.city}
+                                </div>
+                              </div>
+                            </Button>
                           </div>
                         )}
-                        {selectedItem.tax_number && (
-                          <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Steuernummer</p>
-                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+
+                         {/* Additional Info */}
+                        {(selectedItem.vat_number || selectedItem.tax_number) && (
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                              Zusätzliche Informationen
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              {selectedItem.vat_number && (
+                                <div className="p-4 bg-muted/50 rounded-lg">
+                                  <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                                  <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                                </div>
+                              )}
+                              {selectedItem.tax_number && (
+                                <div className="p-4 bg-muted/50 rounded-lg">
+                                  <p className="text-xs text-muted-foreground">Steuernummer</p>
+                                  <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
-                      </div>
-                    </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/* Person Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Personeninformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.position && (
-                        <div className="p-2 bg-background rounded-md">
-                          <p className="text-xs text-muted-foreground">Position</p>
-                          <p className="text-sm font-medium">{selectedItem.position}</p>
+                      </>
+                    ) : (
+                      <>
+                        {/* Person Contact Information */}
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                            Kontaktinformationen
+                          </h4>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                            {selectedItem.email && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                              >
+                                <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">E-Mail</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                                </div>
+                              </Button>
+                            )}
+                            {selectedItem.phone && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                              >
+                                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">Telefon</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                                </div>
+                              </Button>
+                            )}
+                            {selectedItem.mobile && (
+                              <Button
+                                variant="outline"
+                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                                onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
+                              >
+                                <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                                <div className="text-left min-w-0">
+                                  <p className="text-xs text-muted-foreground">WhatsApp</p>
+                                  <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+                                </div>
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                        <div className="p-2 bg-background rounded-md">
-                          <p className="text-xs text-muted-foreground">Unternehmen</p>
-                          <button 
-                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
-                          >
-                            <Building2 className="h-3 w-3" />
-                            {selectedItem.customer_companies.name}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
 
-                  {/* Contact Info */}
-                  <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                      Kontaktinformationen
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {selectedItem.email && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Mail className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">E-Mail</p>
-                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.email}
-                             </a>
+                        {/* Company Information */}
+                        {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                              Unternehmen
+                            </h4>
+                            <Button
+                              variant="outline"
+                              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                              onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                            >
+                              <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+                              <div className="text-left">
+                                <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
+                              </div>
+                            </Button>
                           </div>
-                        </div>
-                      )}
-                      {selectedItem.phone && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <Phone className="h-4 w-4 text-primary" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">Telefon</p>
-                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                               {selectedItem.phone}
-                             </a>
+                        )}
+
+                        {/* Notes */}
+                        {selectedItem.notes && (
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                              Notizen
+                            </h4>
+                            <div className="p-4 bg-muted/50 rounded-lg">
+                              <p className="text-sm">{selectedItem.notes}</p>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      {selectedItem.mobile && (
-                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                          <MessageCircle className="h-4 w-4 text-green-600" />
-                          <div>
-                            <p className="text-xs text-muted-foreground">WhatsApp</p>
-                             <a 
-                               href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
-                               target="_blank" 
-                               rel="noopener noreferrer"
-                               className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                             >
-                               {selectedItem.mobile}
-                             </a>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                        )}
+                      </>
+                    )}
                   </div>
-                  
-                  {/* Notes */}
-                  {selectedItem.notes && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Notizen
-                      </h4>
-                      <div className="p-2 bg-background rounded-md">
-                        <p className="text-sm">{selectedItem.notes}</p>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
+                )}
+              </div>
+
+              {/* Bottom Action Buttons */}
+              <div className="p-6 border-t bg-background flex flex-col sm:flex-row items-center gap-3">
+                <Button onClick={handleEditItem} className="w-full sm:flex-1 flex items-center justify-center gap-2">
+                  <Edit className="h-4 w-4" />
+                  Bearbeiten
+                </Button>
+                <Button
+                  variant="destructive" 
+                  onClick={handleDeleteItem}
+                  className="w-full sm:w-auto flex items-center justify-center gap-2"
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Löschen
+                </Button>
+                <button 
+                  type="button" 
+                  onClick={handleGoBack}
+                  className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+                >
+                  {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
+                </button>
+              </div>
+            </>
           )}
-          
-          {/* Action Buttons at Bottom */}
-          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6">
-            <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
-              <Edit className="h-4 w-4" />
-              Bearbeiten
-            </Button>
-            <button 
-              type="button" 
-              onClick={handleGoBack}
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-            >
-              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
-            </button>
-          </div>
         </DialogContent>
       </Dialog>
 
