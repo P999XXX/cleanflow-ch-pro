@@ -1123,7 +1123,7 @@ const Kontakte = () => {
           )}
           
           {/* Action Buttons at Bottom */}
-          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6">
+          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6 px-6 pb-6">
             <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
               <Edit className="h-4 w-4" />
               Bearbeiten
