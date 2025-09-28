@@ -431,7 +431,7 @@ const Kontakte = () => {
           {showSections && (
             <h3 className="text-lg font-semibold flex items-center gap-2">
               <Users className="h-5 w-5" />
-              Personen
+              Kontaktpersonen
               <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
                 {persons.length}
               </Badge>
@@ -447,9 +447,9 @@ const Kontakte = () => {
     </div>
   );
 
-  // Unified table view component
-  const TableView = ({ companies, persons, showSections = false }: { companies: any[], persons: any[], showSections?: boolean }) => (
-    <div className="space-y-6 animate-fade-in">
+  // Table view component
+  const TableView = ({ companies, persons }: { companies: any[], persons: any[] }) => (
+    <div className="space-y-8 animate-fade-in">
       {/* No results message */}
       {isSearching && hasNoResults && (
         <div className="text-center py-12 text-muted-foreground animate-fade-in">
@@ -464,335 +464,291 @@ const Kontakte = () => {
 
       {/* Companies Table */}
       {companies.length > 0 && (
-        <div className="space-y-3">
-          {showSections && (
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Building2 className="h-5 w-5" />
-              Unternehmen
-              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                {companies.length}
-              </Badge>
-            </h3>
-          )}
-          <Card>
-            <Table className="lg:table-fixed">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="lg:w-1/4">Name</TableHead>
-                      <TableHead className="lg:w-1/4">Ort</TableHead>
-                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
-                      <TableHead className="text-right lg:w-1/4"></TableHead>
-                    </TableRow>
-                  </TableHeader>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Building2 className="h-5 w-5" />
+            Unternehmen
+            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+              {companies.length}
+            </Badge>
+          </h3>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Typ</TableHead>
+                  <TableHead>Ort</TableHead>
+                  <TableHead>Kontakt</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[100px]">Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {companies.map((company) => (
                   <TableRow 
                     key={company.id}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                    className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleCardClick(company, 'company')}
                   >
-                        <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">{company.name}</TableCell>
-                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}</TableCell>
-                        <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                           <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
-                         {company.email && (
-                           <div className="flex items-center gap-1 text-sm">
-                             <Mail className="h-3 w-3" />
-                             <a href={`mailto:${company.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                               {company.email}
-                             </a>
-                           </div>
-                         )}
-                         {company.phone && (
-                           <div className="flex items-center gap-1 text-sm">
-                             <Phone className="h-3 w-3" />
-                             <a href={`tel:${company.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                               {company.phone}
-                             </a>
-                           </div>
-                         )}
-                       </div>
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-4 w-4 text-primary" />
+                        {company.name}
+                      </div>
                     </TableCell>
-                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-2 flex-wrap">
-                            {getStatusBadge(company.status)}
-                            {company.industry_category && (
-                              <Badge 
-                                variant="outline" 
-                                className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
-                              >
-                                {company.industry_category}
-                              </Badge>
-                            )}
-                            {company.contact_type && (
-                              <Badge 
-                                variant="outline" 
-                                className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
-                              >
-                                {company.contact_type}
-                              </Badge>
-                            )}
+                    <TableCell>{company.company_type}</TableCell>
+                    <TableCell>
+                      {company.city && company.postal_code 
+                        ? `${company.postal_code} ${company.city}` 
+                        : company.city || company.postal_code || '-'}
+                    </TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {company.email && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Mail className="h-3 w-3" />
+                            {company.email}
                           </div>
-                        </TableCell>
-                      </TableRow>
+                        )}
+                        {company.phone && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Phone className="h-3 w-3" />
+                            {company.phone}
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>{getStatusBadge(company.status)}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedCompany(company);
+                            setFormMode('company');
+                            setIsFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </Card>
+          </div>
         </div>
       )}
 
       {/* Persons Table */}
       {persons.length > 0 && (
-        <div className="space-y-3">
-          {showSections && (
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <Users className="h-5 w-5" />
-              Personen
-              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                {persons.length}
-              </Badge>
-            </h3>
-          )}
-          <Card>
-            <Table className="lg:table-fixed">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="lg:w-1/4">Name</TableHead>
-                      <TableHead className="lg:w-1/4">Unternehmen</TableHead>
-                      <TableHead className="lg:w-1/4">Kontakt</TableHead>
-                      <TableHead className="text-right lg:w-1/4"></TableHead>
-                    </TableRow>
-                  </TableHeader>
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Kontaktpersonen
+            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+              {persons.length}
+            </Badge>
+          </h3>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Position</TableHead>
+                  <TableHead>Unternehmen</TableHead>
+                  <TableHead>Kontakt</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[100px]">Aktionen</TableHead>
+                </TableRow>
+              </TableHeader>
               <TableBody>
                 {persons.map((person) => (
                   <TableRow 
                     key={person.id}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                    className="cursor-pointer hover:bg-muted/50"
                     onClick={() => handleCardClick(person, 'person')}
                   >
-                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
-                      <div>
-                        <div>{`${person.first_name} ${person.last_name}`}</div>
-                        {person.title && <div className="text-sm text-muted-foreground">{person.title}</div>}
+                    <TableCell className="font-medium">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-primary" />
+                        {person.first_name} {person.last_name}
                       </div>
                     </TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                       <div className="flex flex-wrap lg:flex-nowrap items-center gap-3 lg:whitespace-nowrap">
-                         {person.email && (
-                           <div className="flex items-center gap-1 text-sm">
-                             <Mail className="h-3 w-3" />
-                             <a href={`mailto:${person.email}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                               {person.email}
-                             </a>
-                           </div>
-                         )}
-                         {person.phone && (
-                           <div className="flex items-center gap-1 text-sm">
-                             <Phone className="h-3 w-3" />
-                             <a href={`tel:${person.phone}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                               {person.phone}
-                             </a>
-                           </div>
-                         )}
-                         {person.mobile && (
-                           <div className="flex items-center gap-1 text-sm">
-                             <Smartphone className="h-3 w-3" />
-                             <a href={`tel:${person.mobile}`} className="text-foreground/70 hover:text-foreground transition-colors" onClick={(e) => e.stopPropagation()}>
-                               {person.mobile}
-                             </a>
-                           </div>
-                         )}
-                       </div>
+                    <TableCell>{person.position || '-'}</TableCell>
+                    <TableCell>{person.customer_companies?.name || '-'}</TableCell>
+                    <TableCell>
+                      <div className="space-y-1">
+                        {person.email && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Mail className="h-3 w-3" />
+                            {person.email}
+                          </div>
+                        )}
+                        {person.phone && (
+                          <div className="flex items-center gap-1 text-sm">
+                            <Phone className="h-3 w-3" />
+                            {person.phone}
+                          </div>
+                        )}
+                      </div>
                     </TableCell>
-                        <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
-                          {person.is_primary_contact && (
-                            <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                              Primär
-                            </Badge>
-                          )}
-                        </TableCell>
-                      </TableRow>
+                    <TableCell>
+                      {person.is_primary_contact && (
+                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                          Primär
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedPerson(person);
+                            setFormMode('person');
+                            setIsFormOpen(true);
+                          }}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
                 ))}
               </TableBody>
             </Table>
-          </Card>
+          </div>
         </div>
       )}
     </div>
   );
 
   return (
-    <div className="container mx-auto p-4 space-y-4">
-      {/* Header - Responsive */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
-        <div className="flex flex-col space-y-4">
-          {/* Title with View Toggle for Tablet */}
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Kontakte</h1>
-            {/* View Mode Toggle - Tablet only (right of title) */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-              className="hidden md:flex lg:hidden items-center gap-2"
-            >
-              {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
-            </Button>
-          </div>
-        
-        {/* Search and Controls */}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Search - Full width on mobile/tablet */}
-          <div className="relative w-full lg:flex-1 lg:max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Suchen nach Name, E-Mail, Telefon..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 pr-9 w-full"
-            />
-            {searchTerm && (
-              <button
-                onClick={clearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
+    <div className="container mx-auto p-4 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Kontakte</h1>
+          <p className="text-muted-foreground">
+            Verwalten Sie Ihre Geschäftskontakte und Kundendaten
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button onClick={() => { setFormMode('company'); setIsFormOpen(true); }} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Unternehmen hinzufügen
+          </Button>
+          <Button onClick={() => { setFormMode('person'); setIsFormOpen(true); }} variant="outline" className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Person hinzufügen
+          </Button>
+        </div>
+      </div>
+
+      {/* Search and View Controls */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+            <div className="relative flex-1 max-w-sm">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Suche nach Namen, E-Mail, Ort..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8"
+              />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-2 top-1 h-7 w-7 p-0"
+                  onClick={clearSearch}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+            
+            {!isMobile && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={effectiveViewMode === 'cards' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('cards')}
+                  className="flex items-center gap-2"
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                  Karten
+                </Button>
+                <Button
+                  variant={effectiveViewMode === 'table' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('table')}
+                  className="flex items-center gap-2"
+                >
+                  <List className="h-4 w-4" />
+                  Tabelle
+                </Button>
+              </div>
             )}
           </div>
 
-          {/* Add Button - Mobile/Tablet only - After search, before tabs */}
-          <div className="lg:hidden">
-            <Button
-              onClick={() => {
-                if (activeTab === 'companies') {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                } else if (activeTab === 'persons') {
-                  setSelectedPerson(null);
-                  setFormMode('person');
-                } else {
-                  setSelectedCompany(null);
-                  setFormMode('company');
-                }
-                setIsFormOpen(true);
-              }}
-              size="sm"
-              className="flex items-center gap-2 w-full"
-            >
-              <Plus className="h-4 w-4" />
-              Hinzufügen
-            </Button>
-          </div>
-
-          {/* Tabs - Desktop: Inline with controls */}
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full lg:w-auto">
-              <TabsList className="grid grid-cols-3 lg:grid-cols-3 lg:w-auto">
-                <TabsTrigger value="all" className="flex items-center gap-1 px-2">
-                  <Contact className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">Alle</span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'all' ? 'font-bold' : 'font-medium'
-                    } hover:bg-primary/10`}
-                  >
-                    {totalCount}
-                  </Badge>
-                </TabsTrigger>
-                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                  <Building className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">
-                    <span className="hidden sm:inline">Unternehmen</span>
-                    <span className="sm:hidden">Firma</span>
-                  </span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                    } hover:bg-primary/10`}
-                  >
-                    {filteredCompanies.length}
-                  </Badge>
-                </TabsTrigger>
-                <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
-                  <Users className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">Personen</span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                    } hover:bg-primary/10`}
-                  >
-                    {filteredPersons.length}
-                  </Badge>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            {/* Controls - Desktop only - Right aligned */}
-            <div className="hidden lg:flex flex-row gap-3 ml-auto">
-              {/* View Mode Toggle - Desktop only */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-                className="flex items-center gap-2"
-              >
-                {viewMode === 'table' ? <Grid3X3 className="h-4 w-4" /> : <List className="h-4 w-4" />}
-              </Button>
-              
-              {/* Add Button - Desktop only */}
-              <Button
-                onClick={() => {
-                  if (activeTab === 'companies') {
-                    setSelectedCompany(null);
-                    setFormMode('company');
-                  } else if (activeTab === 'persons') {
-                    setSelectedPerson(null);
-                    setFormMode('person');
-                  } else {
-                    setSelectedCompany(null);
-                    setFormMode('company');
-                  }
-                  setIsFormOpen(true);
-                }}
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Plus className="h-4 w-4" />
-                Hinzufügen
-              </Button>
+          {/* Results Summary */}
+          {(companiesLoading || personsLoading) ? (
+            <div className="mt-4 text-center text-muted-foreground">
+              Lade Kontakte...
             </div>
-          </div>
-          
-          {/* Search Results Info - Mobile */}
-          {isSearching && (
-            <div className="text-sm text-muted-foreground flex items-center lg:hidden">
-              {hasNoResults ? 'Keine Ergebnisse' : `${totalCount} Ergebnis${totalCount !== 1 ? 'se' : ''}`}
+          ) : (
+            <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
+              <span>Gefunden: {totalCount} Kontakte</span>
+              {filteredCompanies.length > 0 && (
+                <span className="flex items-center gap-1">
+                  <Building2 className="h-3 w-3" />
+                  {filteredCompanies.length} Unternehmen
+                </span>
+              )}
+              {filteredPersons.length > 0 && (
+                <span className="flex items-center gap-1">
+                  <Users className="h-3 w-3" />
+                  {filteredPersons.length} Personen
+                </span>
+              )}
             </div>
           )}
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Content Section */}
-        <div className="mt-4">
-          {/* Dynamic Subtitle */}
-          <div className="mb-4">
-            <h2 className="text-lg font-medium text-muted-foreground">
-              {activeTab === 'companies' ? 'Unternehmen' : activeTab === 'persons' ? 'Personen' : 'Alle anzeige'}
-            </h2>
-          </div>
+      {/* Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="all" className="flex items-center gap-2">
+            <Contact className="h-4 w-4" />
+            Alle Kontakte
+          </TabsTrigger>
+          <TabsTrigger value="companies" className="flex items-center gap-2">
+            <Building2 className="h-4 w-4" />
+            Unternehmen
+          </TabsTrigger>
+          <TabsTrigger value="persons" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Personen
+          </TabsTrigger>
+        </TabsList>
 
-          {/* Tab Content */}
+        <div className="min-h-[400px]">
           {activeTab === 'all' && (
             <div className="space-y-6">
               {effectiveViewMode === 'cards' ? (
                 <CardsView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
               ) : (
-                <TableView companies={filteredCompanies} persons={filteredPersons} showSections={true} />
+                <TableView companies={filteredCompanies} persons={filteredPersons} />
               )}
             </div>
           )}
@@ -817,8 +773,7 @@ const Kontakte = () => {
             </div>
           )}
         </div>
-        </div>
-      </div>
+      </Tabs>
 
       {/* Contact Form */}
       <ContactForm
@@ -831,296 +786,332 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Large and Enhanced */}
+      {/* Details Dialog - Enhanced with Maps Header */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-6xl p-0">
-          {/* Google Maps at full width without any margin - Only for companies with address */}
-          {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) && (
-            <GoogleMap
-              address={selectedItem.address}
-              postal_code={selectedItem.postal_code}
-              city={selectedItem.city}
-              country={selectedItem.country}
-              className="w-full h-48"
-            />
-          )}
-          
-          <div className="max-h-[70vh] overflow-y-auto">
-            <DialogHeader className="pb-4 border-b px-6 pt-6">
-              <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
-              <div className="flex items-center gap-3">
-                {itemType === 'company' ? (
-                  <>
-                    <Building2 className="h-6 w-6 text-primary" />
-                    <div className="flex flex-col">
-                      <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
-                      {selectedItem?.company_type && (
-                        <span className="text-sm font-normal text-muted-foreground mt-1">
-                          ({getFullCompanyType(selectedItem.company_type)})
-                        </span>
-                      )}
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <Users className="h-6 w-6 text-primary" />
-                    <span className="text-xl lg:text-2xl font-semibold">
-                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
-                    </span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
-                {itemType === 'company' && selectedItem && (
-                  <>
-                    {getStatusBadge(selectedItem.status)}
-                    {selectedItem.industry_category && (
-                      <Badge 
-                        variant="outline" 
-                        className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
-                      >
-                        {selectedItem.industry_category}
-                      </Badge>
-                    )}
-                    {selectedItem.contact_type && (
-                      <Badge 
-                        variant="outline" 
-                        className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
-                      >
-                        {selectedItem.contact_type}
-                      </Badge>
-                    )}
-                  </>
-                )}
-                {itemType === 'person' && selectedItem?.is_primary_contact && (
-                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                    Primärkontakt
-                  </Badge>
-                )}
-              </div>
-            </DialogTitle>
-            <DialogDescription>
-              {/* Removed detailed information description */}
-            </DialogDescription>
-          </DialogHeader>
-          
-          {selectedItem && (
-            <div className="space-y-6 animate-fade-in">
-              {itemType === 'company' ? (
-                <>
-                  {/* Company Basic Info - Direct display without section header */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedItem.email && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <Mail className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">E-Mail</p>
-                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                             {selectedItem.email}
-                           </a>
+          <div className="max-h-[80vh] overflow-y-auto">
+            {/* Google Maps Header with Title Overlay - Only for companies with address */}
+            {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) ? (
+              <div className="relative w-full h-64">
+                <GoogleMap
+                  address={selectedItem.address}
+                  postal_code={selectedItem.postal_code}
+                  city={selectedItem.city}
+                  country={selectedItem.country}
+                  className="w-full h-full"
+                />
+                {/* Title Overlay on Map */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+                  <div className="absolute bottom-0 left-0 right-0 p-6">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                      <div className="flex items-center gap-3 text-white">
+                        <Building2 className="h-8 w-8 text-white drop-shadow-lg" />
+                        <div className="flex flex-col">
+                          <span className="text-2xl lg:text-3xl font-bold drop-shadow-lg">{selectedItem?.name}</span>
+                          {selectedItem?.company_type && (
+                            <span className="text-sm font-medium text-white/90 mt-1 drop-shadow">
+                              ({getFullCompanyType(selectedItem.company_type)})
+                            </span>
+                          )}
                         </div>
                       </div>
-                    )}
-                    {selectedItem.phone && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Telefon</p>
-                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                             {selectedItem.phone}
-                           </a>
-                        </div>
-                      </div>
-                    )}
-                    {selectedItem.website && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <Building2 className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Website</p>
-                          <a 
-                            href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-sm font-medium text-primary hover:underline transition-colors"
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {getStatusBadge(selectedItem.status)}
+                        {selectedItem.industry_category && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm font-medium"
                           >
-                            {selectedItem.website}
-                          </a>
-                        </div>
+                            {selectedItem.industry_category}
+                          </Badge>
+                        )}
+                        {selectedItem.contact_type && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-white/20 text-white border-white/30 hover:bg-white/30 backdrop-blur-sm font-medium"
+                          >
+                            {selectedItem.contact_type}
+                          </Badge>
+                        )}
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Regular Header for Persons or Companies without Address */
+              <DialogHeader className="pb-4 border-b px-6 pt-6">
+                <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+                  <div className="flex items-center gap-3">
+                    {itemType === 'company' ? (
+                      <>
+                        <Building2 className="h-6 w-6 text-primary" />
+                        <div className="flex flex-col">
+                          <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                          {selectedItem?.company_type && (
+                            <span className="text-sm font-normal text-muted-foreground mt-1">
+                              ({getFullCompanyType(selectedItem.company_type)})
+                            </span>
+                          )}
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Users className="h-6 w-6 text-primary" />
+                        <span className="text-xl lg:text-2xl font-semibold">
+                          {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                        </span>
+                      </>
                     )}
                   </div>
-
-                   {/* Contact Persons */}
-                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                     <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                            <Users className="h-4 w-4" />
-                            Kontaktpersonen
-                            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                              {selectedItem.contact_persons.length}
-                            </Badge>
-                          </h4>
+                  <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
+                    {itemType === 'company' && selectedItem && (
+                      <>
+                        {getStatusBadge(selectedItem.status)}
+                        {selectedItem.industry_category && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                          >
+                            {selectedItem.industry_category}
+                          </Badge>
+                        )}
+                        {selectedItem.contact_type && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                          >
+                            {selectedItem.contact_type}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                    {itemType === 'person' && selectedItem?.is_primary_contact && (
+                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                        Primärkontakt
+                      </Badge>
+                    )}
+                  </div>
+                </DialogTitle>
+              </DialogHeader>
+            )}
+            
+            {selectedItem && (
+              <div className="space-y-6 animate-fade-in px-6 pb-6 pt-6">
+                {itemType === 'company' ? (
+                  <>
+                    {/* Company Basic Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.email}
+                             </a>
+                          </div>
                         </div>
-                       <div className="grid gap-3">
-                         {selectedItem.contact_persons.map((contact) => (
-                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
-                             <div className="flex items-start justify-between">
-                               <div className="flex-1">
-                                 <div className="flex items-center justify-between">
-                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
-                                     {contact.first_name} {contact.last_name}
-                                   </span>
-                                   {contact.is_primary_contact && (
-                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
-                                       Primär
-                                     </Badge>
-                                   )}
-                                 </div>
-                                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                    {contact.position && <span>{contact.position}</span>}
-                                  </div>
-                               </div>
-                             </div>
-                             {contact.notes && (
-                               <div className="mt-2 pt-2 border-t border-border/50">
-                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
-                               </div>
-                             )}
-                           </div>
-                         ))}
-                       </div>
-                     </div>
-                   )}
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.phone}
+                             </a>
+                          </div>
+                        </div>
+                      )}
+                      {selectedItem.website && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Building2 className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Website</p>
+                            <a 
+                              href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer" 
+                              className="text-sm font-medium text-primary hover:underline transition-colors"
+                            >
+                              {selectedItem.website}
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-                   {/* Address */}
-                  {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Adresse
-                      </h4>
-                      <div className="p-2 bg-background rounded-md">
-                        <div className="flex items-start gap-2">
-                          <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                          <div className="text-sm">
-                            {selectedItem.address && <div>{selectedItem.address}</div>}
-                            <div>
-                              {selectedItem.postal_code && selectedItem.city 
-                                ? `${selectedItem.postal_code} ${selectedItem.city}` 
-                                : selectedItem.postal_code || selectedItem.city}
+                     {/* Contact Persons */}
+                     {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                       <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              Kontaktpersonen
+                              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                                {selectedItem.contact_persons.length}
+                              </Badge>
+                            </h4>
+                          </div>
+                         <div className="grid gap-3">
+                           {selectedItem.contact_persons.map((contact) => (
+                             <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                               <div className="flex items-start justify-between">
+                                 <div className="flex-1">
+                                   <div className="flex items-center justify-between">
+                                     <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                       {contact.first_name} {contact.last_name}
+                                     </span>
+                                     {contact.is_primary_contact && (
+                                       <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                         Primär
+                                       </Badge>
+                                     )}
+                                   </div>
+                                    <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                      {contact.position && <span>{contact.position}</span>}
+                                    </div>
+                                 </div>
+                               </div>
+                               {contact.notes && (
+                                 <div className="mt-2 pt-2 border-t border-border/50">
+                                   <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                                 </div>
+                               )}
+                             </div>
+                           ))}
+                         </div>
+                       </div>
+                     )}
+
+                     {/* Address */}
+                    {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                      <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Adresse
+                        </h4>
+                        <div className="p-2 bg-background rounded-md">
+                          <div className="flex items-start gap-2">
+                            <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                            <div className="text-sm">
+                              {selectedItem.address && <div>{selectedItem.address}</div>}
+                              <div>
+                                {selectedItem.postal_code && selectedItem.city 
+                                  ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                  : selectedItem.postal_code || selectedItem.city}
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
+                    )}
+
+                    {/* Additional Info */}
+                    {(selectedItem.vat_number || selectedItem.tax_number) && (
+                      <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Zusätzliche Informationen
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {selectedItem.vat_number && (
+                            <div className="p-2 bg-background rounded-md">
+                              <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                              <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                            </div>
+                          )}
+                          {selectedItem.tax_number && (
+                            <div className="p-2 bg-background rounded-md">
+                              <p className="text-xs text-muted-foreground">Steuernummer</p>
+                              <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Person Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.position && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Position</p>
+                          <p className="text-sm font-medium">{selectedItem.position}</p>
+                        </div>
+                      )}
+                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-xs text-muted-foreground">Unternehmen</p>
+                          <button 
+                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                            className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
+                          >
+                            <Building2 className="h-3 w-3" />
+                            {selectedItem.customer_companies.name}
+                          </button>
+                        </div>
+                      )}
                     </div>
-                  )}
 
-
-                  {/* Additional Info */}
-                  {(selectedItem.vat_number || selectedItem.tax_number) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Zusätzliche Informationen
-                      </h4>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {selectedItem.vat_number && (
-                          <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
-                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                    {/* Contact Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {selectedItem.email && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Mail className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                             <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.email}
+                             </a>
                           </div>
-                        )}
-                        {selectedItem.tax_number && (
-                          <div className="p-2 bg-background rounded-md">
-                            <p className="text-xs text-muted-foreground">Steuernummer</p>
-                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                        </div>
+                      )}
+                      {selectedItem.phone && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <Phone className="h-4 w-4 text-primary" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                             <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                               {selectedItem.phone}
+                             </a>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      )}
+                      {selectedItem.mobile && (
+                        <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                          <MessageCircle className="h-4 w-4 text-green-600" />
+                          <div>
+                            <p className="text-xs text-muted-foreground">WhatsApp</p>
+                             <a 
+                               href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
+                               target="_blank" 
+                               rel="noopener noreferrer"
+                               className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                             >
+                               {selectedItem.mobile}
+                             </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/* Person Info - Direct display without section header */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedItem.position && (
-                      <div className="p-2 bg-background rounded-md">
-                        <p className="text-xs text-muted-foreground">Position</p>
-                        <p className="text-sm font-medium">{selectedItem.position}</p>
-                      </div>
-                    )}
-                    {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                      <div className="p-2 bg-background rounded-md">
-                        <p className="text-xs text-muted-foreground">Unternehmen</p>
-                        <button 
-                          onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                          className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
-                        >
-                          <Building2 className="h-3 w-3" />
-                          {selectedItem.customer_companies.name}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Contact Info - Direct display without section header */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedItem.email && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <Mail className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">E-Mail</p>
-                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                             {selectedItem.email}
-                           </a>
+                    
+                    {/* Notes */}
+                    {selectedItem.notes && (
+                      <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                          Notizen
+                        </h4>
+                        <div className="p-2 bg-background rounded-md">
+                          <p className="text-sm">{selectedItem.notes}</p>
                         </div>
                       </div>
                     )}
-                    {selectedItem.phone && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <Phone className="h-4 w-4 text-primary" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">Telefon</p>
-                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
-                             {selectedItem.phone}
-                           </a>
-                        </div>
-                      </div>
-                    )}
-                    {selectedItem.mobile && (
-                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
-                        <MessageCircle className="h-4 w-4 text-green-600" />
-                        <div>
-                          <p className="text-xs text-muted-foreground">WhatsApp</p>
-                           <a 
-                             href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
-                             target="_blank" 
-                             rel="noopener noreferrer"
-                             className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
-                           >
-                             {selectedItem.mobile}
-                           </a>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Notes */}
-                  {selectedItem.notes && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                        Notizen
-                      </h4>
-                      <div className="p-2 bg-background rounded-md">
-                        <p className="text-sm">{selectedItem.notes}</p>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-          
+                  </>
+                )}
+              </div>
+            )}
+            
             {/* Action Buttons at Bottom */}
             <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6 px-6 pb-6">
               <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
