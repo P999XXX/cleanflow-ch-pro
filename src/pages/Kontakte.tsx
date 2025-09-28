@@ -835,19 +835,61 @@ const Kontakte = () => {
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-6xl">
           <DialogHeader className="pb-4 border-b">
-            <DialogTitle className="sr-only">
-              {itemType === 'company' ? 'Unternehmensdetails' : 'Personendetails'}
-            </DialogTitle>
-            <DialogDescription className="sr-only">
-              {itemType === 'company' ? 'Detaillierte Informationen zum Unternehmen' : 'Detaillierte Informationen zur Kontaktperson'}
-            </DialogDescription>
-            
-            {/* Contact Card as Header */}
-            {selectedItem && (
-              <div className="w-full">
-                <ContactCard item={selectedItem} type={itemType} />
+            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+              <div className="flex items-center gap-3">
+                {itemType === 'company' ? (
+                  <>
+                    <Building2 className="h-6 w-6 text-primary" />
+                    <div className="flex flex-col">
+                      <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                      {selectedItem?.company_type && (
+                        <span className="text-sm font-normal text-muted-foreground mt-1">
+                          ({getFullCompanyType(selectedItem.company_type)})
+                        </span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-6 w-6 text-primary" />
+                    <span className="text-xl lg:text-2xl font-semibold">
+                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                    </span>
+                  </>
+                )}
               </div>
-            )}
+              <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
+                {itemType === 'company' && selectedItem && (
+                  <>
+                    {getStatusBadge(selectedItem.status)}
+                    {selectedItem.industry_category && (
+                      <Badge 
+                        variant="outline" 
+                        className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                      >
+                        {selectedItem.industry_category}
+                      </Badge>
+                    )}
+                    {selectedItem.contact_type && (
+                      <Badge 
+                        variant="outline" 
+                        className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                      >
+                        {selectedItem.contact_type}
+                      </Badge>
+                    )}
+                  </>
+                )}
+                {itemType === 'person' && selectedItem?.is_primary_contact && (
+                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                    Primärkontakt
+                  </Badge>
+                )}
+              </div>
+            </DialogTitle>
+            <DialogDescription>
+              {/* Removed detailed information description */}
+            </DialogDescription>
           </DialogHeader>
           
           {selectedItem && (
