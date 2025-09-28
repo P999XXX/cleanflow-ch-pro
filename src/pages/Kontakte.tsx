@@ -833,21 +833,19 @@ const Kontakte = () => {
 
       {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-6xl">
-          <DialogHeader className="pb-4 border-b">
-            {/* Google Maps at full width above title - Only for companies with address */}
-            {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) && (
-              <div className="mb-4">
-                <GoogleMap
-                  address={selectedItem.address}
-                  postal_code={selectedItem.postal_code}
-                  city={selectedItem.city}
-                  country={selectedItem.country}
-                  className="w-full h-48 rounded-lg border"
-                />
-              </div>
-            )}
-            
+        <DialogContent className="max-w-6xl p-0 overflow-hidden">
+          {/* Google Maps at full width without any margin - Only for companies with address */}
+          {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) && (
+            <GoogleMap
+              address={selectedItem.address}
+              postal_code={selectedItem.postal_code}
+              city={selectedItem.city}
+              country={selectedItem.country}
+              className="w-full h-48"
+            />
+          )}
+          
+          <DialogHeader className="pb-4 border-b px-6 pt-6">
             <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
               <div className="flex items-center gap-3">
                 {itemType === 'company' ? (
