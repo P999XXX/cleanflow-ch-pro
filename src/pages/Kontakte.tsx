@@ -831,88 +831,50 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Redesigned for Better UX */}
+      {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-5xl max-h-[90vh] flex flex-col p-0">
-          {/* Fixed Header with Navigation and Actions */}
-          <div className="flex-shrink-0 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <DialogHeader className="p-6 pb-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {/* Back Button */}
-                  {navigationStack.length > 0 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleGoBack}
-                      className="mr-2"
-                    >
-                      ←
-                    </Button>
-                  )}
-                  
-                  <div className="flex items-center gap-3">
-                    {itemType === 'company' ? (
-                      <Building2 className="h-6 w-6 text-primary" />
-                    ) : (
-                      <Users className="h-6 w-6 text-primary" />
-                    )}
-                    <div>
-                      <DialogTitle className="text-xl font-semibold text-left">
-                        {itemType === 'company' 
-                          ? selectedItem?.name 
-                          : selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''
-                        }
-                      </DialogTitle>
-                      {itemType === 'company' && selectedItem?.company_type && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {getFullCompanyType(selectedItem.company_type)}
-                        </p>
-                      )}
-                      {itemType === 'person' && selectedItem?.position && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {selectedItem.position}
-                        </p>
+        <DialogContent className="max-w-6xl">
+          <DialogHeader className="pb-4 border-b">
+            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+              <div className="flex items-center gap-3">
+                {itemType === 'company' ? (
+                  <>
+                    <Building2 className="h-6 w-6 text-primary" />
+                    <div className="flex flex-col">
+                      <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                      {selectedItem?.company_type && (
+                        <span className="text-sm font-normal text-muted-foreground mt-1">
+                          ({getFullCompanyType(selectedItem.company_type)})
+                        </span>
                       )}
                     </div>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleEditItem}
-                    className="flex items-center gap-2"
-                  >
-                    <Edit className="h-4 w-4" />
-                    Bearbeiten
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleDeleteItem}
-                    className="flex items-center gap-2 text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                    Löschen
-                  </Button>
-                </div>
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-6 w-6 text-primary" />
+                    <span className="text-xl lg:text-2xl font-semibold">
+                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                    </span>
+                  </>
+                )}
               </div>
-
-              {/* Status Badges */}
-              <div className="flex flex-wrap items-center gap-2 mt-4">
+              <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
                 {itemType === 'company' && selectedItem && (
                   <>
                     {getStatusBadge(selectedItem.status)}
                     {selectedItem.industry_category && (
-                      <Badge variant="outline" className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium">
+                      <Badge 
+                        variant="outline" 
+                        className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                      >
                         {selectedItem.industry_category}
                       </Badge>
                     )}
                     {selectedItem.contact_type && (
-                      <Badge variant="outline" className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium">
+                      <Badge 
+                        variant="outline" 
+                        className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                      >
                         {selectedItem.contact_type}
                       </Badge>
                     )}
@@ -924,260 +886,258 @@ const Kontakte = () => {
                   </Badge>
                 )}
               </div>
-            </DialogHeader>
-          </div>
-
-          {/* Scrollable Content Area */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-6 space-y-6">
-              {selectedItem && (
+            </DialogTitle>
+            <DialogDescription>
+              {/* Removed detailed information description */}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedItem && (
+            <div className="space-y-6 animate-fade-in">
+              {itemType === 'company' ? (
                 <>
-                  {itemType === 'company' ? (
-                    <>
-                      {/* Quick Contact Info */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {selectedItem.email && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <Mail className="h-5 w-5 text-primary" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">E-Mail</p>
-                              <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium hover:text-primary transition-colors truncate block">
-                                {selectedItem.email}
-                              </a>
+                  {/* Company Basic Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">E-Mail</p>
+                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.email}
+                           </a>
+                        </div>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Phone className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Telefon</p>
+                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.phone}
+                           </a>
+                        </div>
+                      </div>
+                    )}
+                    {selectedItem.website && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Building2 className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Website</p>
+                          <a 
+                            href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-sm font-medium text-primary hover:underline transition-colors"
+                          >
+                            {selectedItem.website}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                   {/* Contact Persons */}
+                   {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                     <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                            <Users className="h-4 w-4" />
+                            Kontaktpersonen
+                            <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                              {selectedItem.contact_persons.length}
+                            </Badge>
+                          </h4>
+                        </div>
+                       <div className="grid gap-3">
+                         {selectedItem.contact_persons.map((contact) => (
+                           <div key={contact.id} className="bg-background rounded-lg p-3 border border-border/50 hover:bg-muted/20 transition-colors cursor-pointer" onClick={() => handleNavigateToPerson(contact)}>
+                             <div className="flex items-start justify-between">
+                               <div className="flex-1">
+                                 <div className="flex items-center justify-between">
+                                   <span className="font-medium text-sm text-foreground hover:text-primary transition-colors">
+                                     {contact.first_name} {contact.last_name}
+                                   </span>
+                                   {contact.is_primary_contact && (
+                                     <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs">
+                                       Primär
+                                     </Badge>
+                                   )}
+                                 </div>
+                                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                    {contact.position && <span>{contact.position}</span>}
+                                  </div>
+                               </div>
+                             </div>
+                             {contact.notes && (
+                               <div className="mt-2 pt-2 border-t border-border/50">
+                                 <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                               </div>
+                             )}
+                           </div>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                   {/* Address */}
+                  {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Adresse
+                      </h4>
+                      <div className="p-2 bg-background rounded-md">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="h-4 w-4 text-primary mt-0.5" />
+                          <div className="text-sm">
+                            {selectedItem.address && <div>{selectedItem.address}</div>}
+                            <div>
+                              {selectedItem.postal_code && selectedItem.city 
+                                ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                : selectedItem.postal_code || selectedItem.city}
                             </div>
                           </div>
-                        )}
-                        {selectedItem.phone && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <Phone className="h-5 w-5 text-primary" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">Telefon</p>
-                              <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium hover:text-primary transition-colors">
-                                {selectedItem.phone}
-                              </a>
-                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Google Maps - Show company location */}
+                  {(selectedItem.address || selectedItem.city) && (
+                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Standort
+                      </h4>
+                      <GoogleMap
+                        address={selectedItem.address}
+                        postal_code={selectedItem.postal_code}
+                        city={selectedItem.city}
+                        country={selectedItem.country}
+                        className="w-full h-64 rounded-lg"
+                      />
+                    </div>
+                  )}
+
+                  {/* Additional Info */}
+                  {(selectedItem.vat_number || selectedItem.tax_number) && (
+                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Zusätzliche Informationen
+                      </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedItem.vat_number && (
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                            <p className="text-sm font-medium">{selectedItem.vat_number}</p>
                           </div>
                         )}
-                        {selectedItem.website && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <Building2 className="h-5 w-5 text-primary" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">Website</p>
-                              <a 
-                                href={selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="text-sm font-medium text-primary hover:underline transition-colors truncate block"
-                              >
-                                {selectedItem.website}
-                              </a>
-                            </div>
+                        {selectedItem.tax_number && (
+                          <div className="p-2 bg-background rounded-md">
+                            <p className="text-xs text-muted-foreground">Steuernummer</p>
+                            <p className="text-sm font-medium">{selectedItem.tax_number}</p>
                           </div>
                         )}
                       </div>
-
-                      {/* Contact Persons */}
-                      {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                        <Card>
-                          <CardHeader>
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-semibold text-base flex items-center gap-2">
-                                <Users className="h-5 w-5" />
-                                Kontaktpersonen
-                              </h4>
-                              <Badge variant="secondary" className="bg-primary/10 text-primary border-0">
-                                {selectedItem.contact_persons.length}
-                              </Badge>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="grid gap-3">
-                            {selectedItem.contact_persons.map((contact) => (
-                              <div 
-                                key={contact.id} 
-                                className="flex items-start justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group" 
-                                onClick={() => handleNavigateToPerson(contact)}
-                              >
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <span className="font-medium group-hover:text-primary transition-colors">
-                                      {contact.first_name} {contact.last_name}
-                                    </span>
-                                    {contact.is_primary_contact && (
-                                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 text-xs">
-                                        Primär
-                                      </Badge>
-                                    )}
-                                  </div>
-                                  {contact.position && (
-                                    <p className="text-sm text-muted-foreground">{contact.position}</p>
-                                  )}
-                                  {contact.email && (
-                                    <p className="text-xs text-muted-foreground mt-1">{contact.email}</p>
-                                  )}
-                                </div>
-                                <div className="text-muted-foreground group-hover:text-foreground transition-colors">
-                                  →
-                                </div>
-                              </div>
-                            ))}
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {/* Address & Map */}
-                      {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                        <Card>
-                          <CardHeader>
-                            <h4 className="font-semibold text-base flex items-center gap-2">
-                              <MapPin className="h-5 w-5" />
-                              Adresse & Standort
-                            </h4>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            {/* Address Text */}
-                            <div className="flex items-start gap-3 p-3 bg-muted/30 rounded-lg">
-                              <MapPin className="h-4 w-4 text-primary mt-0.5" />
-                              <div className="text-sm">
-                                {selectedItem.address && <div className="font-medium">{selectedItem.address}</div>}
-                                <div className="text-muted-foreground">
-                                  {selectedItem.postal_code && selectedItem.city 
-                                    ? `${selectedItem.postal_code} ${selectedItem.city}` 
-                                    : selectedItem.postal_code || selectedItem.city}
-                                </div>
-                              </div>
-                            </div>
-                            
-                            {/* Map */}
-                            <GoogleMap
-                              address={selectedItem.address}
-                              postal_code={selectedItem.postal_code}
-                              city={selectedItem.city}
-                              country={selectedItem.country}
-                              className="w-full h-64 rounded-lg"
-                            />
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {/* Additional Information */}
-                      {(selectedItem.vat_number || selectedItem.tax_number) && (
-                        <Card>
-                          <CardHeader>
-                            <h4 className="font-semibold text-base">Zusätzliche Informationen</h4>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              {selectedItem.vat_number && (
-                                <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                                  <div>
-                                    <p className="text-xs text-muted-foreground uppercase tracking-wide">USt-IdNr.</p>
-                                    <p className="text-sm font-medium">{selectedItem.vat_number}</p>
-                                  </div>
-                                </div>
-                              )}
-                              {selectedItem.tax_number && (
-                                <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                                  <div>
-                                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Steuernummer</p>
-                                    <p className="text-sm font-medium">{selectedItem.tax_number}</p>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {/* Person Details */}
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {selectedItem.email && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <Mail className="h-5 w-5 text-primary" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">E-Mail</p>
-                              <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium hover:text-primary transition-colors truncate block">
-                                {selectedItem.email}
-                              </a>
-                            </div>
-                          </div>
-                        )}
-                        {selectedItem.phone && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <Phone className="h-5 w-5 text-primary" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">Telefon</p>
-                              <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium hover:text-primary transition-colors">
-                                {selectedItem.phone}
-                              </a>
-                            </div>
-                          </div>
-                        )}
-                        {selectedItem.mobile && (
-                          <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg hover:bg-muted/70 transition-colors">
-                            <MessageCircle className="h-5 w-5 text-green-600" />
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs text-muted-foreground uppercase tracking-wide">WhatsApp</p>
-                              <a 
-                                href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
-                                target="_blank" 
-                                rel="noopener noreferrer"
-                                className="text-sm font-medium hover:text-primary transition-colors"
-                              >
-                                {selectedItem.mobile}
-                              </a>
-                            </div>
-                          </div>
-                        )}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Person Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.position && (
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-xs text-muted-foreground">Position</p>
+                        <p className="text-sm font-medium">{selectedItem.position}</p>
                       </div>
+                    )}
+                    {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-xs text-muted-foreground">Unternehmen</p>
+                        <button 
+                          onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                          className="text-sm font-medium flex items-center gap-1 text-primary hover:underline cursor-pointer transition-colors"
+                        >
+                          <Building2 className="h-3 w-3" />
+                          {selectedItem.customer_companies.name}
+                        </button>
+                      </div>
+                    )}
+                  </div>
 
-                      {/* Company Link */}
-                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                        <Card>
-                          <CardHeader>
-                            <h4 className="font-semibold text-base flex items-center gap-2">
-                              <Building2 className="h-5 w-5" />
-                              Unternehmen
-                            </h4>
-                          </CardHeader>
-                          <CardContent>
-                            <div 
-                              className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer group" 
-                              onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                            >
-                              <Building2 className="h-5 w-5 text-primary" />
-                              <div className="flex-1">
-                                <p className="font-medium group-hover:text-primary transition-colors">
-                                  {selectedItem.customer_companies.name}
-                                </p>
-                              </div>
-                              <div className="text-muted-foreground group-hover:text-foreground transition-colors">
-                                →
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-
-                      {/* Notes */}
-                      {selectedItem.notes && (
-                        <Card>
-                          <CardHeader>
-                            <h4 className="font-semibold text-base">Notizen</h4>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="p-3 bg-muted/30 rounded-lg">
-                              <p className="text-sm whitespace-pre-wrap">{selectedItem.notes}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </>
+                  {/* Contact Info - Direct display without section header */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedItem.email && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Mail className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">E-Mail</p>
+                           <a href={`mailto:${selectedItem.email}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.email}
+                           </a>
+                        </div>
+                      </div>
+                    )}
+                    {selectedItem.phone && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <Phone className="h-4 w-4 text-primary" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">Telefon</p>
+                           <a href={`tel:${selectedItem.phone}`} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors">
+                             {selectedItem.phone}
+                           </a>
+                        </div>
+                      </div>
+                    )}
+                    {selectedItem.mobile && (
+                      <div className="flex items-center gap-2 p-2 bg-background rounded-md">
+                        <MessageCircle className="h-4 w-4 text-green-600" />
+                        <div>
+                          <p className="text-xs text-muted-foreground">WhatsApp</p>
+                           <a 
+                             href={`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`} 
+                             target="_blank" 
+                             rel="noopener noreferrer"
+                             className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors"
+                           >
+                             {selectedItem.mobile}
+                           </a>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Notes */}
+                  {selectedItem.notes && (
+                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
+                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                        Notizen
+                      </h4>
+                      <div className="p-2 bg-background rounded-md">
+                        <p className="text-sm">{selectedItem.notes}</p>
+                      </div>
+                    </div>
                   )}
                 </>
               )}
             </div>
+          )}
+          
+          {/* Action Buttons at Bottom */}
+          <div className="flex flex-col items-center gap-3 pt-4 border-t mt-6">
+            <Button onClick={handleEditItem} className="w-full flex items-center justify-center gap-2">
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Button>
+            <button 
+              type="button" 
+              onClick={handleGoBack}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
+            </button>
           </div>
         </DialogContent>
       </Dialog>
