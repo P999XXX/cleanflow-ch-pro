@@ -833,39 +833,42 @@ const Kontakte = () => {
 
       {/* Details Dialog - Large and Enhanced */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-6xl">
-          <DialogHeader className="pb-4 border-b">
-            <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
-              <div className="flex items-center gap-3">
-                {itemType === 'company' ? (
-                  <>
-                    <Building2 className="h-6 w-6 text-primary" />
+        <DialogContent className="max-w-6xl p-0 overflow-hidden">
+          {/* Maps Header with Overlay Title and Badges */}
+          {itemType === 'company' && selectedItem && (selectedItem.address || selectedItem.city) ? (
+            <div className="relative h-48 overflow-hidden">
+              <GoogleMap
+                address={selectedItem.address}
+                postal_code={selectedItem.postal_code}
+                city={selectedItem.city}
+                country={selectedItem.country}
+                className="absolute inset-0 w-full h-full"
+              />
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+              
+              {/* Title and Badges Overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <Building2 className="h-6 w-6 text-white drop-shadow-lg" />
                     <div className="flex flex-col">
-                      <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                      <span className="text-xl lg:text-2xl font-bold text-white drop-shadow-lg">
+                        {selectedItem?.name}
+                      </span>
                       {selectedItem?.company_type && (
-                        <span className="text-sm font-normal text-muted-foreground mt-1">
+                        <span className="text-sm font-medium text-white/90 mt-1 drop-shadow">
                           ({getFullCompanyType(selectedItem.company_type)})
                         </span>
                       )}
                     </div>
-                  </>
-                ) : (
-                  <>
-                    <Users className="h-6 w-6 text-primary" />
-                    <span className="text-xl lg:text-2xl font-semibold">
-                      {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
-                    </span>
-                  </>
-                )}
-              </div>
-              <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
-                {itemType === 'company' && selectedItem && (
-                  <>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
                     {getStatusBadge(selectedItem.status)}
                     {selectedItem.industry_category && (
                       <Badge 
                         variant="outline" 
-                        className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                        className="bg-purple-500/20 text-purple-200 hover:bg-purple-500/30 border-purple-400/30 backdrop-blur-sm font-medium shadow-lg"
                       >
                         {selectedItem.industry_category}
                       </Badge>
@@ -873,27 +876,75 @@ const Kontakte = () => {
                     {selectedItem.contact_type && (
                       <Badge 
                         variant="outline" 
-                        className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                        className="bg-orange-500/20 text-orange-200 hover:bg-orange-500/30 border-orange-400/30 backdrop-blur-sm font-medium shadow-lg"
                       >
                         {selectedItem.contact_type}
                       </Badge>
                     )}
-                  </>
-                )}
-                {itemType === 'person' && selectedItem?.is_primary_contact && (
-                  <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                    Primärkontakt
-                  </Badge>
-                )}
+                  </div>
+                </div>
               </div>
-            </DialogTitle>
-            <DialogDescription>
-              {/* Removed detailed information description */}
-            </DialogDescription>
-          </DialogHeader>
+            </div>
+          ) : (
+            // Fallback header for persons or companies without address
+            <DialogHeader className="pb-4 border-b mx-6 mt-6">
+              <DialogTitle className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pr-8">
+                <div className="flex items-center gap-3">
+                  {itemType === 'company' ? (
+                    <>
+                      <Building2 className="h-6 w-6 text-primary" />
+                      <div className="flex flex-col">
+                        <span className="text-xl lg:text-2xl font-semibold">{selectedItem?.name}</span>
+                        {selectedItem?.company_type && (
+                          <span className="text-sm font-normal text-muted-foreground mt-1">
+                            ({getFullCompanyType(selectedItem.company_type)})
+                          </span>
+                        )}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Users className="h-6 w-6 text-primary" />
+                      <span className="text-xl lg:text-2xl font-semibold">
+                        {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                      </span>
+                    </>
+                  )}
+                </div>
+                <div className="flex items-center gap-2 lg:mr-2 flex-wrap">
+                  {itemType === 'company' && selectedItem && (
+                    <>
+                      {getStatusBadge(selectedItem.status)}
+                      {selectedItem.industry_category && (
+                        <Badge 
+                          variant="outline" 
+                          className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                        >
+                          {selectedItem.industry_category}
+                        </Badge>
+                      )}
+                      {selectedItem.contact_type && (
+                        <Badge 
+                          variant="outline" 
+                          className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                        >
+                          {selectedItem.contact_type}
+                        </Badge>
+                      )}
+                    </>
+                  )}
+                  {itemType === 'person' && selectedItem?.is_primary_contact && (
+                    <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                      Primärkontakt
+                    </Badge>
+                  )}
+                </div>
+              </DialogTitle>
+            </DialogHeader>
+          )}
           
           {selectedItem && (
-            <div className="space-y-6 animate-fade-in">
+            <div className="space-y-6 animate-fade-in p-6">
               {itemType === 'company' ? (
                 <>
                   {/* Company Basic Info - Direct display without section header */}
@@ -1000,23 +1051,6 @@ const Kontakte = () => {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )}
-
-                  {/* Google Maps - Show company location */}
-                  {(selectedItem.address || selectedItem.city) && (
-                    <div className="bg-muted/80 rounded-lg p-4 space-y-3">
-                      <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                        <MapPin className="h-4 w-4" />
-                        Standort
-                      </h4>
-                      <GoogleMap
-                        address={selectedItem.address}
-                        postal_code={selectedItem.postal_code}
-                        city={selectedItem.city}
-                        country={selectedItem.country}
-                        className="w-full h-64 rounded-lg"
-                      />
                     </div>
                   )}
 
