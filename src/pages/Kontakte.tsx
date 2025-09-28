@@ -866,14 +866,14 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Redesigned with Map Header */}
+      {/* Details Dialog - Scrollable */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-hidden flex flex-col">
+        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-y-auto">
           {selectedItem && (
-            <>
+            <div className="w-full">
               {/* Map Header - Full width, no margins */}
               {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-                <div className="relative h-48 sm:h-64 flex-shrink-0">
+                <div className="relative h-48 sm:h-64">
                   <GoogleMap
                     address={selectedItem.address}
                     postal_code={selectedItem.postal_code}
@@ -886,408 +886,146 @@ const Kontakte = () => {
                 </div>
               )}
 
-              {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto">
-                {/* Title and Badges Section */}
-                <div className="p-6 pb-4 border-b">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    {/* Title - Left */}
-                    <div className="flex items-center gap-3">
-                      {itemType === 'company' ? (
-                        <>
-                          <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
-                          <div className="flex flex-col min-w-0">
-                            <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem?.name}</h2>
-                            {selectedItem?.company_type && (
-                              <span className="text-sm font-normal text-muted-foreground mt-1">
-                                {selectedItem.company_type}
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <Users className="h-6 w-6 text-primary flex-shrink-0" />
-                          <div className="flex flex-col min-w-0">
-                            <h2 className="text-xl sm:text-2xl font-semibold">
-                              {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
-                            </h2>
-                            {selectedItem?.position && (
-                              <span className="text-sm font-normal text-muted-foreground mt-1">
-                                {selectedItem.position}
-                              </span>
-                            )}
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Badges - Right */}
-                    <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
-                      {itemType === 'company' && selectedItem && (
-                        <>
-                          {getStatusBadge(selectedItem.status)}
-                          {selectedItem.industry_category && (
-                            <Badge 
-                              variant="outline" 
-                              className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
-                            >
-                              {selectedItem.industry_category}
-                            </Badge>
+              {/* Title and Badges Section */}
+              <div className="p-6 pb-4 border-b">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  {/* Title - Left */}
+                  <div className="flex items-center gap-3">
+                    {itemType === 'company' ? (
+                      <>
+                        <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
+                        <div className="flex flex-col min-w-0">
+                          <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem?.name}</h2>
+                          {selectedItem?.company_type && (
+                            <span className="text-sm font-normal text-muted-foreground mt-1">
+                              {selectedItem.company_type}
+                            </span>
                           )}
-                          {selectedItem.contact_type && (
-                            <Badge 
-                              variant="outline" 
-                              className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
-                            >
-                              {selectedItem.contact_type}
-                            </Badge>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                        <div className="flex flex-col min-w-0">
+                          <h2 className="text-xl sm:text-2xl font-semibold">
+                            {selectedItem ? `${selectedItem.first_name} ${selectedItem.last_name}` : ''}
+                          </h2>
+                          {selectedItem?.position && (
+                            <span className="text-sm font-normal text-muted-foreground mt-1">
+                              {selectedItem.position}
+                            </span>
                           )}
-                        </>
-                      )}
-                      {itemType === 'person' && selectedItem?.is_primary_contact && (
-                        <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
-                          Primärkontakt
-                        </Badge>
-                      )}
-                    </div>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  {/* Quick Action Icons - Round buttons */}
-                  <div className="flex items-center gap-3 mt-4">
-                    {selectedItem.website && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full h-10 w-10"
-                        onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
-                      >
-                        <Globe className="h-4 w-4" />
-                      </Button>
+                  {/* Badges - Right */}
+                  <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+                    {itemType === 'company' && selectedItem && (
+                      <>
+                        {getStatusBadge(selectedItem.status)}
+                        {selectedItem.industry_category && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-purple-500/15 text-purple-700 hover:bg-purple-500/25 border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400 dark:hover:bg-purple-500/20 font-medium"
+                          >
+                            {selectedItem.industry_category}
+                          </Badge>
+                        )}
+                        {selectedItem.contact_type && (
+                          <Badge 
+                            variant="outline" 
+                            className="bg-orange-500/15 text-orange-700 hover:bg-orange-500/25 border-orange-500/20 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20 font-medium"
+                          >
+                            {selectedItem.contact_type}
+                          </Badge>
+                        )}
+                      </>
                     )}
-                    {selectedItem.phone && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full h-10 w-10"
-                        onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
-                      >
-                        <Phone className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {selectedItem.email && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full h-10 w-10"
-                        onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
-                      >
-                        <Mail className="h-4 w-4" />
-                      </Button>
-                    )}
-                    {(selectedItem.address || selectedItem.city) && (
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="rounded-full h-10 w-10"
-                        onClick={() => {
-                          const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
-                          window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
-                        }}
-                      >
-                        <MapPin className="h-4 w-4" />
-                      </Button>
+                    {itemType === 'person' && selectedItem?.is_primary_contact && (
+                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium">
+                        Primärkontakt
+                      </Badge>
                     )}
                   </div>
                 </div>
 
-                {/* Tabs - Only for customers */}
-                {itemType === 'company' && selectedItem.contact_type === 'kunde' && (
-                  <div className="px-6 py-4 border-b">
-                    <Tabs defaultValue="kontakt" className="w-full">
-                      <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="kontakt" className="flex items-center gap-2">
-                          <Contact className="h-4 w-4" />
-                          <span className="hidden sm:inline">Kontakt</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="objekte" className="flex items-center gap-2">
-                          <Building className="h-4 w-4" />
-                          <span className="hidden sm:inline">Objekte</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="reklamationen" className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4" />
-                          <span className="hidden sm:inline">Reklamationen</span>
-                          <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
-                        </TabsTrigger>
-                        <TabsTrigger value="dokumente" className="flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          <span className="hidden sm:inline">Dokumente</span>
-                        </TabsTrigger>
-                      </TabsList>
+                {/* Quick Action Icons - Round buttons */}
+                <div className="flex items-center gap-3 mt-4">
+                  {selectedItem.website && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                    >
+                      <Globe className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {selectedItem.phone && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                    >
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {selectedItem.email && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                    >
+                      <Mail className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {(selectedItem.address || selectedItem.city) && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => {
+                        const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                        window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                      }}
+                    >
+                      <MapPin className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
 
-                      <TabsContent value="kontakt" className="mt-4">
-                        {/* Kontakt Content */}
-                        <div className="space-y-6">
-                          {itemType === 'company' ? (
-                            <>
-                              {/* Contact Information Cards */}
-                              <div className="space-y-4">
-                                <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                  Kontaktinformationen
-                                </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                  {selectedItem.email && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
-                                    >
-                                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">E-Mail</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.email}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                  {selectedItem.phone && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
-                                    >
-                                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">Telefon</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                  {selectedItem.website && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
-                                    >
-                                      <Globe className="h-5 w-5 text-primary flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">Website</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.website}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
+              {/* Tabs - Only for customers */}
+              {itemType === 'company' && selectedItem.contact_type === 'kunde' && (
+                <div className="px-6 py-4 border-b">
+                  <Tabs defaultValue="kontakt" className="w-full">
+                    <TabsList className="grid w-full grid-cols-4">
+                      <TabsTrigger value="kontakt" className="flex items-center gap-2">
+                        <Contact className="h-4 w-4" />
+                        <span className="hidden sm:inline">Kontakt</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="objekte" className="flex items-center gap-2">
+                        <Building className="h-4 w-4" />
+                        <span className="hidden sm:inline">Objekte</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="reklamationen" className="flex items-center gap-2">
+                        <AlertTriangle className="h-4 w-4" />
+                        <span className="hidden sm:inline">Reklamationen</span>
+                        <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
+                      </TabsTrigger>
+                      <TabsTrigger value="dokumente" className="flex items-center gap-2">
+                        <FileText className="h-4 w-4" />
+                        <span className="hidden sm:inline">Dokumente</span>
+                      </TabsTrigger>
+                    </TabsList>
 
-                              {/* Contact Persons */}
-                              {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
-                                <div className="space-y-4">
-                                  <div className="flex items-center justify-between">
-                                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
-                                      <Users className="h-4 w-4" />
-                                      Kontaktpersonen
-                                      <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                                        {selectedItem.contact_persons.length}
-                                      </Badge>
-                                    </h4>
-                                  </div>
-                                  <div className="grid gap-3">
-                                    {selectedItem.contact_persons.map((contact) => (
-                                      <Button
-                                        key={contact.id}
-                                        variant="outline"
-                                        className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
-                                        onClick={() => handleNavigateToPerson(contact)}
-                                      >
-                                        <div className="flex-1 text-left">
-                                          <div className="flex items-center justify-between">
-                                            <span className="font-medium text-sm text-foreground">
-                                              {contact.first_name} {contact.last_name}
-                                            </span>
-                                            {contact.is_primary_contact && (
-                                              <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs ml-2">
-                                                Primär
-                                              </Badge>
-                                            )}
-                                          </div>
-                                          <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
-                                            {contact.position && <span>{contact.position}</span>}
-                                          </div>
-                                          {contact.notes && (
-                                            <div className="mt-2 pt-2 border-t border-border/50">
-                                              <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
-                                            </div>
-                                          )}
-                                        </div>
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Address */}
-                              {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
-                                <div className="space-y-4">
-                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                    Adresse
-                                  </h4>
-                                  <Button
-                                    variant="outline"
-                                    className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
-                                    onClick={() => {
-                                      const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
-                                      window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
-                                    }}
-                                  >
-                                    <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
-                                    <div className="text-left">
-                                      {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
-                                      <div className="text-sm font-medium">
-                                        {selectedItem.postal_code && selectedItem.city 
-                                          ? `${selectedItem.postal_code} ${selectedItem.city}` 
-                                          : selectedItem.postal_code || selectedItem.city}
-                                      </div>
-                                    </div>
-                                  </Button>
-                                </div>
-                              )}
-
-                              {/* Additional Info */}
-                              {(selectedItem.vat_number || selectedItem.tax_number) && (
-                                <div className="space-y-4">
-                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                    Zusätzliche Informationen
-                                  </h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {selectedItem.vat_number && (
-                                      <div className="p-4 bg-muted/50 rounded-lg">
-                                        <p className="text-xs text-muted-foreground">USt-IdNr.</p>
-                                        <p className="text-sm font-medium">{selectedItem.vat_number}</p>
-                                      </div>
-                                    )}
-                                    {selectedItem.tax_number && (
-                                      <div className="p-4 bg-muted/50 rounded-lg">
-                                        <p className="text-xs text-muted-foreground">Steuernummer</p>
-                                        <p className="text-sm font-medium">{selectedItem.tax_number}</p>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          ) : (
-                            <>
-                              {/* Person Contact Information */}
-                              <div className="space-y-4">
-                                <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                  Kontaktinformationen
-                                </h4>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                                  {selectedItem.email && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
-                                    >
-                                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">E-Mail</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.email}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                  {selectedItem.phone && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
-                                    >
-                                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">Telefon</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                  {selectedItem.mobile && (
-                                    <Button
-                                      variant="outline"
-                                      className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                      onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
-                                    >
-                                      <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                                      <div className="text-left min-w-0">
-                                        <p className="text-xs text-muted-foreground">WhatsApp</p>
-                                        <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
-                                      </div>
-                                    </Button>
-                                  )}
-                                </div>
-                              </div>
-
-                              {/* Company Information */}
-                              {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                                <div className="space-y-4">
-                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                    Unternehmen
-                                  </h4>
-                                  <Button
-                                    variant="outline"
-                                    className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
-                                    onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                                  >
-                                    <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
-                                    <div className="text-left">
-                                      <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
-                                    </div>
-                                  </Button>
-                                </div>
-                              )}
-
-                              {/* Notes */}
-                              {selectedItem.notes && (
-                                <div className="space-y-4">
-                                  <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                                    Notizen
-                                  </h4>
-                                  <div className="p-4 bg-muted/50 rounded-lg">
-                                    <p className="text-sm">{selectedItem.notes}</p>
-                                  </div>
-                                </div>
-                              )}
-                            </>
-                          )}
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="objekte" className="mt-4">
-                        <div className="text-center py-8 text-muted-foreground">
-                          <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                          <p>Objekte werden hier angezeigt</p>
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="reklamationen" className="mt-4">
-                        <div className="text-center py-8 text-muted-foreground">
-                          <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                          <p>Reklamationen werden hier angezeigt</p>
-                        </div>
-                      </TabsContent>
-
-                      <TabsContent value="dokumente" className="mt-4">
-                        <div className="text-center py-8 text-muted-foreground">
-                          <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                          <p>Dokumente werden hier angezeigt</p>
-                        </div>
-                      </TabsContent>
-                    </Tabs>
-                  </div>
-                )}
-
-                {/* Non-customer content (no tabs) */}
-                {!(itemType === 'company' && selectedItem.contact_type === 'kunde') && (
-                  <div className="p-6 space-y-6">
-                    {itemType === 'company' ? (
-                      <>
+                    <TabsContent value="kontakt" className="mt-4">
+                      {/* Contact Content */}
+                      <div className="space-y-6">
                         {/* Contact Information Cards */}
                         <div className="space-y-4">
                           <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -1370,6 +1108,11 @@ const Kontakte = () => {
                                     <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
                                       {contact.position && <span>{contact.position}</span>}
                                     </div>
+                                    {contact.notes && (
+                                      <div className="mt-2 pt-2 border-t border-border/50">
+                                        <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                                      </div>
+                                    )}
                                   </div>
                                 </Button>
                               ))}
@@ -1404,7 +1147,7 @@ const Kontakte = () => {
                           </div>
                         )}
 
-                         {/* Additional Info */}
+                        {/* Additional Info */}
                         {(selectedItem.vat_number || selectedItem.tax_number) && (
                           <div className="space-y-4">
                             <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -1426,92 +1169,230 @@ const Kontakte = () => {
                             </div>
                           </div>
                         )}
-                      </>
-                    ) : (
-                      <>
-                        {/* Person Contact Information */}
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="objekte" className="mt-4">
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                        <p>Objekte werden hier angezeigt</p>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="reklamationen" className="mt-4">
+                      <div className="text-center py-8 text-muted-foreground">
+                        <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                        <p>Reklamationen werden hier angezeigt</p>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="dokumente" className="mt-4">
+                      <div className="text-center py-8 text-muted-foreground">
+                        <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                        <p>Dokumente werden hier angezeigt</p>
+                      </div>
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              )}
+
+              {/* Non-customer content (no tabs) and person content */}
+              {(itemType === 'person' || (itemType === 'company' && selectedItem.contact_type !== 'kunde')) && (
+                <div className="p-6 space-y-6">
+                  {/* Contact Information Cards */}
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                      Kontaktinformationen
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {selectedItem.email && (
+                        <Button
+                          variant="outline"
+                          className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                          onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                        >
+                          <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                          <div className="text-left min-w-0">
+                            <p className="text-xs text-muted-foreground">E-Mail</p>
+                            <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                          </div>
+                        </Button>
+                      )}
+                      {selectedItem.phone && (
+                        <Button
+                          variant="outline"
+                          className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                          onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                        >
+                          <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                          <div className="text-left min-w-0">
+                            <p className="text-xs text-muted-foreground">Telefon</p>
+                            <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                          </div>
+                        </Button>
+                      )}
+                      {selectedItem.mobile && (
+                        <Button
+                          variant="outline"
+                          className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                          onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
+                        >
+                          <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                          <div className="text-left min-w-0">
+                            <p className="text-xs text-muted-foreground">WhatsApp</p>
+                            <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+                          </div>
+                        </Button>
+                      )}
+                      {selectedItem.website && (
+                        <Button
+                          variant="outline"
+                          className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+                          onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                        >
+                          <Globe className="h-5 w-5 text-primary flex-shrink-0" />
+                          <div className="text-left min-w-0">
+                            <p className="text-xs text-muted-foreground">Website</p>
+                            <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+                          </div>
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Company-specific content for non-customers */}
+                  {itemType === 'company' && (
+                    <>
+                      {/* Contact Persons */}
+                      {selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              Kontaktpersonen
+                              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                                {selectedItem.contact_persons.length}
+                              </Badge>
+                            </h4>
+                          </div>
+                          <div className="grid gap-3">
+                            {selectedItem.contact_persons.map((contact) => (
+                              <Button
+                                key={contact.id}
+                                variant="outline"
+                                className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
+                                onClick={() => handleNavigateToPerson(contact)}
+                              >
+                                <div className="flex-1 text-left">
+                                  <div className="flex items-center justify-between">
+                                    <span className="font-medium text-sm text-foreground">
+                                      {contact.first_name} {contact.last_name}
+                                    </span>
+                                    {contact.is_primary_contact && (
+                                      <Badge variant="secondary" className="bg-blue-500/15 text-blue-700 hover:bg-blue-500/25 border-blue-500/20 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20 font-medium text-xs ml-2">
+                                        Primär
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                                    {contact.position && <span>{contact.position}</span>}
+                                  </div>
+                                </div>
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Address */}
+                      {(selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
                         <div className="space-y-4">
                           <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                            Kontaktinformationen
+                            Adresse
                           </h4>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            {selectedItem.email && (
-                              <Button
-                                variant="outline"
-                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
-                              >
-                                <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                                <div className="text-left min-w-0">
-                                  <p className="text-xs text-muted-foreground">E-Mail</p>
-                                  <p className="text-sm font-medium truncate">{selectedItem.email}</p>
-                                </div>
-                              </Button>
+                          <Button
+                            variant="outline"
+                            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                            onClick={() => {
+                              const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                              window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                            }}
+                          >
+                            <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+                            <div className="text-left">
+                              {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
+                              <div className="text-sm font-medium">
+                                {selectedItem.postal_code && selectedItem.city 
+                                  ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                                  : selectedItem.postal_code || selectedItem.city}
+                              </div>
+                            </div>
+                          </Button>
+                        </div>
+                      )}
+
+                      {/* Additional Info */}
+                      {(selectedItem.vat_number || selectedItem.tax_number) && (
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                            Zusätzliche Informationen
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {selectedItem.vat_number && (
+                              <div className="p-4 bg-muted/50 rounded-lg">
+                                <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                                <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+                              </div>
                             )}
-                            {selectedItem.phone && (
-                              <Button
-                                variant="outline"
-                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
-                              >
-                                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                                <div className="text-left min-w-0">
-                                  <p className="text-xs text-muted-foreground">Telefon</p>
-                                  <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
-                                </div>
-                              </Button>
-                            )}
-                            {selectedItem.mobile && (
-                              <Button
-                                variant="outline"
-                                className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
-                                onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
-                              >
-                                <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                                <div className="text-left min-w-0">
-                                  <p className="text-xs text-muted-foreground">WhatsApp</p>
-                                  <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
-                                </div>
-                              </Button>
+                            {selectedItem.tax_number && (
+                              <div className="p-4 bg-muted/50 rounded-lg">
+                                <p className="text-xs text-muted-foreground">Steuernummer</p>
+                                <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+                              </div>
                             )}
                           </div>
                         </div>
+                      )}
+                    </>
+                  )}
 
-                        {/* Company Information */}
-                        {selectedItem.customer_company_id && selectedItem.customer_companies && (
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                              Unternehmen
-                            </h4>
-                            <Button
-                              variant="outline"
-                              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
-                              onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
-                            >
-                              <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
-                              <div className="text-left">
-                                <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
-                              </div>
-                            </Button>
-                          </div>
-                        )}
-
-                        {/* Notes */}
-                        {selectedItem.notes && (
-                          <div className="space-y-4">
-                            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
-                              Notizen
-                            </h4>
-                            <div className="p-4 bg-muted/50 rounded-lg">
-                              <p className="text-sm">{selectedItem.notes}</p>
+                  {/* Person-specific content */}
+                  {itemType === 'person' && (
+                    <>
+                      {/* Company Information */}
+                      {selectedItem.customer_company_id && selectedItem.customer_companies && (
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                            Unternehmen
+                          </h4>
+                          <Button
+                            variant="outline"
+                            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+                            onClick={() => handleNavigateToCompany(selectedItem.customer_company_id)}
+                          >
+                            <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+                            <div className="text-left">
+                              <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
                             </div>
+                          </Button>
+                        </div>
+                      )}
+
+                      {/* Notes */}
+                      {selectedItem.notes && (
+                        <div className="space-y-4">
+                          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+                            Notizen
+                          </h4>
+                          <div className="p-4 bg-muted/50 rounded-lg">
+                            <p className="text-sm">{selectedItem.notes}</p>
                           </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
 
               {/* Bottom Action Buttons */}
               <div className="p-6 border-t bg-background flex flex-col sm:flex-row items-center gap-3">
@@ -1535,7 +1416,7 @@ const Kontakte = () => {
                   {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
                 </button>
               </div>
-            </>
+            </div>
           )}
         </DialogContent>
       </Dialog>
