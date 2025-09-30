@@ -130,7 +130,7 @@ export function ContactsFilters({
                         )}
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-64 p-4 bg-muted/1 border shadow-lg" align="end">
+                    <PopoverContent className="w-64 p-4 bg-background border shadow-lg" align="end">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
                           <h4 className="font-medium text-sm">Kontaktart Filter</h4>
@@ -186,7 +186,7 @@ export function ContactsFilters({
                       )}
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 p-4 bg-muted/1 border shadow-lg z-50" align="end">
+                  <PopoverContent className="w-64 p-4 bg-background border shadow-lg z-50" align="end">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <h4 className="font-medium text-sm">Kontaktart Filter</h4>
