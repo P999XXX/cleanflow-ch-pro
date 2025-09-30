@@ -122,6 +122,8 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`mailto:${item.email}`} 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors truncate"
                 onClick={(e) => e.stopPropagation()}
                 title={item.email}
@@ -135,6 +137,8 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.phone}`} 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -147,6 +151,8 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
               <a 
                 href={`tel:${item.mobile}`} 
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-foreground/70 hover:text-foreground transition-colors"
                 onClick={(e) => e.stopPropagation()}
               >

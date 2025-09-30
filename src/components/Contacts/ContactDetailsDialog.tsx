@@ -217,7 +217,7 @@ export function ContactDetailsDialog({
                   variant="outline"
                   size="icon"
                   className="rounded-full h-10 w-10"
-                  onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                  onClick={() => window.open(`tel:${selectedItem.phone}`, '_blank')}
                 >
                   <Phone className="h-4 w-4" />
                 </Button>
@@ -263,7 +263,7 @@ export function ContactDetailsDialog({
                   variant="outline"
                   size="icon"
                   className="rounded-full h-10 w-10"
-                  onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                  onClick={() => window.open(`mailto:${selectedItem.email}`, '_blank')}
                 >
                   <Mail className="h-4 w-4" />
                 </Button>
@@ -399,7 +399,7 @@ function ContactInformationSection({
             <Button
               variant="outline"
               className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
-              onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+              onClick={() => window.open(`mailto:${selectedItem.email}`, '_blank')}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <Mail className="h-5 w-5 text-primary flex-shrink-0" />
@@ -415,7 +415,7 @@ function ContactInformationSection({
             <Button
               variant="outline"
               className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
-              onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+              onClick={() => window.open(`tel:${selectedItem.phone}`, '_blank')}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />
@@ -431,7 +431,7 @@ function ContactInformationSection({
             <Button
               variant="outline"
               className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
-              onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
+              onClick={() => window.open(`tel:${selectedItem.mobile}`, '_blank')}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <Phone className="h-5 w-5 text-primary flex-shrink-0" />

@@ -79,6 +79,8 @@ export function ContactsTableView({
                             <Mail className="h-3 w-3" />
                             <a 
                               href={`mailto:${company.email}`} 
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-foreground/70 hover:text-foreground transition-colors" 
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -91,6 +93,8 @@ export function ContactsTableView({
                             <Phone className="h-3 w-3" />
                             <a 
                               href={`tel:${company.phone}`} 
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-foreground/70 hover:text-foreground transition-colors" 
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -172,6 +176,8 @@ export function ContactsTableView({
                             <Mail className="h-3 w-3" />
                             <a 
                               href={`mailto:${person.email}`} 
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-foreground/70 hover:text-foreground transition-colors" 
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -184,6 +190,8 @@ export function ContactsTableView({
                             <Phone className="h-3 w-3" />
                             <a 
                               href={`tel:${person.phone}`} 
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-foreground/70 hover:text-foreground transition-colors" 
                               onClick={(e) => e.stopPropagation()}
                             >
@@ -196,6 +204,8 @@ export function ContactsTableView({
                             <Smartphone className="h-3 w-3" />
                             <a 
                               href={`tel:${person.mobile}`} 
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-foreground/70 hover:text-foreground transition-colors" 
                               onClick={(e) => e.stopPropagation()}
                             >
