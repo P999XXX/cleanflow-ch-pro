@@ -45,11 +45,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const navigationItems = [
   {
-    title: "Main",
+    title: "CRM",
     items: [
-      { title: "Dashboard", url: "/", icon: Home },
-      { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
       { title: "Kontakte", url: "/kontakte", icon: Users },
+      { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
     ]
   },
   {
@@ -92,8 +91,8 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "Main": true,
-    "Kunden": false,
+    "CRM": true,
+    "Objekte": false,
     "Controlling": false,
     "Personal": false,
   });
@@ -135,6 +134,32 @@ export function AppSidebar() {
             )}
           </div>
         </div>
+
+        {/* Dashboard Link - Single, no collapsible */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <NavLink 
+                    to="/" 
+                    className={getNavClass(currentPath === "/")}
+                  >
+                    <Home className={cn(
+                      "transition-colors",
+                      collapsed ? "w-5 h-5" : "w-4 h-4 mr-3"
+                    )} />
+                    {!collapsed && (
+                      <span className="text-base font-medium">
+                        Dashboard
+                      </span>
+                    )}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
         {/* Navigation Groups */}
         {navigationItems.map((group) => (
