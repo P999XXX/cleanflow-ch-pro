@@ -377,7 +377,7 @@ const Kontakte = () => {
               <ContactsCardsView
                 companies={filteredCompanies}
                 persons={[]}
-                showSections={false}
+                showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
                 onClearSearch={clearSearch}
@@ -388,7 +388,7 @@ const Kontakte = () => {
               <ContactsCardsView
                 companies={[]}
                 persons={filteredPersons}
-                showSections={false}
+                showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
                 onClearSearch={clearSearch}
@@ -414,7 +414,7 @@ const Kontakte = () => {
               <ContactsTableView
                 companies={filteredCompanies}
                 persons={[]}
-                showSections={false}
+                showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
                 onClearSearch={clearSearch}
@@ -426,7 +426,7 @@ const Kontakte = () => {
               <ContactsTableView
                 companies={[]}
                 persons={filteredPersons}
-                showSections={false}
+                showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
                 onClearSearch={clearSearch}
