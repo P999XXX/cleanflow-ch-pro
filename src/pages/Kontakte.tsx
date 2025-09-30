@@ -1082,30 +1082,34 @@ const Kontakte = () => {
                 <div className="border-b">
                   <Tabs defaultValue="kontakt" className="w-full">
                     {/* Horizontal scrollable tab list */}
-                    <div className="overflow-x-auto scrollbar-hide px-6 flex justify-end">
-                      <TabsList className="inline-flex w-max h-12 bg-transparent p-0 rounded-none border-b">
-                        <TabsTrigger value="kontakt" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
-                          <Contact className="h-4 w-4" />
-                          <span className="whitespace-nowrap">Kontakt</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="objekte" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
-                          <Building className="h-4 w-4" />
-                          <span className="whitespace-nowrap">Objekte</span>
-                        </TabsTrigger>
-                        <TabsTrigger value="reklamationen" className="shrink-0 flex items-center gap-2 px-4 relative -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
-                          <AlertTriangle className="h-4 w-4" />
-                          <span className="whitespace-nowrap">Reklamationen</span>
-                          <sup>
-                            <Badge variant="destructive" className="h-4 w-4 p-0 flex items-center justify-center text-[10px] leading-none ml-1">
-                              2
-                            </Badge>
-                          </sup>
-                        </TabsTrigger>
-                        <TabsTrigger value="dokumente" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
-                          <FileText className="h-4 w-4" />
-                          <span className="whitespace-nowrap">Dokumente</span>
-                        </TabsTrigger>
-                      </TabsList>
+                    <div className="px-6">
+                      <div className="overflow-x-auto overscroll-x-contain touch-pan-x scrollbar-hide -mx-6 px-6">
+                        <div className="w-max whitespace-nowrap flex justify-end">
+                          <TabsList className="inline-flex w-max h-12 bg-transparent p-0 rounded-none border-b whitespace-nowrap">
+                            <TabsTrigger value="kontakt" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
+                              <Contact className="h-4 w-4" />
+                              <span className="whitespace-nowrap">Kontakt</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="objekte" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
+                              <Building className="h-4 w-4" />
+                              <span className="whitespace-nowrap">Objekte</span>
+                            </TabsTrigger>
+                            <TabsTrigger value="reklamationen" className="shrink-0 flex items-center gap-2 px-4 relative -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
+                              <AlertTriangle className="h-4 w-4" />
+                              <span className="whitespace-nowrap">Reklamationen</span>
+                              <sup>
+                                <Badge variant="destructive" className="h-4 w-4 p-0 flex items-center justify-center text-[10px] leading-none ml-1">
+                                  2
+                                </Badge>
+                              </sup>
+                            </TabsTrigger>
+                            <TabsTrigger value="dokumente" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
+                              <FileText className="h-4 w-4" />
+                              <span className="whitespace-nowrap">Dokumente</span>
+                            </TabsTrigger>
+                          </TabsList>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Tab Content */}
