@@ -105,7 +105,7 @@ export function ContactDetailsDialog({
               /* Person Layout: Buttons absolutely positioned, then name, then badge */
               <>
                 {/* Action Buttons - Absolutely positioned like company view */}
-                <div className="absolute -top-2 right-2 flex items-center gap-2 z-20">
+                <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
                   <Button
                     variant="secondary"
                     size="icon"
@@ -132,12 +132,12 @@ export function ContactDetailsDialog({
                   </Button>
                 </div>
 
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2 pt-6">
                   {/* Name */}
-                  <div className="flex items-center gap-3 pr-28">
+                  <div className="flex items-center gap-3">
                     <Users className="h-6 w-6 text-primary flex-shrink-0" />
                     <div className="flex flex-col min-w-0">
-                      <h2 className="text-xl sm:text-2xl font-semibold truncate whitespace-nowrap">
+                      <h2 className="text-xl sm:text-2xl font-semibold">
                         {`${selectedItem.first_name} ${selectedItem.last_name}`}
                       </h2>
                       {selectedItem.position && (
