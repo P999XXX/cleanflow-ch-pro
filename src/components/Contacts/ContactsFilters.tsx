@@ -355,60 +355,61 @@ export function ContactsFilters({
             </div>
 
             {/* Mobile/Tablet: Show tabs below search */}
-            <div className="lg:hidden -mx-4 px-4">
+            <div className="lg:hidden">
               <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-                <div className="overflow-x-auto no-scrollbar">
-                  <TabsList className="inline-flex w-auto min-w-full">
-                    <TabsTrigger value="all" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Contact className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Alle</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'all' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {totalCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="companies" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Building className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Unternehmen</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {companiesCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="persons" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Users className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Personen</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {personsCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="employees" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <UserCheck className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Mitarbeiter</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'employees' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {employeesCount}
-                      </Badge>
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
+                <TabsList className="grid grid-cols-4 w-full">
+                  <TabsTrigger value="all" className="flex items-center gap-1 px-2">
+                    <Contact className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Alle</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'all' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {totalCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                    <Building className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">
+                      <span className="hidden sm:inline">Unternehmen</span>
+                      <span className="sm:hidden">Firmen</span>
+                    </span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {companiesCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
+                    <Users className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Personen</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {personsCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="employees" className="flex items-center gap-1 px-2">
+                    <UserCheck className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Mitarb.</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'employees' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {employeesCount}
+                    </Badge>
+                  </TabsTrigger>
+                </TabsList>
               </Tabs>
             </div>
           </div>
