@@ -250,6 +250,10 @@ const Kontakte = () => {
         { id: selectedCompany.id, company: companyData },
         { 
           onSuccess: () => { 
+            // Vibration für mobile Geräte
+            if (navigator.vibrate) {
+              navigator.vibrate(50);
+            }
             setIsFormOpen(false); 
             setSelectedCompany(null);
             
@@ -265,7 +269,13 @@ const Kontakte = () => {
       );
     } else {
       createCompany.mutate(companyData, {
-        onSuccess: () => setIsFormOpen(false)
+        onSuccess: () => {
+          // Vibration für mobile Geräte
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
+          }
+          setIsFormOpen(false);
+        }
       });
     }
   };
@@ -289,6 +299,11 @@ const Kontakte = () => {
               }
             }
 
+            // Vibration für mobile Geräte
+            if (navigator.vibrate) {
+              navigator.vibrate(50);
+            }
+            
             setIsFormOpen(false); 
             setSelectedPerson(null);
             
@@ -321,6 +336,11 @@ const Kontakte = () => {
                 });
               }
             }
+          }
+
+          // Vibration für mobile Geräte
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
           }
 
           setIsFormOpen(false);

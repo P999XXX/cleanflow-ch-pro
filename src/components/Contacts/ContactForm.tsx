@@ -514,7 +514,7 @@ export const ContactForm = ({
                 Abbrechen
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Lädt...' : (company ? 'Aktualisieren' : 'Erstellen')}
+                {isLoading ? 'Lädt...' : (company ? 'Aktualisieren' : 'Speichern')}
               </Button>
             </div>
           </form>

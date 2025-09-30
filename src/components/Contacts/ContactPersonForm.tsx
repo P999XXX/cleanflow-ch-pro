@@ -117,7 +117,7 @@ export const ContactPersonForm = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <div className="flex items-center gap-2">
             {onBack && (
@@ -298,7 +298,7 @@ export const ContactPersonForm = ({
                       <ChevronRight className="h-4 w-4 ml-2" />
                     </>
                   ) : (
-                    contactPerson ? 'Aktualisieren' : 'Erstellen'
+                    contactPerson ? 'Aktualisieren' : 'Speichern'
                   )
                 )}
               </Button>
