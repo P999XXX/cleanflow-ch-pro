@@ -70,7 +70,7 @@ export function ContactDetailsDialog({
               />
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
+              <div className="sticky top-0 right-2 flex items-center gap-2 z-20 justify-end pt-2 pr-2">
                 <Button
                   variant="secondary"
                   size="icon"
@@ -104,8 +104,8 @@ export function ContactDetailsDialog({
             {itemType === 'person' ? (
               /* Person Layout: Buttons absolutely positioned, then name, then badge */
               <>
-                {/* Action Buttons - Absolutely positioned like company view */}
-                <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
+                {/* Action Buttons - Sticky positioned */}
+                <div className="sticky top-0 right-2 flex items-center gap-2 z-20 justify-end pt-2 pr-2 bg-background/80 backdrop-blur-sm pb-2">
                   <Button
                     variant="secondary"
                     size="icon"
