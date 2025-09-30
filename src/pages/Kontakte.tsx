@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
+import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
@@ -34,6 +35,7 @@ const Kontakte = () => {
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
+  const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
 
   // Handle URL parameters for filtering (e.g., ?type=kunde)
   useEffect(() => {
@@ -251,12 +253,25 @@ const Kontakte = () => {
     }
   };
 
-  const handlePersonSubmit = (personData) => {
+  const handlePersonSubmit = async (personData, employeeDetails, children) => {
     if (selectedPerson) {
       updateContactPerson.mutate(
         { id: selectedPerson.id, contactPerson: personData },
         { 
-          onSuccess: () => { 
+          onSuccess: async (updatedPerson) => {
+            // If employee data is provided, save it
+            if (personData.is_employee && employeeDetails) {
+              await createOrUpdateEmployeeDetails.mutateAsync({
+                contactPersonId: updatedPerson.id,
+                details: employeeDetails
+              });
+
+              // Save children if any
+              if (children && children.length > 0) {
+                // TODO: Handle children updates
+              }
+            }
+
             setIsFormOpen(false); 
             setSelectedPerson(null);
             
@@ -272,7 +287,27 @@ const Kontakte = () => {
       );
     } else {
       createContactPerson.mutate(personData, {
-        onSuccess: () => setIsFormOpen(false)
+        onSuccess: async (createdPerson) => {
+          // If employee data is provided, save it
+          if (personData.is_employee && employeeDetails) {
+            const employeeDetailsResult = await createOrUpdateEmployeeDetails.mutateAsync({
+              contactPersonId: createdPerson.id,
+              details: employeeDetails
+            });
+
+            // Save children if any
+            if (children && children.length > 0 && employeeDetailsResult) {
+              for (const child of children) {
+                await createEmployeeChild.mutateAsync({
+                  employeeDetailsId: employeeDetailsResult.id,
+                  child
+                });
+              }
+            }
+          }
+
+          setIsFormOpen(false);
+        }
       });
     }
   };

@@ -11,6 +11,7 @@ export interface ContactPerson {
   phone?: string;
   mobile?: string;
   is_primary_contact: boolean;
+  is_employee: boolean;
   notes?: string;
   customer_company_id?: string;
   company_id: string;
@@ -29,6 +30,7 @@ export interface ContactPersonInput {
   phone?: string;
   mobile?: string;
   is_primary_contact?: boolean;
+  is_employee?: boolean;
   notes?: string;
   customer_company_id?: string;
 }
@@ -48,6 +50,7 @@ export const useContactPersons = () => {
           phone,
           mobile,
           is_primary_contact,
+          is_employee,
           notes,
           customer_company_id,
           company_id,

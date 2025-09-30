@@ -73,6 +73,7 @@ export type Database = {
           email: string | null
           first_name: string
           id: string
+          is_employee: boolean | null
           is_primary_contact: boolean | null
           last_name: string
           mobile: string | null
@@ -88,6 +89,7 @@ export type Database = {
           email?: string | null
           first_name: string
           id?: string
+          is_employee?: boolean | null
           is_primary_contact?: boolean | null
           last_name: string
           mobile?: string | null
@@ -103,6 +105,7 @@ export type Database = {
           email?: string | null
           first_name?: string
           id?: string
+          is_employee?: boolean | null
           is_primary_contact?: boolean | null
           last_name?: string
           mobile?: string | null
@@ -195,6 +198,112 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_children: {
+        Row: {
+          birth_date: string
+          created_at: string | null
+          employee_details_id: string
+          first_name: string
+          id: string
+          last_name: string
+        }
+        Insert: {
+          birth_date: string
+          created_at?: string | null
+          employee_details_id: string
+          first_name: string
+          id?: string
+          last_name: string
+        }
+        Update: {
+          birth_date?: string
+          created_at?: string | null
+          employee_details_id?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_children_employee_details_id_fkey"
+            columns: ["employee_details_id"]
+            isOneToOne: false
+            referencedRelation: "employee_details"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      employee_details: {
+        Row: {
+          address_since: string | null
+          ahv_number: string | null
+          birth_date: string | null
+          birth_place: string | null
+          company_id: string
+          contact_person_id: string
+          created_at: string | null
+          current_address: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
+          employment_start_date: string | null
+          id: string
+          marital_status: string | null
+          origin_country: string | null
+          permit_document_url: string | null
+          permit_type: string | null
+          tax_residence: boolean | null
+          updated_at: string | null
+        }
+        Insert: {
+          address_since?: string | null
+          ahv_number?: string | null
+          birth_date?: string | null
+          birth_place?: string | null
+          company_id: string
+          contact_person_id: string
+          created_at?: string | null
+          current_address?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          employment_start_date?: string | null
+          id?: string
+          marital_status?: string | null
+          origin_country?: string | null
+          permit_document_url?: string | null
+          permit_type?: string | null
+          tax_residence?: boolean | null
+          updated_at?: string | null
+        }
+        Update: {
+          address_since?: string | null
+          ahv_number?: string | null
+          birth_date?: string | null
+          birth_place?: string | null
+          company_id?: string
+          contact_person_id?: string
+          created_at?: string | null
+          current_address?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
+          employment_start_date?: string | null
+          id?: string
+          marital_status?: string | null
+          origin_country?: string | null
+          permit_document_url?: string | null
+          permit_type?: string | null
+          tax_residence?: boolean | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "employee_details_contact_person_id_fkey"
+            columns: ["contact_person_id"]
+            isOneToOne: true
+            referencedRelation: "contact_persons"
             referencedColumns: ["id"]
           },
         ]

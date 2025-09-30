@@ -11,6 +11,8 @@ import { Building2, User } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useToast } from '@/hooks/use-toast';
+import { ContactPersonForm } from './ContactPersonForm';
+import { EmployeeDetailsInput } from '@/hooks/useEmployeeDetails';
 
 type ContactFormMode = 'company' | 'person';
 
@@ -18,7 +20,7 @@ interface ContactFormProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmitCompany: (company: CustomerCompanyInput) => void;
-  onSubmitPerson: (person: ContactPersonInput) => void;
+  onSubmitPerson: (person: ContactPersonInput, employeeDetails?: EmployeeDetailsInput, children?: any[]) => void;
   company?: CustomerCompany;
   contactPerson?: ContactPerson;
   isLoading?: boolean;
@@ -269,16 +271,26 @@ export const ContactForm = ({
 
   const canSwitchMode = !company && !contactPerson;
 
+  // Use ContactPersonForm for person mode
+  if (mode === 'person') {
+    return (
+      <ContactPersonForm
+        isOpen={isOpen}
+        onClose={onClose}
+        onSubmit={onSubmitPerson}
+        contactPerson={contactPerson}
+        isLoading={isLoading}
+      />
+    );
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle>{getTitle()}</DialogTitle>
           <DialogDescription>
-            {mode === 'company' 
-              ? (company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu')
-              : (contactPerson ? 'Bearbeiten Sie die Kontaktperson' : 'Fügen Sie eine neue Kontaktperson hinzu')
-            }
+            {company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu'}
           </DialogDescription>
         </DialogHeader>
 
