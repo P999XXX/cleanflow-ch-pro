@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft } from 'lucide-react';
+import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useToast } from '@/hooks/use-toast';
@@ -261,7 +261,7 @@ export const ContactForm = ({
                 onClick={handleBack}
                 className="h-8 w-8"
               >
-                <ArrowLeft className="h-4 w-4" />
+                <ChevronLeft className="h-4 w-4" />
               </Button>
             )}
             <div className="flex-1">

@@ -42,7 +42,7 @@ export const ContactPersonForm = ({
     phone: '',
     mobile: '',
     is_primary_contact: false,
-    is_employee: false,
+    is_employee: initialIsEmployee,
     notes: '',
     customer_company_id: undefined,
   });
@@ -95,13 +95,13 @@ export const ContactPersonForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (formData.is_employee && currentStep < 3) {
+    if (initialIsEmployee && currentStep < 3) {
       // Move to next step if employee
       setCurrentStep(currentStep + 1);
       return;
     }
     
-    onSubmit(formData, formData.is_employee ? employeeData : undefined, formData.is_employee ? children : undefined);
+    onSubmit(formData, initialIsEmployee ? employeeData : undefined, initialIsEmployee ? children : undefined);
   };
 
   const handlePrevious = () => {
@@ -110,8 +110,8 @@ export const ContactPersonForm = ({
     }
   };
 
-  const totalSteps = formData.is_employee ? 3 : 1;
-  const stepLabels = formData.is_employee 
+  const totalSteps = initialIsEmployee ? 3 : 1;
+  const stepLabels = initialIsEmployee 
     ? ["Basis-Kontakt", "HR-Details", "Kinder"]
     : ["Kontaktdaten"];
 
@@ -141,7 +141,7 @@ export const ContactPersonForm = ({
           </div>
         </DialogHeader>
 
-        {formData.is_employee && (
+        {initialIsEmployee && (
           <FormProgressIndicator 
             currentStep={currentStep} 
             totalSteps={totalSteps}
@@ -152,25 +152,6 @@ export const ContactPersonForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-4">
-              {/* Is Employee Checkbox */}
-              <div className="flex items-center space-x-2 p-4 bg-muted/50 rounded-lg">
-                <Checkbox
-                  id="is_employee"
-                  checked={formData.is_employee}
-                  onCheckedChange={(checked) => {
-                    setFormData({ ...formData, is_employee: checked as boolean });
-                    if (!checked) {
-                      setCurrentStep(1);
-                      setEmployeeData({});
-                      setChildren([]);
-                    }
-                  }}
-                />
-                <Label htmlFor="is_employee" className="cursor-pointer font-medium">
-                  Diese Person ist ein Mitarbeiter
-                </Label>
-              </div>
-
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">Vorname *</Label>
@@ -202,7 +183,7 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              {!formData.is_employee && (
+              {!initialIsEmployee && (
                 <div className="space-y-2">
                   <Label htmlFor="customer_company_id">Unternehmen</Label>
                   <Select
@@ -255,7 +236,7 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              {!formData.is_employee && (
+              {!initialIsEmployee && (
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="is_primary_contact"
@@ -280,7 +261,7 @@ export const ContactPersonForm = ({
             </div>
           )}
 
-          {currentStep === 2 && formData.is_employee && (
+          {currentStep === 2 && initialIsEmployee && (
             <EmployeeFormStep2 
               employeeData={employeeData}
               onChange={setEmployeeData}
@@ -288,7 +269,7 @@ export const ContactPersonForm = ({
             />
           )}
 
-          {currentStep === 3 && formData.is_employee && (
+          {currentStep === 3 && initialIsEmployee && (
             <EmployeeFormStep3 
               children={children}
               onChange={setChildren}
@@ -311,7 +292,7 @@ export const ContactPersonForm = ({
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Lädt...' : (
-                  formData.is_employee && currentStep < 3 ? (
+                  initialIsEmployee && currentStep < 3 ? (
                     <>
                       Weiter
                       <ChevronRight className="h-4 w-4 ml-2" />

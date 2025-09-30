@@ -21,7 +21,7 @@ export const ContactTypeSelector = ({ onSelect }: ContactTypeSelectorProps) => {
           </div>
           <CardTitle>Unternehmen</CardTitle>
           <CardDescription>
-            Neues Kundenunternehmen oder Lieferant hinzufügen
+            Firma oder Organisation hinzufügen
           </CardDescription>
         </CardHeader>
       </Card>
@@ -36,7 +36,7 @@ export const ContactTypeSelector = ({ onSelect }: ContactTypeSelectorProps) => {
           </div>
           <CardTitle>Person</CardTitle>
           <CardDescription>
-            Kontaktperson einem bestehenden Unternehmen zuordnen
+            Externe Kontaktperson hinzufügen
           </CardDescription>
         </CardHeader>
       </Card>
@@ -51,7 +51,7 @@ export const ContactTypeSelector = ({ onSelect }: ContactTypeSelectorProps) => {
           </div>
           <CardTitle>Mitarbeiter</CardTitle>
           <CardDescription>
-            Neuen Mitarbeiter mit HR-Details erfassen
+            Neuen Mitarbeiter erfassen
           </CardDescription>
         </CardHeader>
       </Card>

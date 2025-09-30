@@ -16,7 +16,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons' | 'employees'>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -100,7 +100,7 @@ const Kontakte = () => {
   const filteredPersons = useMemo(() => {
     if (!contactPersons) return [];
     
-    let filtered = contactPersons;
+    let filtered = contactPersons.filter(person => !person.is_employee);
     
     // Filter by contact type (supports multiple types comma-separated)
     if (contactTypeFilter !== 'all') {
@@ -127,7 +127,27 @@ const Kontakte = () => {
     return filtered;
   }, [contactPersons, searchTerm, contactTypeFilter, companies]);
 
-  const totalCount = filteredCompanies.length + filteredPersons.length;
+  const filteredEmployees = useMemo(() => {
+    if (!contactPersons) return [];
+    
+    let filtered = contactPersons.filter(person => person.is_employee === true);
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(person =>
+        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
+        person.email?.toLowerCase().includes(term) ||
+        person.phone?.toLowerCase().includes(term) ||
+        person.mobile?.toLowerCase().includes(term) ||
+        person.position?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [contactPersons, searchTerm]);
+
+  const totalCount = filteredCompanies.length + filteredPersons.length + filteredEmployees.length;
   const isSearching = searchTerm.trim().length > 0;
   const hasNoResults = isSearching && totalCount === 0;
 
@@ -388,10 +408,11 @@ const Kontakte = () => {
         contactTypeFilter={contactTypeFilter}
         onContactTypeChange={setContactTypeFilter}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees')}
         totalCount={totalCount}
         companiesCount={filteredCompanies.length}
         personsCount={filteredPersons.length}
+        employeesCount={filteredEmployees.length}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={handleAddClick}
@@ -406,7 +427,7 @@ const Kontakte = () => {
             {activeTab === 'all' && (
               <ContactsCardsView
                 companies={filteredCompanies}
-                persons={filteredPersons}
+                persons={[...filteredPersons, ...filteredEmployees]}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -429,6 +450,17 @@ const Kontakte = () => {
               <ContactsCardsView
                 companies={[]}
                 persons={filteredPersons}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+            {activeTab === 'employees' && (
+              <ContactsCardsView
+                companies={[]}
+                persons={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -467,6 +499,18 @@ const Kontakte = () => {
               <ContactsTableView
                 companies={[]}
                 persons={filteredPersons}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+            {activeTab === 'employees' && (
+              <ContactsTableView
+                companies={[]}
+                persons={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
