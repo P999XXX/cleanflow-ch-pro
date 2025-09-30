@@ -322,24 +322,40 @@ export function ContactDetailsDialog({
                   </TabsList>
                   </div>
 
-                  <TabsContent value="kontakt" className="px-6 pb-6 mt-4">
-                    <ContactInformationSection 
-                      selectedItem={selectedItem} 
-                      itemType={itemType}
-                      onNavigateToPerson={onNavigateToPerson}
-                    />
+                  <TabsContent value="kontakt" className="mt-4 -mx-6 p-0">
+                    <div className="bg-muted/50">
+                      <div className="px-6 pb-6">
+                        <ContactInformationSection 
+                          selectedItem={selectedItem} 
+                          itemType={itemType}
+                          onNavigateToPerson={onNavigateToPerson}
+                        />
+                      </div>
+                    </div>
                   </TabsContent>
 
-                  <TabsContent value="objekte" className="px-6 pb-6 mt-4">
-                    <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                  <TabsContent value="objekte" className="mt-4 -mx-6 p-0">
+                    <div className="bg-muted/50">
+                      <div className="px-6 pb-6">
+                        <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                      </div>
+                    </div>
                   </TabsContent>
 
-                  <TabsContent value="reklamationen" className="px-6 pb-6 mt-4">
-                    <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                  <TabsContent value="reklamationen" className="mt-4 -mx-6 p-0">
+                    <div className="bg-muted/50">
+                      <div className="px-6 pb-6">
+                        <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                      </div>
+                    </div>
                   </TabsContent>
 
-                  <TabsContent value="dokumente" className="px-6 pb-6 mt-4">
-                    <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                  <TabsContent value="dokumente" className="mt-4 -mx-6 p-0">
+                    <div className="bg-muted/50">
+                      <div className="px-6 pb-6">
+                        <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                      </div>
+                    </div>
                   </TabsContent>
                 </Tabs>
               </div>
@@ -382,7 +398,7 @@ function ContactInformationSection({
           {selectedItem.email && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
               onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -392,13 +408,13 @@ function ContactInformationSection({
                   <p className="text-sm font-medium truncate">{selectedItem.email}</p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
             </Button>
           )}
           {selectedItem.phone && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
               onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -408,13 +424,13 @@ function ContactInformationSection({
                   <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
             </Button>
           )}
           {selectedItem.mobile && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
               onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -424,13 +440,13 @@ function ContactInformationSection({
                   <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
             </Button>
           )}
           {selectedItem.website && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
               onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -440,7 +456,7 @@ function ContactInformationSection({
                   <p className="text-sm font-medium truncate">{selectedItem.website}</p>
                 </div>
               </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0 transition-transform group-hover:translate-x-1" />
             </Button>
           )}
         </div>
