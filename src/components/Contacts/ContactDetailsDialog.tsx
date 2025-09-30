@@ -289,7 +289,7 @@ export function ContactDetailsDialog({
                 <Tabs defaultValue="kontakt" className="w-full">
                   {/* Scrollable Tab Container - Full Width without margins */}
                   <div className="overflow-x-auto overflow-y-hidden no-scrollbar -mx-6 pl-2 pr-6 md:px-6 mb-2 md:mb-0">
-                    <TabsList className="inline-flex min-w-full bg-background md:bg-muted p-1 rounded-md h-auto">
+                    <TabsList className="inline-flex min-w-full bg-white md:bg-muted p-1 rounded-md h-auto">
                       <TabsTrigger 
                         value="kontakt" 
                         className="flex items-center gap-2 flex-shrink-0 px-2.5 py-1.5 md:px-3 md:py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
