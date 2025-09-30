@@ -3,6 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { designTokens } from "@/lib/design-tokens";
+import { LucideIcon } from "lucide-react";
 
 interface EmptyStateProps {
   icon: React.ComponentType<{ className?: string }>;
@@ -88,5 +90,73 @@ export function SectionHeader({ title, description, action, className }: Section
       </div>
       {action && <div>{action}</div>}
     </div>
+  );
+}
+
+interface PageContainerProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+/**
+ * Standard Page Container with consistent spacing
+ */
+export function PageContainer({ children, className }: PageContainerProps) {
+  return (
+    <div className={cn(designTokens.layouts.pageContainer, className)}>
+      {children}
+    </div>
+  );
+}
+
+interface PageHeaderProps {
+  title: string;
+  description?: string;
+  icon?: LucideIcon;
+  actions?: React.ReactNode;
+  className?: string;
+}
+
+/**
+ * Standard Page Header with icon and actions
+ */
+export function PageHeader({ title, description, icon: Icon, actions, className }: PageHeaderProps) {
+  return (
+    <div className={cn("flex flex-col sm:flex-row sm:items-center justify-between gap-4", className)}>
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          {Icon && <Icon className="h-6 w-6 text-primary" />}
+          <h1 className={designTokens.typography.pageTitle}>{title}</h1>
+        </div>
+        {description && (
+          <p className={designTokens.typography.muted}>{description}</p>
+        )}
+      </div>
+      {actions && <div className="flex gap-2 flex-shrink-0">{actions}</div>}
+    </div>
+  );
+}
+
+interface InteractiveCardProps {
+  onClick?: () => void;
+  children: React.ReactNode;
+  className?: string;
+}
+
+/**
+ * Interactive Card with hover effects
+ */
+export function InteractiveCard({ onClick, children, className }: InteractiveCardProps) {
+  return (
+    <Card 
+      className={cn(
+        designTokens.cards.interactive,
+        "hover:scale-[1.02] active:scale-[0.98]",
+        className
+      )}
+      onClick={onClick}
+    >
+      {children}
+    </Card>
   );
 }
