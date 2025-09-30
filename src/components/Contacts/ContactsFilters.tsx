@@ -96,12 +96,13 @@ export function ContactsFilters({
         </div>
 
         {/* Search and Controls */}
-        <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-          {/* Search and Filter Row */}
-          <div className="flex flex-col gap-4 w-full lg:flex-1">
-            <div className="flex items-center gap-2">
+        <div className="flex flex-col gap-4">
+          {/* Top Row - Desktop: Search/Filter + Tabs + Buttons on same line */}
+          <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+            {/* Search and Filter - Mobile/Tablet/Desktop */}
+            <div className="flex items-center gap-2 flex-1 lg:max-w-md">
               {/* Search with integrated filter for Mobile/Tablet only */}
-              <div className="relative flex-1 lg:max-w-md">
+              <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                 <Input
                   placeholder="Suchen nach Name, E-Mail, Telefon..."
@@ -223,112 +224,180 @@ export function ContactsFilters({
               </div>
             </div>
 
-            {/* Filter Badges - All Viewports */}
-            {selectedFilters.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {selectedFilters.map((filter) => (
-                  <Badge
-                    key={filter}
-                    variant="secondary"
-                    className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
-                  >
-                    {filterOptions.find(o => o.value === filter)?.label}
-                    <button
-                      onClick={() => handleFilterToggle(filter)}
-                      className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Add Button - Mobile/Tablet only */}
-          <div className="lg:hidden">
-            <Button
-              onClick={onAddClick}
-              size="sm"
-              className="flex items-center gap-2 w-full"
-            >
-              <Plus className="h-4 w-4" />
-              Hinzufügen
-            </Button>
-          </div>
-
-          {/* Tabs and Actions - Desktop */}
-          <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-6">
-            <Tabs value={activeTab} onValueChange={onTabChange} className="w-full lg:w-auto">
-              <TabsList className="grid grid-cols-3 lg:w-auto">
-                <TabsTrigger value="all" className="flex items-center gap-1 px-2">
-                  <Contact className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">Alle</span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'all' ? 'font-bold' : 'font-medium'
-                    }`}
-                  >
-                    {totalCount}
-                  </Badge>
-                </TabsTrigger>
-                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                  <Building className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">
-                    <span className="hidden sm:inline">Unternehmen</span>
-                    <span className="sm:hidden">Firma</span>
-                  </span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                    }`}
-                  >
-                    {companiesCount}
-                  </Badge>
-                </TabsTrigger>
-                <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
-                  <Users className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">Personen</span>
-                  <Badge 
-                    variant="secondary" 
-                    className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                      activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                    }`}
-                  >
-                    {personsCount}
-                  </Badge>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            {/* Desktop Controls */}
-            <div className="hidden lg:flex flex-row gap-3 ml-auto">
+            {/* Add Button - Mobile/Tablet only */}
+            <div className="lg:hidden">
               <Button
-                variant="outline"
+                onClick={onAddClick}
                 size="sm"
-                onClick={onViewModeToggle}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 w-full"
               >
-                {viewMode === 'table' ? (
-                  <>
-                    <Grid3X3 className="h-4 w-4" />
-                    Karten
-                  </>
-                ) : (
-                  <>
-                    <List className="h-4 w-4" />
-                    Tabelle
-                  </>
-                )}
-              </Button>
-              <Button onClick={onAddClick} size="sm" className="flex items-center gap-2">
                 <Plus className="h-4 w-4" />
                 Hinzufügen
               </Button>
             </div>
+
+            {/* Tabs and Actions - Desktop: on same line */}
+            <div className="hidden lg:flex lg:items-start gap-6 flex-1">
+              <Tabs value={activeTab} onValueChange={onTabChange} className="w-auto">
+                <TabsList className="grid grid-cols-3 w-auto">
+                  <TabsTrigger value="all" className="flex items-center gap-1 px-2">
+                    <Contact className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Alle</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'all' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {totalCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                    <Building className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">
+                      <span className="hidden sm:inline">Unternehmen</span>
+                      <span className="sm:hidden">Firma</span>
+                    </span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {companiesCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
+                    <Users className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Personen</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {personsCount}
+                    </Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              {/* Desktop Controls */}
+              <div className="flex flex-row gap-3 ml-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onViewModeToggle}
+                  className="flex items-center gap-2"
+                >
+                  {viewMode === 'table' ? (
+                    <>
+                      <Grid3X3 className="h-4 w-4" />
+                      Karten
+                    </>
+                  ) : (
+                    <>
+                      <List className="h-4 w-4" />
+                      Tabelle
+                    </>
+                  )}
+                </Button>
+                <Button onClick={onAddClick} size="sm" className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Hinzufügen
+                </Button>
+              </div>
+            </div>
+
+            {/* Mobile/Tablet: Show tabs below search */}
+            <div className="lg:hidden">
+              <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
+                <TabsList className="grid grid-cols-3 w-full">
+                  <TabsTrigger value="all" className="flex items-center gap-1 px-2">
+                    <Contact className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Alle</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'all' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {totalCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                    <Building className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">
+                      <span className="hidden sm:inline">Unternehmen</span>
+                      <span className="sm:hidden">Firma</span>
+                    </span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'companies' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {companiesCount}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
+                    <Users className="h-4 w-4" />
+                    <span className="text-xs sm:text-sm">Personen</span>
+                    <Badge 
+                      variant="secondary" 
+                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
+                        activeTab === 'persons' ? 'font-bold' : 'font-medium'
+                      }`}
+                    >
+                      {personsCount}
+                    </Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
           </div>
+
+          {/* Filter Badges - Desktop only, on new line below search/tabs */}
+          {selectedFilters.length > 0 && (
+            <div className="hidden lg:flex flex-wrap gap-2">
+              {selectedFilters.map((filter) => (
+                <Badge
+                  key={filter}
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
+                >
+                  {filterOptions.find(o => o.value === filter)?.label}
+                  <button
+                    onClick={() => handleFilterToggle(filter)}
+                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
+
+          {/* Filter Badges - Mobile/Tablet */}
+          {selectedFilters.length > 0 && (
+            <div className="lg:hidden flex flex-wrap gap-2">
+              {selectedFilters.map((filter) => (
+                <Badge
+                  key={filter}
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
+                >
+                  {filterOptions.find(o => o.value === filter)?.label}
+                  <button
+                    onClick={() => handleFilterToggle(filter)}
+                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
