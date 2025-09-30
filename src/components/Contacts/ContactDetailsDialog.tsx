@@ -285,46 +285,46 @@ export function ContactDetailsDialog({
 
             {/* Tabs for Customers */}
             {isCustomer && (
-              <div className="mt-6">
+              <div className="mt-4 md:mt-6">
                 <Tabs defaultValue="kontakt" className="w-full">
                   {/* Scrollable Tab Container - Full Width without margins */}
-                  <div className="overflow-x-auto overflow-y-hidden no-scrollbar -mx-6 pl-2 pr-6 md:px-6">
+                  <div className="overflow-x-auto overflow-y-hidden no-scrollbar -mx-6 pl-2 pr-6 md:px-6 mb-2 md:mb-0">
                     <TabsList className="inline-flex min-w-full bg-white md:bg-muted p-1 rounded-md h-auto">
                       <TabsTrigger 
                         value="kontakt" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-2.5 py-1.5 md:px-3 md:py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
-                        <Contact className="h-4 w-4" />
+                        <Contact className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>Kontakt</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="objekte" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-2.5 py-1.5 md:px-3 md:py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
-                        <Building className="h-4 w-4" />
+                        <Building className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>Objekte</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="reklamationen" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-2.5 py-1.5 md:px-3 md:py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
-                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTriangle className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>Reklamationen</span>
                         <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="dokumente" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-2.5 py-1.5 md:px-3 md:py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
-                        <FileText className="h-4 w-4" />
+                        <FileText className="h-3.5 w-3.5 md:h-4 md:w-4" />
                         <span>Dokumente</span>
                       </TabsTrigger>
                   </TabsList>
                   </div>
 
-                  <TabsContent value="kontakt" className="mt-4 -mx-6 p-0">
+                  <TabsContent value="kontakt" className="mt-2 md:mt-4 -mx-6 p-0">
                     <div className="bg-muted/50">
-                      <div className="px-6 pb-6">
+                      <div className="px-6 pt-4 md:pt-6 pb-6">
                         <ContactInformationSection 
                           selectedItem={selectedItem} 
                           itemType={itemType}
@@ -334,25 +334,25 @@ export function ContactDetailsDialog({
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="objekte" className="mt-4 -mx-6 p-0">
+                  <TabsContent value="objekte" className="mt-2 md:mt-4 -mx-6 p-0">
                     <div className="bg-muted/50">
-                      <div className="px-6 pb-6">
+                      <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
                       </div>
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="reklamationen" className="mt-4 -mx-6 p-0">
+                  <TabsContent value="reklamationen" className="mt-2 md:mt-4 -mx-6 p-0">
                     <div className="bg-muted/50">
-                      <div className="px-6 pb-6">
+                      <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
                       </div>
                     </div>
                   </TabsContent>
 
-                  <TabsContent value="dokumente" className="mt-4 -mx-6 p-0">
+                  <TabsContent value="dokumente" className="mt-2 md:mt-4 -mx-6 p-0">
                     <div className="bg-muted/50">
-                      <div className="px-6 pb-6">
+                      <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
                       </div>
                     </div>
