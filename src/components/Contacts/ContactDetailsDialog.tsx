@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, 
-  Contact, Building, AlertTriangle, FileText, MessageCircle 
+  Contact, Building, AlertTriangle, FileText, MessageCircle, MessageSquare 
 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
@@ -213,6 +213,20 @@ export function ContactDetailsDialog({
                   }}
                 >
                   <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                </Button>
+              )}
+              {(selectedItem.mobile || selectedItem.phone) && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10"
+                  onClick={() => {
+                    const raw = (selectedItem.mobile || selectedItem.phone) as string;
+                    const phone = raw.replace(/[^\d]/g, '').replace(/^0/, '41');
+                    window.open(`sms:${phone}`);
+                  }}
+                >
+                  <MessageSquare className="h-4 w-4" />
                 </Button>
               )}
               {selectedItem.email && (
