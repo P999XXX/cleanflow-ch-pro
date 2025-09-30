@@ -49,28 +49,30 @@ export function ContactDetailsDialog({
       <DialogContent aria-describedby="contact-dialog-desc" className={cn(
         designTokens.containers.dialog.lg,
         designTokens.dialogs.content,
-        "h-[90vh]"
+        "h-[90vh] overflow-visible"
       )}>
-      <VisuallyHidden>
-        <DialogTitle>
-          {itemType === 'company' ? selectedItem.name : `${selectedItem.first_name} ${selectedItem.last_name}`}
-        </DialogTitle>
-        <p id="contact-dialog-desc">Details zur Kontaktansicht</p>
-      </VisuallyHidden>
-      <div className="w-full">
+        <VisuallyHidden>
+          <DialogTitle>
+            {itemType === 'company' ? selectedItem.name : `${selectedItem.first_name} ${selectedItem.last_name}`}
+          </DialogTitle>
+          <p id="contact-dialog-desc">Details zur Kontaktansicht</p>
+        </VisuallyHidden>
+        <div className="w-full overflow-visible">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0 overflow-visible">
-              <GoogleMap
-                address={selectedItem.address}
-                postal_code={selectedItem.postal_code}
-                city={selectedItem.city}
-                country={selectedItem.country}
-                className="w-full h-full rounded-none"
-              />
+            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0">
+              <div className="absolute inset-0 overflow-visible">
+                <GoogleMap
+                  address={selectedItem.address}
+                  postal_code={selectedItem.postal_code}
+                  city={selectedItem.city}
+                  country={selectedItem.country}
+                  className="w-full h-full rounded-none"
+                />
+              </div>
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+              <div className="absolute top-6 right-6 flex items-center gap-2 z-20">
                 <Button
                   variant="secondary"
                   size="icon"
