@@ -105,11 +105,13 @@ export function AppSidebar() {
     }));
   };
 
-  const getNavClass = (isActive: boolean) =>
+  const getNavClass = (isActive: boolean, isKundenFilter: boolean = false) =>
     cn(
       "w-full justify-start transition-all duration-200",
       isActive 
         ? "bg-primary text-primary-foreground shadow-clean-primary font-medium" 
+        : isKundenFilter
+        ? "bg-primary/20 text-primary font-medium"
         : "hover:bg-accent hover:text-accent-foreground text-foreground"
     );
 
@@ -166,12 +168,17 @@ export function AppSidebar() {
                   <SidebarMenu>
                     {group.items.map((item) => {
                       const isActive = currentPath === item.url;
+                      // Check if we're on Kontakte page with kunde filter for Kunden link
+                      const isKundenFilter = item.url === '/kunden' && 
+                        currentPath === '/kontakte' && 
+                        location.search.includes('type=kunde');
+                      
                       return (
                         <SidebarMenuItem key={item.title}>
                           <SidebarMenuButton asChild>
                             <NavLink 
                               to={item.url} 
-                              className={getNavClass(isActive)}
+                              className={getNavClass(isActive, isKundenFilter)}
                             >
                               <item.icon className={cn(
                                 "transition-colors",
