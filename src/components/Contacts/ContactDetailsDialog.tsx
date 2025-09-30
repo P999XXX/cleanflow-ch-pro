@@ -289,24 +289,24 @@ export function ContactDetailsDialog({
                 <Tabs defaultValue="kontakt" className="w-full">
                   {/* Scrollable Tab Container - Full Width without margins */}
                   <div className="overflow-x-auto overflow-y-hidden no-scrollbar -mx-6 px-6">
-                    <TabsList className="inline-flex min-w-full bg-muted p-1 rounded-md h-auto">
+                    <TabsList className="inline-flex min-w-full bg-white md:bg-muted p-1 rounded-md h-auto">
                       <TabsTrigger 
                         value="kontakt" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <Contact className="h-4 w-4" />
                         <span>Kontakt</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="objekte" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <Building className="h-4 w-4" />
                         <span>Objekte</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="reklamationen" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <AlertTriangle className="h-4 w-4" />
                         <span>Reklamationen</span>
@@ -314,7 +314,7 @@ export function ContactDetailsDialog({
                       </TabsTrigger>
                       <TabsTrigger 
                         value="dokumente" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2.5 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground md:data-[state=active]:bg-background md:data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <FileText className="h-4 w-4" />
                         <span>Dokumente</span>
