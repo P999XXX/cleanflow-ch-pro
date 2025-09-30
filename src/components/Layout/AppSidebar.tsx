@@ -53,23 +53,22 @@ const navigationItems = [
     ]
   },
   {
-    title: "Auftragswesen",
+    title: "Kunden",
     items: [
-      { title: "Angebote", url: "/angebote", icon: FileText },
-      { title: "Verträge", url: "/vertraege", icon: FileCheck },
+      { title: "Kunden", url: "/kunden", icon: Users },
+      { title: "Objekte", url: "/objekte", icon: Building2 },
+      { title: "Offerten", url: "/offerten", icon: FileText },
       { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
-      { title: "Materialbestellungen", url: "/materialbestellungen", icon: Package },
+      { title: "Reklamationen", url: "/reklamationen", icon: AlertTriangle },
       { title: "Rechnungen", url: "/rechnungen", icon: Receipt },
     ]
   },
   {
     title: "Controlling",
     items: [
-      { title: "Objekte", url: "/objekte", icon: Building2 },
       { title: "Einsatzplan", url: "/einsatzplan", icon: Calendar },
       { title: "Fahrzeuge", url: "/fahrzeuge", icon: Car },
       { title: "Materialschrank", url: "/materialschrank", icon: Briefcase },
-      { title: "Beschwerden", url: "/beschwerden", icon: MessageSquare },
       { title: "QS Kontrollen", url: "/qs-kontrollen", icon: CheckSquare },
     ]
   },
@@ -94,7 +93,7 @@ export function AppSidebar() {
   const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
     "Main": true,
-    "Auftragswesen": false,
+    "Kunden": false,
     "Controlling": false,
     "Personal": false,
   });

@@ -1,21 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileCheck } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
-const Vertraege = () => {
+const Unterhaltsreinigung = () => {
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center gap-2 mb-6">
-        <FileCheck className="h-6 w-6" />
-        <h1 className="text-2xl font-bold">Verträge</h1>
+        <Sparkles className="h-6 w-6" />
+        <h1 className="text-2xl font-bold">Unterhaltsreinigung</h1>
       </div>
       
       <Card>
         <CardHeader>
-          <CardTitle>Verträge verwalten</CardTitle>
+          <CardTitle>Unterhaltsreinigung</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">
-            Hier verwalten Sie alle Reinigungsverträge.
+            Hier verwalten Sie alle Unterhaltsreinigungsdienste und -aufträge.
           </p>
         </CardContent>
       </Card>
@@ -23,4 +23,4 @@ const Vertraege = () => {
   );
 };
 
-export default Vertraege;
+export default Unterhaltsreinigung;

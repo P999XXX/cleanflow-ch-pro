@@ -22,16 +22,17 @@ import AGB from "./pages/Auth/AGB";
 import Datenschutz from "./pages/Auth/Datenschutz";
 import Terminkalender from "./pages/Terminkalender";
 import Kontakte from "./pages/Kontakte";
-import Angebote from "./pages/Angebote";
-import Vertraege from "./pages/Vertraege";
+import Kunden from "./pages/Kunden";
+import Offerten from "./pages/Offerten";
 import Auftraege from "./pages/Auftraege";
-import Materialbestellungen from "./pages/Materialbestellungen";
+import Reklamationen from "./pages/Reklamationen";
 import Rechnungen from "./pages/Rechnungen";
 import Objekte from "./pages/Objekte";
+import Unterhaltsreinigung from "./pages/Unterhaltsreinigung";
+import Baureinigung from "./pages/Baureinigung";
 import Einsatzplan from "./pages/Einsatzplan";
 import Fahrzeuge from "./pages/Fahrzeuge";
 import Materialschrank from "./pages/Materialschrank";
-import Beschwerden from "./pages/Beschwerden";
 import QSKontrollen from "./pages/QSKontrollen";
 import Mitarbeiter from "./pages/Mitarbeiter";
 import Zeiterfassung from "./pages/Zeiterfassung";
@@ -95,16 +96,17 @@ function AuthLayout() {
                         <Route path="/" element={<Index />} />
                         <Route path="/terminkalender" element={<Terminkalender />} />
                         <Route path="/kontakte" element={<Kontakte />} />
-                        <Route path="/angebote" element={<Angebote />} />
-                        <Route path="/vertraege" element={<Vertraege />} />
-                        <Route path="/auftraege" element={<Auftraege />} />
-                        <Route path="/materialbestellungen" element={<Materialbestellungen />} />
-                        <Route path="/rechnungen" element={<Rechnungen />} />
+                        <Route path="/kunden" element={<Kunden />} />
                         <Route path="/objekte" element={<Objekte />} />
+                        <Route path="/offerten" element={<Offerten />} />
+                        <Route path="/auftraege" element={<Auftraege />} />
+                        <Route path="/reklamationen" element={<Reklamationen />} />
+                        <Route path="/rechnungen" element={<Rechnungen />} />
+                        <Route path="/unterhaltsreinigung" element={<Unterhaltsreinigung />} />
+                        <Route path="/baureinigung" element={<Baureinigung />} />
                         <Route path="/einsatzplan" element={<Einsatzplan />} />
                         <Route path="/fahrzeuge" element={<Fahrzeuge />} />
                         <Route path="/materialschrank" element={<Materialschrank />} />
-                        <Route path="/beschwerden" element={<Beschwerden />} />
                         <Route path="/qs-kontrollen" element={<QSKontrollen />} />
                         <Route path="/mitarbeiter" element={<Mitarbeiter />} />
                         <Route path="/zeiterfassung" element={<Zeiterfassung />} />
