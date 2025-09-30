@@ -509,18 +509,14 @@ export const ContactForm = ({
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-3 pt-4">
-            <Button type="submit" disabled={isLoading} className="w-full">
-              {isLoading ? 'Speichere...' : 'Speichern'}
-            </Button>
-            <button 
-              type="button" 
-              onClick={onClose}
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-            >
-              Abbrechen
-            </button>
-          </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Abbrechen
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Lädt...' : (company ? 'Aktualisieren' : 'Erstellen')}
+              </Button>
+            </div>
           </form>
         )}
       </DialogContent>
