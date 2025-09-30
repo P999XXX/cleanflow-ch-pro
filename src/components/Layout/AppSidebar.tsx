@@ -45,16 +45,11 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 
 const navigationItems = [
   {
-    title: "",
+    title: "Main",
     items: [
       { title: "Dashboard", url: "/", icon: Home },
-    ]
-  },
-  {
-    title: "CRM",
-    items: [
-      { title: "Kontakte", url: "/kontakte", icon: Users },
       { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
+      { title: "Kontakte", url: "/kontakte", icon: Users },
     ]
   },
   {
@@ -97,9 +92,8 @@ export function AppSidebar() {
   const currentPath = location.pathname;
   const collapsed = isMobile ? !openMobile : !open;
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "": true,
-    "CRM": true,
-    "Objekte": false,
+    "Main": true,
+    "Kunden": false,
     "Controlling": false,
     "Personal": false,
   });
