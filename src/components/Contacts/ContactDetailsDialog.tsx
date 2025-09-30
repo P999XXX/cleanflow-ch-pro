@@ -60,19 +60,17 @@ export function ContactDetailsDialog({
         <div className="w-full overflow-visible">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0">
-              <div className="absolute inset-0 overflow-visible">
-                <GoogleMap
-                  address={selectedItem.address}
-                  postal_code={selectedItem.postal_code}
-                  city={selectedItem.city}
-                  country={selectedItem.country}
-                  className="w-full h-full rounded-none"
-                />
-              </div>
+            <div className="relative h-48 sm:h-64 mb-0">
+              <GoogleMap
+                address={selectedItem.address}
+                postal_code={selectedItem.postal_code}
+                city={selectedItem.city}
+                country={selectedItem.country}
+                className="w-full h-full rounded-md"
+              />
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-6 right-6 flex items-center gap-2 z-20">
+              <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
                 <Button
                   variant="secondary"
                   size="icon"
