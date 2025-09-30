@@ -1,12 +1,11 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search, X, Filter, Contact, Building, Users, Plus, Grid3X3, List } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface ContactsFiltersProps {
   searchTerm: string;
@@ -23,6 +22,7 @@ interface ContactsFiltersProps {
   onViewModeToggle: () => void;
   onAddClick: () => void;
   isMobile: boolean;
+  availableContactTypes: string[];
 }
 
 export function ContactsFilters({
@@ -40,16 +40,18 @@ export function ContactsFilters({
   onViewModeToggle,
   onAddClick,
   isMobile,
+  availableContactTypes,
 }: ContactsFiltersProps) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const filterOptions = [
-    { value: "kunde", label: "Kunde" },
-    { value: "interessent", label: "Interessent" },
-    { value: "lieferant", label: "Lieferant" },
-    { value: "partner", label: "Partner" },
-  ];
+  // Generate filter options from available contact types
+  const filterOptions = useMemo(() => {
+    return availableContactTypes.map(type => ({
+      value: type,
+      label: type.charAt(0).toUpperCase() + type.slice(1)
+    }));
+  }, [availableContactTypes]);
 
   const handleFilterToggle = (value: string) => {
     const newFilters = selectedFilters.includes(value)
@@ -86,27 +88,27 @@ export function ContactsFilters({
         {/* Search and Controls */}
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           {/* Search and Filter Row */}
-          <div className="flex flex-col sm:flex-row gap-4 w-full lg:flex-1">
-            {/* Search with integrated filter for mobile */}
+          <div className="flex flex-col gap-4 w-full lg:flex-1">
+            {/* Search with integrated filter for all viewports */}
             <div className="relative flex-1 lg:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
               <Input
                 placeholder="Suchen nach Name, E-Mail, Telefon..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-9 pr-24 w-full sm:pr-9"
+                className={`pl-9 w-full ${searchTerm ? 'pr-16' : 'pr-10'}`}
               />
               {searchTerm && (
                 <button
                   onClick={onClearSearch}
-                  className="absolute right-12 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10 sm:right-3"
+                  className="absolute right-10 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10"
                 >
                   <X className="h-4 w-4" />
                 </button>
               )}
               
-              {/* Mobile Filter Icon in Search Field */}
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 sm:hidden">
+              {/* Filter Icon in Search Field - All Viewports */}
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                   <PopoverTrigger asChild>
                     <button className="text-muted-foreground hover:text-foreground transition-colors relative">
@@ -154,44 +156,27 @@ export function ContactsFilters({
               </div>
             </div>
 
-            {/* Contact Type Filter - Desktop/Tablet only */}
-            <div className="hidden sm:flex items-center gap-2 sm:min-w-[200px]">
-              <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <Select value={contactTypeFilter} onValueChange={onContactTypeChange}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Kontaktart" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Alle Kontaktarten</SelectItem>
-                  <SelectItem value="kunde">Kunde</SelectItem>
-                  <SelectItem value="interessent">Interessent</SelectItem>
-                  <SelectItem value="lieferant">Lieferant</SelectItem>
-                  <SelectItem value="partner">Partner</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Mobile Filter Badges */}
-          {selectedFilters.length > 0 && (
-            <div className="flex flex-wrap gap-2 sm:hidden">
-              {selectedFilters.map((filter) => (
-                <Badge
-                  key={filter}
-                  variant="secondary"
-                  className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
-                >
-                  {filterOptions.find(o => o.value === filter)?.label}
-                  <button
-                    onClick={() => handleFilterToggle(filter)}
-                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+            {/* Filter Badges - All Viewports */}
+            {selectedFilters.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {selectedFilters.map((filter) => (
+                  <Badge
+                    key={filter}
+                    variant="secondary"
+                    className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
                   >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          )}
+                    {filterOptions.find(o => o.value === filter)?.label}
+                    <button
+                      onClick={() => handleFilterToggle(filter)}
+                      className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* Add Button - Mobile/Tablet only */}
           <div className="lg:hidden">

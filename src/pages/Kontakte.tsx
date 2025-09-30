@@ -43,16 +43,29 @@ const Kontakte = () => {
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
+  // Extract unique contact types from companies
+  const availableContactTypes = useMemo(() => {
+    if (!companies) return [];
+    const types = new Set<string>();
+    companies.forEach(company => {
+      if (company.contact_type) {
+        types.add(company.contact_type);
+      }
+    });
+    return Array.from(types).sort();
+  }, [companies]);
+
   // Optimized filtering with useMemo for performance
   const filteredCompanies = useMemo(() => {
     if (!companies) return [];
     
     let filtered = companies;
     
-    // Filter by contact type
+    // Filter by contact type (supports multiple types comma-separated)
     if (contactTypeFilter !== 'all') {
+      const selectedTypes = contactTypeFilter.split(',');
       filtered = filtered.filter(company => 
-        company.contact_type === contactTypeFilter
+        selectedTypes.includes(company.contact_type || '')
       );
     }
     
@@ -76,11 +89,12 @@ const Kontakte = () => {
     
     let filtered = contactPersons;
     
-    // Filter by contact type
+    // Filter by contact type (supports multiple types comma-separated)
     if (contactTypeFilter !== 'all') {
+      const selectedTypes = contactTypeFilter.split(',');
       filtered = filtered.filter(person => {
         const fullCompany = companies?.find(company => company.id === person.customer_company_id);
-        return fullCompany?.contact_type === contactTypeFilter;
+        return selectedTypes.includes(fullCompany?.contact_type || '');
       });
     }
     
@@ -341,6 +355,7 @@ const Kontakte = () => {
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={handleAddClick}
         isMobile={isMobile}
+        availableContactTypes={availableContactTypes}
       />
 
       {/* Main Content */}
