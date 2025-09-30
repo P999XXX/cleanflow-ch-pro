@@ -186,3 +186,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Hide native scrollbars but keep scrolling */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
