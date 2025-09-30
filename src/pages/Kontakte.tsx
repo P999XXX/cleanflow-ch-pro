@@ -125,6 +125,8 @@ const Kontakte = () => {
 
   // Handle card clicks to open details
   const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
+    setIsFormOpen(false);
+    setDeleteDialogOpen(false);
     setSelectedItem(item);
     setItemType(type);
     setNavigationStack([]);
@@ -173,6 +175,7 @@ const Kontakte = () => {
       setFormMode('person');
     }
     setDetailsOpen(false);
+    setDeleteDialogOpen(false);
     setIsFormOpen(true);
   }, [selectedItem, itemType]);
 
@@ -324,6 +327,8 @@ const Kontakte = () => {
 
   // Handle add button click based on active tab
   const handleAddClick = () => {
+    setDetailsOpen(false);
+    setDeleteDialogOpen(false);
     if (activeTab === 'companies') {
       setSelectedCompany(null);
       setFormMode('company');
@@ -452,7 +457,10 @@ const Kontakte = () => {
       {/* Details Dialog */}
       <ContactDetailsDialog
         isOpen={detailsOpen}
-        onClose={() => setDetailsOpen(false)}
+        onClose={() => {
+          setDetailsOpen(false);
+          setDeleteDialogOpen(false);
+        }}
         selectedItem={selectedItem}
         itemType={itemType}
         navigationStack={navigationStack}
