@@ -42,7 +42,7 @@ export function ContactDetailsDialog({
 }: ContactDetailsDialogProps) {
   if (!selectedItem) return null;
 
-  const isCustomer = itemType === 'company' && selectedItem.contact_type === 'kunde';
+  const isCustomer = itemType === 'company' && selectedItem.contact_type?.toLowerCase() === 'kunde';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
