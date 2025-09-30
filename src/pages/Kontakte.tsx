@@ -918,14 +918,14 @@ const Kontakte = () => {
         initialMode={formMode}
       />
 
-      {/* Details Dialog - Scrollable */}
+      {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col">
           {selectedItem && (
-            <div className="w-full">
-              {/* Map Header - Full width, no margins */}
+            <div className="flex flex-col h-full overflow-hidden">
+              {/* Map Header - Fixed at top */}
               {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-                <div className="relative h-48 sm:h-64">
+                <div className="relative h-48 sm:h-64 flex-shrink-0">
                   <GoogleMap
                     address={selectedItem.address}
                     postal_code={selectedItem.postal_code}
@@ -933,13 +933,12 @@ const Kontakte = () => {
                     country={selectedItem.country}
                     className="w-full h-full rounded-t-lg"
                   />
-                  {/* Overlay for better text readability */}
                   <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
                 </div>
               )}
 
-              {/* Title and Badges Section */}
-              <div className="p-6 pb-4 border-b">
+              {/* Header Section - Fixed */}
+              <div className="p-6 pb-4 border-b flex-shrink-0">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   {/* Title - Left */}
                   <div className="flex items-center gap-3">
@@ -1006,6 +1005,70 @@ const Kontakte = () => {
                   </div>
                 </div>
 
+                {/* Quick Action Icons */}
+                <div className="flex items-center gap-3 mt-4 flex-wrap">
+                  {selectedItem.website && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                    >
+                      <Globe className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {selectedItem.phone && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                    >
+                      <Phone className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {selectedItem.email && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                    >
+                      <Mail className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {(selectedItem.address || selectedItem.city) && (
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="rounded-full h-10 w-10"
+                      onClick={() => {
+                        const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                        window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                      }}
+                    >
+                      <MapPin className="h-4 w-4" />
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10"
+                    onClick={handleEditItem}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
+                    onClick={handleDeleteItem}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
                  {/* Quick Action Icons - Round buttons */}
                  <div className="flex items-center gap-3 mt-4 flex-wrap">
                    {selectedItem.website && (
@@ -1069,33 +1132,40 @@ const Kontakte = () => {
                    </Button>
                  </div>
 
-                  {/* Tabs - Only for customers */}
-                  {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
-                    <div className="mt-6">
-                     <Tabs defaultValue="kontakt" className="w-full">
-                       <div className="overflow-x-auto">
-                         <TabsList className="inline-flex w-auto min-w-full">
-                           <TabsTrigger value="kontakt" className="flex items-center gap-2 px-4">
-                             <Contact className="h-4 w-4" />
-                             <span className="whitespace-nowrap">Kontakt</span>
-                           </TabsTrigger>
-                           <TabsTrigger value="objekte" className="flex items-center gap-2 px-4">
-                             <Building className="h-4 w-4" />
-                             <span className="whitespace-nowrap">Objekte</span>
-                           </TabsTrigger>
-                           <TabsTrigger value="reklamationen" className="flex items-center gap-2 px-4 relative">
-                             <AlertTriangle className="h-4 w-4" />
-                             <span className="whitespace-nowrap">Reklamationen</span>
-                             <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] leading-none">2</Badge>
-                           </TabsTrigger>
-                           <TabsTrigger value="dokumente" className="flex items-center gap-2 px-4">
-                             <FileText className="h-4 w-4" />
-                             <span className="whitespace-nowrap">Dokumente</span>
-                           </TabsTrigger>
-                         </TabsList>
-                       </div>
+              {/* Tabs Section - For customers only, fixed */}
+              {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
+                <div className="border-b flex-shrink-0">
+                  <Tabs defaultValue="kontakt" className="w-full">
+                    {/* Horizontal scrollable tab list */}
+                    <div className="overflow-x-auto scrollbar-hide px-6">
+                      <TabsList className="inline-flex w-auto min-w-full h-12">
+                        <TabsTrigger value="kontakt" className="flex items-center gap-2 px-4">
+                          <Contact className="h-4 w-4" />
+                          <span className="whitespace-nowrap">Kontakt</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="objekte" className="flex items-center gap-2 px-4">
+                          <Building className="h-4 w-4" />
+                          <span className="whitespace-nowrap">Objekte</span>
+                        </TabsTrigger>
+                        <TabsTrigger value="reklamationen" className="flex items-center gap-2 px-4 relative">
+                          <AlertTriangle className="h-4 w-4" />
+                          <span className="whitespace-nowrap">Reklamationen</span>
+                          <sup>
+                            <Badge variant="destructive" className="h-4 w-4 p-0 flex items-center justify-center text-[10px] leading-none ml-1">
+                              2
+                            </Badge>
+                          </sup>
+                        </TabsTrigger>
+                        <TabsTrigger value="dokumente" className="flex items-center gap-2 px-4">
+                          <FileText className="h-4 w-4" />
+                          <span className="whitespace-nowrap">Dokumente</span>
+                        </TabsTrigger>
+                      </TabsList>
+                    </div>
 
-                        <TabsContent value="kontakt" className="mt-4 px-6">
+                    {/* Scrollable Tab Content */}
+                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 400px)' }}>
+                      <TabsContent value="kontakt" className="mt-0 px-6 py-6">{/* Removed mt-4 */}
                           {/* Contact Content */}
                           <div className="space-y-6">
                             {/* Contact Information Cards */}
@@ -1241,37 +1311,37 @@ const Kontakte = () => {
                                 </div>
                               </div>
                             )}
-                          </div>
-                        </TabsContent>
+                        </div>
+                      </TabsContent>
 
-                        <TabsContent value="objekte" className="mt-4 px-6">
-                          <div className="text-center py-8 text-muted-foreground">
-                            <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                            <p>Objekte werden hier angezeigt</p>
-                          </div>
-                        </TabsContent>
+                      <TabsContent value="objekte" className="mt-0 px-6 py-6">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Objekte werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
 
-                        <TabsContent value="reklamationen" className="mt-4 px-6">
-                          <div className="text-center py-8 text-muted-foreground">
-                            <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                            <p>Reklamationen werden hier angezeigt</p>
-                          </div>
-                        </TabsContent>
+                      <TabsContent value="reklamationen" className="mt-0 px-6 py-6">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Reklamationen werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
 
-                        <TabsContent value="dokumente" className="mt-4 px-6">
-                          <div className="text-center py-8 text-muted-foreground">
-                            <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-                            <p>Dokumente werden hier angezeigt</p>
-                          </div>
-                        </TabsContent>
-                      </Tabs>
-                   </div>
-                 )}
+                      <TabsContent value="dokumente" className="mt-0 px-6 py-6">
+                        <div className="text-center py-8 text-muted-foreground">
+                          <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+                          <p>Dokumente werden hier angezeigt</p>
+                        </div>
+                      </TabsContent>
+                    </div>
+                  </Tabs>
                 </div>
+              )}
 
-              {/* Non-customer content (no tabs) and person content */}
+              {/* Scrollable Content for non-customer companies and persons */}
               {(itemType === 'person' || (itemType === 'company' && (selectedItem.contact_type || '').toLowerCase() !== 'kunde')) && (
-                <div className="p-6 space-y-6">
+                <div className="overflow-y-auto flex-1 p-6">{/* Made scrollable */}
                   {/* Contact Information Cards */}
                   <div className="space-y-4">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -1467,18 +1537,19 @@ const Kontakte = () => {
                 </div>
               )}
 
+              {/* Footer with Close Button - Fixed at bottom */}
+              <DialogFooter className="p-6 border-t flex-shrink-0">
+                <Button
+                  variant="outline"
+                  onClick={() => setSelectedItem(null)}
+                  className="w-full sm:w-auto sm:ml-auto bg-white shadow-sm"
+                >
+                  Schließen
+                </Button>
+              </DialogFooter>
+
             </div>
           )}
-          
-          <DialogFooter className="mt-6">
-            <Button
-              variant="outline"
-              onClick={() => setSelectedItem(null)}
-              className="w-full sm:w-auto sm:ml-auto bg-white shadow-sm"
-            >
-              Schließen
-            </Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
