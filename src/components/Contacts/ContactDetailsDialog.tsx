@@ -46,20 +46,21 @@ export function ContactDetailsDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={cn(
+      <DialogContent aria-describedby="contact-dialog-desc" className={cn(
         designTokens.containers.dialog.lg,
         designTokens.dialogs.content,
         "h-[90vh]"
       )}>
-        <VisuallyHidden>
-          <DialogTitle>
-            {itemType === 'company' ? selectedItem.name : `${selectedItem.first_name} ${selectedItem.last_name}`}
-          </DialogTitle>
-        </VisuallyHidden>
-        <div className="w-full">
+      <VisuallyHidden>
+        <DialogTitle>
+          {itemType === 'company' ? selectedItem.name : `${selectedItem.first_name} ${selectedItem.last_name}`}
+        </DialogTitle>
+        <p id="contact-dialog-desc">Details zur Kontaktansicht</p>
+      </VisuallyHidden>
+      <div className="w-full">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0 overflow-hidden">
+            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0 overflow-visible">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
@@ -69,7 +70,7 @@ export function ContactDetailsDialog({
               />
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-6 right-6 flex items-center gap-2 z-10">
+              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                 <Button
                   variant="secondary"
                   size="icon"
@@ -99,7 +100,7 @@ export function ContactDetailsDialog({
           )}
 
           {/* Title and Badges Section */}
-          <div className={cn(designTokens.dialogs.header, itemType === 'company' && (selectedItem.address || selectedItem.city) && "pt-4")}>
+          <div className={designTokens.dialogs.header}>
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
               <div className="flex items-center gap-3 flex-1 min-w-0">
