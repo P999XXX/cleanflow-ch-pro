@@ -323,7 +323,7 @@ export function ContactDetailsDialog({
                   </div>
 
                   <TabsContent value="kontakt" className="mt-2 md:mt-4 -mx-6 p-0">
-                    <div className="bg-muted/20">
+                    <div className="bg-muted/1">
                       <div className="px-6 pt-4 md:pt-6 pb-6">
                         <ContactInformationSection 
                           selectedItem={selectedItem} 
@@ -335,7 +335,7 @@ export function ContactDetailsDialog({
                   </TabsContent>
 
                   <TabsContent value="objekte" className="mt-2 md:mt-4 -mx-6 p-0">
-                    <div className="bg-muted/20">
+                    <div className="bg-muted/1">
                       <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
                       </div>
@@ -343,7 +343,7 @@ export function ContactDetailsDialog({
                   </TabsContent>
 
                   <TabsContent value="reklamationen" className="mt-2 md:mt-4 -mx-6 p-0">
-                    <div className="bg-muted/20">
+                    <div className="bg-muted/1">
                       <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
                       </div>
@@ -351,7 +351,7 @@ export function ContactDetailsDialog({
                   </TabsContent>
 
                   <TabsContent value="dokumente" className="mt-2 md:mt-4 -mx-6 p-0">
-                    <div className="bg-muted/20">
+                    <div className="bg-muted/1">
                       <div className="px-6 pt-4 md:pt-6 pb-6">
                         <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
                       </div>
