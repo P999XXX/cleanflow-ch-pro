@@ -319,30 +319,28 @@ export function ContactDetailsDialog({
                         <FileText className="h-4 w-4" />
                         <span>Dokumente</span>
                       </TabsTrigger>
-                    </TabsList>
+                  </TabsList>
                   </div>
 
-                  <div className="px-6">
-                    <TabsContent value="kontakt" className="mt-4">
-                      <ContactInformationSection 
-                        selectedItem={selectedItem} 
-                        itemType={itemType}
-                        onNavigateToPerson={onNavigateToPerson}
-                      />
-                    </TabsContent>
+                  <TabsContent value="kontakt" className="px-6 pb-6 mt-4">
+                    <ContactInformationSection 
+                      selectedItem={selectedItem} 
+                      itemType={itemType}
+                      onNavigateToPerson={onNavigateToPerson}
+                    />
+                  </TabsContent>
 
-                    <TabsContent value="objekte" className="mt-4">
-                      <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
-                    </TabsContent>
+                  <TabsContent value="objekte" className="px-6 pb-6 mt-4">
+                    <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                  </TabsContent>
 
-                    <TabsContent value="reklamationen" className="mt-4">
-                      <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
-                    </TabsContent>
+                  <TabsContent value="reklamationen" className="px-6 pb-6 mt-4">
+                    <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                  </TabsContent>
 
-                    <TabsContent value="dokumente" className="mt-4">
-                      <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
-                    </TabsContent>
-                  </div>
+                  <TabsContent value="dokumente" className="px-6 pb-6 mt-4">
+                    <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                  </TabsContent>
                 </Tabs>
               </div>
             )}
@@ -384,40 +382,49 @@ function ContactInformationSection({
           {selectedItem.email && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
             >
-              <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">E-Mail</p>
-                <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">E-Mail</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.phone && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
             >
-              <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">Telefon</p>
-                <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">Telefon</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.mobile && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
             >
-              <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">Mobile Nummer</p>
-                <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">Mobile Nummer</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.website && (
