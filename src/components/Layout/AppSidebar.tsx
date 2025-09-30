@@ -55,7 +55,6 @@ const navigationItems = [
   {
     title: "Kunden",
     items: [
-      { title: "Kunden", url: "/kunden", icon: Users },
       { title: "Objekte", url: "/objekte", icon: Building2 },
       { title: "Offerten", url: "/offerten", icon: FileText },
       { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
