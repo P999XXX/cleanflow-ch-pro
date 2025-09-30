@@ -302,7 +302,7 @@ export const ContactForm = ({
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
-                  Firmenname <span className="text-muted-foreground">*</span>
+                  Firmenname <span className="text-foreground">*</span>
                 </Label>
                 <Input
                   id="name"
@@ -316,7 +316,7 @@ export const ContactForm = ({
 
               <div>
                 <Label htmlFor="address">
-                  Adresse <span className="text-muted-foreground">*</span>
+                  Adresse <span className="text-foreground">*</span>
                 </Label>
                 <Input
                   id="address"
@@ -331,7 +331,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="postal_code">
-                    PLZ <span className="text-muted-foreground">*</span>
+                    PLZ <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="postal_code"
@@ -344,7 +344,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="city">
-                    Ort <span className="text-muted-foreground">*</span>
+                    Ort <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="city"
@@ -359,7 +359,7 @@ export const ContactForm = ({
 
               <div>
                 <Label htmlFor="country">
-                  Land <span className="text-muted-foreground">*</span>
+                  Land <span className="text-foreground">*</span>
                 </Label>
                 <Input
                   id="country"
@@ -374,7 +374,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="company_type">
-                    Gesellschaftsart <span className="text-destructive">*</span>
+                    Gesellschaftsart <span className="text-foreground">*</span>
                   </Label>
                   <Select 
                     value={companyData.company_type} 
@@ -400,7 +400,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="industry_category">
-                    Branche <span className="text-destructive">*</span>
+                    Branche <span className="text-foreground">*</span>
                   </Label>
                   <Select 
                     value={companyData.industry_category} 
@@ -429,7 +429,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="contact_type">
-                    Kontaktart <span className="text-destructive">*</span>
+                    Kontaktart <span className="text-foreground">*</span>
                   </Label>
                   <Select 
                     value={companyData.contact_type} 
@@ -450,7 +450,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="status">
-                    Status <span className="text-destructive">*</span>
+                    Status <span className="text-foreground">*</span>
                   </Label>
                   <Select 
                     value={companyData.status} 
@@ -472,7 +472,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="phone">
-                    Telefon <span className="text-destructive">*</span>
+                    Telefon <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="phone"
@@ -485,7 +485,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="email">
-                    E-Mail <span className="text-destructive">*</span>
+                    E-Mail <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="email"
@@ -533,7 +533,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="first_name">
-                    Vorname <span className="text-muted-foreground">*</span>
+                    Vorname <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="first_name"
@@ -546,7 +546,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="last_name">
-                    Nachname <span className="text-muted-foreground">*</span>
+                    Nachname <span className="text-foreground">*</span>
                   </Label>
                   <Input
                     id="last_name"
