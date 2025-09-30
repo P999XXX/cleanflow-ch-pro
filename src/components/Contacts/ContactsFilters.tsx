@@ -50,10 +50,11 @@ export function ContactsFilters({
 
   // Generate filter options from available contact types
   const filterOptions = useMemo(() => {
-    return availableContactTypes.map(type => ({
+    const options = availableContactTypes.map(type => ({
       value: type,
       label: type.charAt(0).toUpperCase() + type.slice(1)
     }));
+    return [{ value: 'all', label: 'Alle Kontaktarten' }, ...options];
   }, [availableContactTypes]);
 
   // Sync selectedFilters with contactTypeFilter prop
@@ -66,6 +67,11 @@ export function ContactsFilters({
   }, [contactTypeFilter]);
 
   const handleFilterToggle = (value: string) => {
+    if (value === 'all') {
+      clearFilters();
+      return;
+    }
+    
     const newFilters = selectedFilters.includes(value)
       ? selectedFilters.filter(f => f !== value)
       : [...selectedFilters, value];
@@ -122,16 +128,17 @@ export function ContactsFilters({
                 )}
                 
                 {/* Filter Icon in Search Field - Mobile/Tablet only */}
-                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
-                  <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-                    <PopoverTrigger asChild>
-                      <button className="text-primary hover:text-primary/80 transition-colors relative bg-primary/10 hover:bg-primary/20 rounded-md p-1.5">
-                        <Filter className="h-4 w-4" />
-                        {selectedFilters.length > 0 && (
-                          <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-primary rounded-full border border-background" />
-                        )}
-                      </button>
-                    </PopoverTrigger>
+                {(activeTab === 'all' || activeTab === 'companies') && (
+                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
+                    <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                      <PopoverTrigger asChild>
+                        <button className="text-primary hover:text-primary/80 transition-colors relative bg-primary/10 hover:bg-primary/20 rounded-md p-1.5">
+                          <Filter className="h-4 w-4" />
+                          {selectedFilters.length > 0 && (
+                            <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-primary rounded-full border border-background" />
+                          )}
+                        </button>
+                      </PopoverTrigger>
                     <PopoverContent className="w-64 p-4 bg-background border shadow-lg" align="end">
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -168,26 +175,28 @@ export function ContactsFilters({
                     </PopoverContent>
                   </Popover>
                 </div>
+                )}
               </div>
 
               {/* Desktop Filter Button - next to search */}
-              <div className="hidden lg:block">
-                <Popover open={isDesktopFilterOpen} onOpenChange={setIsDesktopFilterOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-2 relative"
-                    >
-                      <Filter className="h-4 w-4" />
-                      Kontaktart
-                      {selectedFilters.length > 0 && (
-                        <Badge variant="secondary" className="ml-1 px-1.5 py-0 h-5 min-w-5 flex items-center justify-center bg-primary text-primary-foreground">
-                          {selectedFilters.length}
-                        </Badge>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
+              {(activeTab === 'all' || activeTab === 'companies') && (
+                <div className="hidden lg:block">
+                  <Popover open={isDesktopFilterOpen} onOpenChange={setIsDesktopFilterOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex items-center gap-2 relative"
+                      >
+                        <Filter className="h-4 w-4" />
+                        Kontaktart
+                        {selectedFilters.length > 0 && (
+                          <Badge variant="secondary" className="ml-1 px-1.5 py-0 h-5 min-w-5 flex items-center justify-center bg-primary text-primary-foreground">
+                            {selectedFilters.length}
+                          </Badge>
+                        )}
+                      </Button>
+                    </PopoverTrigger>
                   <PopoverContent className="w-64 p-4 bg-background border shadow-lg z-50" align="end">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -224,6 +233,7 @@ export function ContactsFilters({
                   </PopoverContent>
                 </Popover>
               </div>
+              )}
             </div>
 
             {/* Filter Badges - Mobile/Tablet only, directly after search */}
