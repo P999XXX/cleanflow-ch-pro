@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
@@ -12,6 +13,7 @@ import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Kontakte = () => {
+  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
@@ -32,6 +34,16 @@ const Kontakte = () => {
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
+
+  // Handle URL parameters for filtering (e.g., ?type=kunde)
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      // Capitalize first letter to match database values
+      const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
+      setContactTypeFilter(formattedType);
+    }
+  }, [searchParams]);
 
   // Set default view mode based on device type
   React.useEffect(() => {
