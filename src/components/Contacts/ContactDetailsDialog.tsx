@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, 
+  Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, X,
   Contact, Building, AlertTriangle, FileText, MessageCircle 
 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
@@ -73,18 +73,26 @@ export function ContactDetailsDialog({
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full h-8 w-8 bg-white/90 hover:bg-white shadow-lg"
+                  className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
                   onClick={onEdit}
                 >
-                  <Edit className="h-3.5 w-3.5 text-foreground" />
+                  <Edit className="h-3 w-3 text-foreground" />
                 </Button>
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full h-8 w-8 bg-white/90 hover:bg-white shadow-lg"
+                  className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
                   onClick={onDelete}
                 >
-                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                  <Trash2 className="h-3 w-3 text-destructive" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
+                  onClick={navigationStack.length > 0 ? onGoBack : onClose}
+                >
+                  <X className="h-3 w-3 text-foreground" />
                 </Button>
               </div>
             </div>
@@ -125,18 +133,26 @@ export function ContactDetailsDialog({
                   <Button
                     variant="outline"
                     size="icon"
-                    className="rounded-full h-8 w-8"
+                    className="rounded-full h-7 w-7"
                     onClick={onEdit}
                   >
-                    <Edit className="h-3.5 w-3.5" />
+                    <Edit className="h-3 w-3" />
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
-                    className="rounded-full h-8 w-8"
+                    className="rounded-full h-7 w-7"
                     onClick={onDelete}
                   >
-                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                    <Trash2 className="h-3 w-3 text-destructive" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-7 w-7"
+                    onClick={navigationStack.length > 0 ? onGoBack : onClose}
+                  >
+                    <X className="h-3 w-3" />
                   </Button>
                 </div>
               )}
@@ -300,16 +316,6 @@ export function ContactDetailsDialog({
             </div>
           )}
 
-          {/* Bottom Close Button */}
-          <div className={designTokens.dialogs.footer}>
-            <Button 
-              variant="outline"
-              onClick={navigationStack.length > 0 ? onGoBack : onClose}
-              className="w-full sm:w-auto sm:min-w-[120px]"
-            >
-              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
-            </Button>
-          </div>
         </div>
       </DialogContent>
     </Dialog>
