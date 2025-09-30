@@ -21,7 +21,6 @@ const Kontakte = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
-  const [formMode, setFormMode] = useState<'company' | 'person'>('company');
   const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -183,10 +182,8 @@ const Kontakte = () => {
     
     if (itemType === 'company') {
       setSelectedCompany(selectedItem);
-      setFormMode('company');
     } else {
       setSelectedPerson(selectedItem);
-      setFormMode('person');
     }
     setDetailsOpen(false);
     setDeleteDialogOpen(false);
@@ -372,20 +369,12 @@ const Kontakte = () => {
     );
   };
 
-  // Handle add button click based on active tab
+  // Handle add button click - reset form state
   const handleAddClick = () => {
     setDetailsOpen(false);
     setDeleteDialogOpen(false);
-    if (activeTab === 'companies') {
-      setSelectedCompany(null);
-      setFormMode('company');
-    } else if (activeTab === 'persons') {
-      setSelectedPerson(null);
-      setFormMode('person');
-    } else {
-      setSelectedCompany(null);
-      setFormMode('company');
-    }
+    setSelectedCompany(null);
+    setSelectedPerson(null);
     setIsFormOpen(true);
   };
 
@@ -498,7 +487,6 @@ const Kontakte = () => {
         contactPerson={selectedPerson}
         onSubmitCompany={handleCompanySubmit}
         onSubmitPerson={handlePersonSubmit}
-        initialMode={formMode}
       />
 
       {/* Details Dialog */}

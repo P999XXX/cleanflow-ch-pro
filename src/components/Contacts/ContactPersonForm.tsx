@@ -20,6 +20,8 @@ interface ContactPersonFormProps {
   onSubmit: (contactPerson: ContactPersonInput, employeeDetails?: EmployeeDetailsInput, children?: any[]) => void;
   contactPerson?: any;
   isLoading?: boolean;
+  initialIsEmployee?: boolean;
+  onBack?: () => void;
 }
 
 export const ContactPersonForm = ({ 
@@ -27,7 +29,9 @@ export const ContactPersonForm = ({
   onClose, 
   onSubmit, 
   contactPerson,
-  isLoading = false
+  isLoading = false,
+  initialIsEmployee = false,
+  onBack
 }: ContactPersonFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<ContactPersonInput>({
@@ -73,7 +77,7 @@ export const ContactPersonForm = ({
         phone: '',
         mobile: '',
         is_primary_contact: false,
-        is_employee: false,
+        is_employee: initialIsEmployee,
         notes: '',
         customer_company_id: undefined,
       });
@@ -86,7 +90,7 @@ export const ContactPersonForm = ({
         setCompanyId(companies[0].id);
       }
     }
-  }, [contactPerson, companies, isOpen]);
+  }, [contactPerson, companies, isOpen, initialIsEmployee]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,9 +119,26 @@ export const ContactPersonForm = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {contactPerson ? 'Kontaktperson bearbeiten' : 'Neue Kontaktperson'}
-          </DialogTitle>
+          <div className="flex items-center gap-2">
+            {onBack && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBack}
+                className="h-8 w-8"
+                type="button"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <DialogTitle>
+              {contactPerson ? (
+                contactPerson.is_employee ? 'Mitarbeiter bearbeiten' : 'Kontaktperson bearbeiten'
+              ) : (
+                initialIsEmployee ? 'Neuer Mitarbeiter' : 'Neue Kontaktperson'
+              )}
+            </DialogTitle>
+          </div>
         </DialogHeader>
 
         {formData.is_employee && (

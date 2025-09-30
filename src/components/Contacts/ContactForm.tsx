@@ -5,16 +5,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Building2, User } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useToast } from '@/hooks/use-toast';
 import { ContactPersonForm } from './ContactPersonForm';
+import { ContactTypeSelector, ContactType } from './ContactTypeSelector';
 import { EmployeeDetailsInput } from '@/hooks/useEmployeeDetails';
 
-type ContactFormMode = 'company' | 'person';
+type ContactFormStage = 'select' | 'form';
 
 interface ContactFormProps {
   isOpen: boolean;
@@ -24,7 +23,6 @@ interface ContactFormProps {
   company?: CustomerCompany;
   contactPerson?: ContactPerson;
   isLoading?: boolean;
-  initialMode?: ContactFormMode;
 }
 
 export const ContactForm = ({ 
@@ -34,12 +32,12 @@ export const ContactForm = ({
   onSubmitPerson, 
   company, 
   contactPerson, 
-  isLoading,
-  initialMode = 'company'
+  isLoading
 }: ContactFormProps) => {
   const { data: companies } = useCompanies();
   const { toast } = useToast();
-  const [mode, setMode] = useState<ContactFormMode>(initialMode);
+  const [stage, setStage] = useState<ContactFormStage>('select');
+  const [selectedType, setSelectedType] = useState<ContactType | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [companyData, setCompanyData] = useState<CustomerCompanyInput>({
@@ -59,9 +57,16 @@ export const ContactForm = ({
     contact_type: '',
   });
 
+  // Reset stage when dialog opens/closes
   useEffect(() => {
-    setMode(initialMode);
-  }, [initialMode]);
+    if (isOpen && !company && !contactPerson) {
+      setStage('select');
+      setSelectedType(null);
+    } else if (company || contactPerson) {
+      setStage('form');
+      setSelectedType(company ? 'company' : (contactPerson?.is_employee ? 'employee' : 'person'));
+    }
+  }, [isOpen, company, contactPerson]);
 
   useEffect(() => {
     if (company) {
@@ -81,7 +86,6 @@ export const ContactForm = ({
         industry_category: company.industry_category || '',
         contact_type: company.contact_type || '',
       });
-      setMode('company');
     } else {
       setCompanyData({
         name: '',
@@ -192,16 +196,46 @@ export const ContactForm = ({
     }
   };
 
+  const handleTypeSelect = (type: ContactType) => {
+    setSelectedType(type);
+    setStage('form');
+  };
+
+  const handleBack = () => {
+    setStage('select');
+    setSelectedType(null);
+  };
+
   const getTitle = () => {
     if (company) return 'Unternehmen bearbeiten';
     if (contactPerson) return 'Kontaktperson bearbeiten';
-    return mode === 'company' ? 'Neues Unternehmen' : 'Neue Kontaktperson';
+    
+    if (stage === 'select') return 'Kontakt hinzufügen';
+    
+    switch (selectedType) {
+      case 'company': return 'Neues Unternehmen';
+      case 'person': return 'Neue Kontaktperson';
+      case 'employee': return 'Neuer Mitarbeiter';
+      default: return 'Neuer Kontakt';
+    }
   };
 
-  const canSwitchMode = !company && !contactPerson;
+  const getDescription = () => {
+    if (company) return 'Bearbeiten Sie die Unternehmensdaten';
+    if (contactPerson) return contactPerson.is_employee ? 'Bearbeiten Sie die Mitarbeiterdaten' : 'Bearbeiten Sie die Kontaktdaten';
+    
+    if (stage === 'select') return 'Wählen Sie die Art des Kontakts aus';
+    
+    switch (selectedType) {
+      case 'company': return 'Fügen Sie ein neues Unternehmen hinzu';
+      case 'person': return 'Fügen Sie eine neue Kontaktperson hinzu';
+      case 'employee': return 'Fügen Sie einen neuen Mitarbeiter hinzu';
+      default: return 'Fügen Sie einen neuen Kontakt hinzu';
+    }
+  };
 
-  // Use ContactPersonForm for person mode
-  if (mode === 'person') {
+  // Show ContactPersonForm for person or employee types
+  if (stage === 'form' && (selectedType === 'person' || selectedType === 'employee')) {
     return (
       <ContactPersonForm
         isOpen={isOpen}
@@ -209,6 +243,8 @@ export const ContactForm = ({
         onSubmit={onSubmitPerson}
         contactPerson={contactPerson}
         isLoading={isLoading}
+        initialIsEmployee={selectedType === 'employee'}
+        onBack={!company && !contactPerson ? handleBack : undefined}
       />
     );
   }
@@ -217,28 +253,32 @@ export const ContactForm = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
-          <DialogTitle>{getTitle()}</DialogTitle>
-          <DialogDescription>
-            {company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu'}
-          </DialogDescription>
+          <div className="flex items-center gap-2">
+            {stage === 'form' && !company && !contactPerson && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleBack}
+                className="h-8 w-8"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+            )}
+            <div className="flex-1">
+              <DialogTitle>{getTitle()}</DialogTitle>
+              <DialogDescription>
+                {getDescription()}
+              </DialogDescription>
+            </div>
+          </div>
         </DialogHeader>
 
-        {canSwitchMode && (
-          <Tabs value={mode} onValueChange={(value) => setMode(value as ContactFormMode)} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 h-16">
-              <TabsTrigger value="company" className="flex flex-col items-center gap-1 h-full">
-                <Building2 className="h-4 w-4" />
-                <span className="text-xs">Unternehmen</span>
-              </TabsTrigger>
-              <TabsTrigger value="person" className="flex flex-col items-center gap-1 h-full">
-                <User className="h-4 w-4" />
-                <span className="text-xs">Person</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
+        {stage === 'select' && (
+          <ContactTypeSelector onSelect={handleTypeSelect} />
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        {stage === 'form' && selectedType === 'company' && (
+          <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
@@ -481,7 +521,8 @@ export const ContactForm = ({
               Abbrechen
             </button>
           </div>
-        </form>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );
