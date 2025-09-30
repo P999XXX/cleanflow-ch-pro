@@ -166,14 +166,33 @@ export const ContactForm = ({
       newErrors.country = 'Land ist erforderlich';
     }
 
-    // Validate email format if provided
-    if (companyData.email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
-      newErrors.email = 'Ungültige E-Mail-Adresse';
+    // Required fields from the form
+    if (!companyData.company_type.trim()) {
+      newErrors.company_type = 'Gesellschaftsart ist erforderlich';
     }
 
-    // Validate phone format if provided
-    if (companyData.phone.trim() && !/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
+    if (!companyData.industry_category.trim()) {
+      newErrors.industry_category = 'Branche ist erforderlich';
+    }
+
+    if (!companyData.contact_type.trim()) {
+      newErrors.contact_type = 'Kontaktart ist erforderlich';
+    }
+
+    if (!companyData.status.trim()) {
+      newErrors.status = 'Status ist erforderlich';
+    }
+
+    if (!companyData.phone.trim()) {
+      newErrors.phone = 'Telefon ist erforderlich';
+    } else if (!/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
       newErrors.phone = 'Ungültiges Telefonformat';
+    }
+
+    if (!companyData.email.trim()) {
+      newErrors.email = 'E-Mail ist erforderlich';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
+      newErrors.email = 'Ungültige E-Mail-Adresse';
     }
 
     setErrors(newErrors);
@@ -203,6 +222,15 @@ export const ContactForm = ({
     }
     
     // Clear field error when user starts typing
+    if (errors[field]) {
+      setErrors({ ...errors, [field]: '' });
+    }
+  };
+
+  const handleSelectChange = (field: string, value: string) => {
+    setCompanyData({ ...companyData, [field]: value });
+    
+    // Clear field error when user selects a value
     if (errors[field]) {
       setErrors({ ...errors, [field]: '' });
     }
@@ -345,9 +373,14 @@ export const ContactForm = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="company_type">Gesellschaftsart</Label>
-                  <Select value={companyData.company_type} onValueChange={(value) => setCompanyData({ ...companyData, company_type: value })}>
-                    <SelectTrigger>
+                  <Label htmlFor="company_type">
+                    Gesellschaftsart <span className="text-destructive">*</span>
+                  </Label>
+                  <Select 
+                    value={companyData.company_type} 
+                    onValueChange={(value) => handleSelectChange('company_type', value)}
+                  >
+                    <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Gesellschaftsart auswählen" />
                     </SelectTrigger>
                     <SelectContent>
@@ -363,11 +396,17 @@ export const ContactForm = ({
                       <SelectItem value="Sonstige">Sonstige</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.company_type && <p className="text-sm text-destructive mt-1">{errors.company_type}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="industry_category">Branche</Label>
-                  <Select value={companyData.industry_category} onValueChange={(value) => setCompanyData({ ...companyData, industry_category: value })}>
-                    <SelectTrigger>
+                  <Label htmlFor="industry_category">
+                    Branche <span className="text-destructive">*</span>
+                  </Label>
+                  <Select 
+                    value={companyData.industry_category} 
+                    onValueChange={(value) => handleSelectChange('industry_category', value)}
+                  >
+                    <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Branche auswählen" />
                     </SelectTrigger>
                     <SelectContent>
@@ -383,14 +422,20 @@ export const ContactForm = ({
                       <SelectItem value="Sonstige">Sonstige</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.industry_category && <p className="text-sm text-destructive mt-1">{errors.industry_category}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="contact_type">Kontaktart</Label>
-                  <Select value={companyData.contact_type} onValueChange={(value) => setCompanyData({ ...companyData, contact_type: value })}>
-                    <SelectTrigger>
+                  <Label htmlFor="contact_type">
+                    Kontaktart <span className="text-destructive">*</span>
+                  </Label>
+                  <Select 
+                    value={companyData.contact_type} 
+                    onValueChange={(value) => handleSelectChange('contact_type', value)}
+                  >
+                    <SelectTrigger className={errors.contact_type ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Kontaktart auswählen" />
                     </SelectTrigger>
                     <SelectContent>
@@ -401,11 +446,17 @@ export const ContactForm = ({
                       <SelectItem value="Sonstige">Sonstige</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.contact_type && <p className="text-sm text-destructive mt-1">{errors.contact_type}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="status">Status</Label>
-                  <Select value={companyData.status} onValueChange={(value) => setCompanyData({ ...companyData, status: value })}>
-                    <SelectTrigger>
+                  <Label htmlFor="status">
+                    Status <span className="text-destructive">*</span>
+                  </Label>
+                  <Select 
+                    value={companyData.status} 
+                    onValueChange={(value) => handleSelectChange('status', value)}
+                  >
+                    <SelectTrigger className={errors.status ? 'border-destructive' : ''}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -414,27 +465,34 @@ export const ContactForm = ({
                       <SelectItem value="potentiell">Potentieller Kunde</SelectItem>
                     </SelectContent>
                   </Select>
+                  {errors.status && <p className="text-sm text-destructive mt-1">{errors.status}</p>}
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="phone">Telefon</Label>
+                  <Label htmlFor="phone">
+                    Telefon <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="phone"
                     value={companyData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
+                    required
                     className={errors.phone ? 'border-destructive' : ''}
                   />
                   {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
                 </div>
                 <div>
-                  <Label htmlFor="email">E-Mail</Label>
+                  <Label htmlFor="email">
+                    E-Mail <span className="text-destructive">*</span>
+                  </Label>
                   <Input
                     id="email"
                     type="email"
                     value={companyData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
+                    required
                     className={errors.email ? 'border-destructive' : ''}
                   />
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
