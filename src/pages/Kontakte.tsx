@@ -447,7 +447,8 @@ const Kontakte = () => {
             {activeTab === 'all' && (
               <ContactsCardsView
                 companies={filteredCompanies}
-                persons={[...filteredPersons, ...filteredEmployees]}
+                persons={filteredPersons}
+                employees={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
