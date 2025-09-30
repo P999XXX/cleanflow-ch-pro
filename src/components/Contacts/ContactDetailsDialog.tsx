@@ -364,7 +364,7 @@ export function ContactDetailsDialog({
 
           {/* Non-customer and Person content */}
           {!isCustomer && (
-            <div className="px-6 pb-6 space-y-6 bg-muted/10">
+            <div className="px-6 pb-6 space-y-6 bg-muted/3">
               <ContactInformationSection 
                 selectedItem={selectedItem} 
                 itemType={itemType}
