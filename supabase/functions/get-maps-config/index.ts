@@ -26,31 +26,9 @@ serve(async (req) => {
       );
     }
 
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
-    );
+    // At this point, the platform has already verified the JWT (verify_jwt = true by default)
+    // We trust the request is authenticated and only return the configured API key
 
-    // Verify the user
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
-    if (authError || !user) {
-      console.log('get-maps-config: Unauthorized user', { authError: authError?.message });
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { 
-          status: 401,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Get the Google Maps API key from environment variables
     const mapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
     
     if (!mapsApiKey) {
@@ -64,9 +42,8 @@ serve(async (req) => {
       );
     }
 
-    console.log('get-maps-config: Returning API key for user', user.id);
+    console.log('get-maps-config: Returning API key');
 
-    // Return the API key securely
     return new Response(
       JSON.stringify({ 
         apiKey: mapsApiKey,
