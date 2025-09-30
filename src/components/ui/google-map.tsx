@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { MapPin } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { useTheme } from 'next-themes';
 
 interface GoogleMapProps {
   address?: string;
@@ -22,6 +23,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
+  const { theme } = useTheme();
 
   // Construct full address
   const fullAddress = [address, postal_code, city, country]
@@ -73,6 +75,106 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         const google = await loader.load();
         const geocoder = new google.maps.Geocoder();
         
+        // Dark mode styles for Google Maps
+        const darkModeStyles = [
+          { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+          {
+            featureType: "administrative.locality",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }]
+          },
+          {
+            featureType: "poi",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }]
+          },
+          {
+            featureType: "poi",
+            elementType: "labels",
+            stylers: [{ visibility: "off" }]
+          },
+          {
+            featureType: "poi.park",
+            elementType: "geometry",
+            stylers: [{ color: "#263c3f" }]
+          },
+          {
+            featureType: "poi.park",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#6b9a76" }]
+          },
+          {
+            featureType: "road",
+            elementType: "geometry",
+            stylers: [{ color: "#38414e" }]
+          },
+          {
+            featureType: "road",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#212a37" }]
+          },
+          {
+            featureType: "road",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#9ca5b3" }]
+          },
+          {
+            featureType: "road.highway",
+            elementType: "geometry",
+            stylers: [{ color: "#746855" }]
+          },
+          {
+            featureType: "road.highway",
+            elementType: "geometry.stroke",
+            stylers: [{ color: "#1f2835" }]
+          },
+          {
+            featureType: "road.highway",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#f3d19c" }]
+          },
+          {
+            featureType: "transit",
+            elementType: "geometry",
+            stylers: [{ color: "#2f3948" }]
+          },
+          {
+            featureType: "transit.station",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#d59563" }]
+          },
+          {
+            featureType: "water",
+            elementType: "geometry",
+            stylers: [{ color: "#17263c" }]
+          },
+          {
+            featureType: "water",
+            elementType: "labels.text.fill",
+            stylers: [{ color: "#515c6d" }]
+          },
+          {
+            featureType: "water",
+            elementType: "labels.text.stroke",
+            stylers: [{ color: "#17263c" }]
+          }
+        ];
+
+        // Light mode styles (minimal, hide POI labels)
+        const lightModeStyles = [
+          {
+            featureType: 'poi',
+            elementType: 'labels',
+            stylers: [{ visibility: 'off' }]
+          }
+        ];
+
+        // Determine which styles to use based on theme
+        const isDark = theme === 'dark';
+        const mapStyles = isDark ? darkModeStyles : lightModeStyles;
+        
         // Geocode the address
         geocoder.geocode({ address: fullAddress }, (results, status) => {
           if (status === 'OK' && results && results[0]) {
@@ -83,13 +185,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               streetViewControl: false,
               fullscreenControl: false,
               zoomControl: true,
-              styles: [
-                {
-                  featureType: 'poi',
-                  elementType: 'labels',
-                  stylers: [{ visibility: 'off' }]
-                }
-              ]
+              styles: mapStyles
             });
 
             // Add marker with theme colors
@@ -121,7 +217,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     };
 
     initMap();
-  }, [fullAddress, apiKey]);
+  }, [fullAddress, apiKey, theme]);
 
   if (!fullAddress) {
     return (
