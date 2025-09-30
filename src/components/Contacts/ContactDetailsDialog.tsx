@@ -285,28 +285,28 @@ export function ContactDetailsDialog({
 
             {/* Tabs for Customers */}
             {isCustomer && (
-              <div className="mt-6">
+              <div className="mt-6 -mx-6">
                 <Tabs defaultValue="kontakt" className="w-full">
-                  {/* Scrollable Tab Container */}
-                  <div className="overflow-x-auto overflow-y-hidden -mx-6 px-6 scrollbar-hide">
-                    <TabsList className="inline-flex w-auto min-w-full bg-muted/50 h-auto p-0.5 rounded-md">
+                  {/* Scrollable Tab Container - Full Width */}
+                  <div className="overflow-x-auto overflow-y-hidden px-6 scrollbar-hide">
+                    <TabsList className="inline-flex w-auto min-w-full bg-muted/50 h-auto p-1 rounded-md">
                       <TabsTrigger 
                         value="kontakt" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm rounded-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <Contact className="h-4 w-4" />
                         <span>Kontakt</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="objekte" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm rounded-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <Building className="h-4 w-4" />
                         <span>Objekte</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="reklamationen" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm rounded-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <AlertTriangle className="h-4 w-4" />
                         <span>Reklamationen</span>
@@ -314,7 +314,7 @@ export function ContactDetailsDialog({
                       </TabsTrigger>
                       <TabsTrigger 
                         value="dokumente" 
-                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm rounded-sm data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
                       >
                         <FileText className="h-4 w-4" />
                         <span>Dokumente</span>
@@ -322,25 +322,27 @@ export function ContactDetailsDialog({
                     </TabsList>
                   </div>
 
-                  <TabsContent value="kontakt" className="mt-4">
-                    <ContactInformationSection 
-                      selectedItem={selectedItem} 
-                      itemType={itemType}
-                      onNavigateToPerson={onNavigateToPerson}
-                    />
-                  </TabsContent>
+                  <div className="px-6">
+                    <TabsContent value="kontakt" className="mt-4">
+                      <ContactInformationSection 
+                        selectedItem={selectedItem} 
+                        itemType={itemType}
+                        onNavigateToPerson={onNavigateToPerson}
+                      />
+                    </TabsContent>
 
-                  <TabsContent value="objekte" className="mt-4">
-                    <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
-                  </TabsContent>
+                    <TabsContent value="objekte" className="mt-4">
+                      <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                    </TabsContent>
 
-                  <TabsContent value="reklamationen" className="mt-4">
-                    <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
-                  </TabsContent>
+                    <TabsContent value="reklamationen" className="mt-4">
+                      <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                    </TabsContent>
 
-                  <TabsContent value="dokumente" className="mt-4">
-                    <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
-                  </TabsContent>
+                    <TabsContent value="dokumente" className="mt-4">
+                      <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                    </TabsContent>
+                  </div>
                 </Tabs>
               </div>
             )}
