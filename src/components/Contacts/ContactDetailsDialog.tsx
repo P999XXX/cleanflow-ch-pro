@@ -70,7 +70,7 @@ export function ContactDetailsDialog({
               />
               
               {/* Action Buttons on Map */}
-              <div className="sticky top-0 right-2 flex items-center gap-2 z-20 justify-end pt-2 pr-2">
+              <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
                 <Button
                   variant="secondary"
                   size="icon"
