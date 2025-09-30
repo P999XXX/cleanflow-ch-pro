@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, X,
-  Contact, Building, AlertTriangle, FileText, MessageCircle 
+  Contact, Building, AlertTriangle, FileText, MessageCircle, MessageSquare 
 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
@@ -223,17 +223,27 @@ export function ContactDetailsDialog({
                 </Button>
               )}
               {itemType === 'person' && selectedItem.mobile && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="rounded-full h-10 w-10 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900 border-green-200 dark:border-green-800"
-                  onClick={() => {
-                    const phone = selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41');
-                    window.open(`https://wa.me/${phone}`, '_blank');
-                  }}
-                >
-                  <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
-                </Button>
+                <>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900 border-green-200 dark:border-green-800"
+                    onClick={() => {
+                      const phone = selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41');
+                      window.open(`https://wa.me/${phone}`, '_blank');
+                    }}
+                  >
+                    <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-10 w-10"
+                    onClick={() => window.open(`sms:${selectedItem.mobile}`, '_self')}
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                  </Button>
+                </>
               )}
               {itemType === 'company' && selectedItem.mobile && (
                 <Button
@@ -381,13 +391,17 @@ function ContactInformationSection({
             </Button>
           )}
           {selectedItem.mobile && (
-            <div className="p-4 bg-muted/50 rounded-lg flex items-center gap-3">
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
+            >
               <Phone className="h-5 w-5 text-primary flex-shrink-0" />
               <div className="text-left min-w-0">
                 <p className="text-xs text-muted-foreground">Mobile Nummer</p>
                 <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
               </div>
-            </div>
+            </Button>
           )}
           {selectedItem.website && (
             <Button
