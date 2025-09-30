@@ -169,9 +169,10 @@ export function AppSidebar() {
                     {group.items.map((item) => {
                       const isActive = currentPath === item.url;
                       // Check if we're on Kontakte page with kunde filter for Kunden link
+                      const searchParams = new URLSearchParams(location.search);
                       const isKundenFilter = item.url === '/kunden' && 
                         currentPath === '/kontakte' && 
-                        location.search.includes('type=kunde');
+                        searchParams.get('type') === 'kunde';
                       
                       return (
                         <SidebarMenuItem key={item.title}>
