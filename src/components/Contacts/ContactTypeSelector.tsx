@@ -6,11 +6,13 @@ export type ContactType = 'company' | 'person' | 'employee';
 
 interface ContactTypeSelectorProps {
   onSelect: (type: ContactType) => void;
+  onClose: () => void;
 }
 
-export const ContactTypeSelector = ({ onSelect }: ContactTypeSelectorProps) => {
+export const ContactTypeSelector = ({ onSelect, onClose }: ContactTypeSelectorProps) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4">
+    <div className="space-y-6 p-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card 
         className="cursor-pointer transition-all hover:shadow-lg hover:scale-105 border-2 hover:border-primary"
         onClick={() => onSelect('company')}
@@ -55,6 +57,18 @@ export const ContactTypeSelector = ({ onSelect }: ContactTypeSelectorProps) => {
           </CardDescription>
         </CardHeader>
       </Card>
+      </div>
+      
+      {/* Footer mit Abbrechen Button */}
+      <div className="flex justify-end pt-4 border-t">
+        <Button 
+          type="button" 
+          variant="outline" 
+          onClick={onClose}
+        >
+          Abbrechen
+        </Button>
+      </div>
     </div>
   );
 };

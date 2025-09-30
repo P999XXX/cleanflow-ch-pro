@@ -274,7 +274,7 @@ export const ContactForm = ({
         </DialogHeader>
 
         {stage === 'select' && (
-          <ContactTypeSelector onSelect={handleTypeSelect} />
+          <ContactTypeSelector onSelect={handleTypeSelect} onClose={onClose} />
         )}
 
         {stage === 'form' && selectedType === 'company' && (
