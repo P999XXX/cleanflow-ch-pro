@@ -1,4 +1,4 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -6,6 +6,7 @@ import {
   Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, 
   Contact, Building, AlertTriangle, FileText, MessageCircle 
 } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
 import { designTokens } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
@@ -50,6 +51,11 @@ export function ContactDetailsDialog({
         designTokens.dialogs.content,
         "h-[90vh]"
       )}>
+        <VisuallyHidden>
+          <DialogTitle>
+            {itemType === 'company' ? selectedItem.name : `${selectedItem.first_name} ${selectedItem.last_name}`}
+          </DialogTitle>
+        </VisuallyHidden>
         <div className="w-full">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
@@ -62,6 +68,26 @@ export function ContactDetailsDialog({
                 className="w-full h-full rounded-t-lg"
               />
               <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
+              
+              {/* Action Buttons on Map */}
+              <div className="absolute top-4 right-4 flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full h-8 w-8 bg-white/90 hover:bg-white shadow-lg"
+                  onClick={onEdit}
+                >
+                  <Edit className="h-3.5 w-3.5 text-foreground" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="icon"
+                  className="rounded-full h-8 w-8 bg-white/90 hover:bg-white shadow-lg"
+                  onClick={onDelete}
+                >
+                  <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                </Button>
+              </div>
             </div>
           )}
 
@@ -69,7 +95,7 @@ export function ContactDetailsDialog({
           <div className={designTokens.dialogs.header}>
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
                 {itemType === 'company' ? (
                   <>
                     <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
@@ -93,6 +119,28 @@ export function ContactDetailsDialog({
                   </>
                 )}
               </div>
+
+              {/* Action Buttons for non-map views (persons) */}
+              {itemType === 'person' && (
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-8 w-8"
+                    onClick={onEdit}
+                  >
+                    <Edit className="h-3.5 w-3.5" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full h-8 w-8"
+                    onClick={onDelete}
+                  >
+                    <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                  </Button>
+                </div>
+              )}
 
               {/* Badges */}
               <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
@@ -240,27 +288,15 @@ export function ContactDetailsDialog({
             </div>
           )}
 
-          {/* Bottom Action Buttons */}
+          {/* Bottom Close Button */}
           <div className={designTokens.dialogs.footer}>
-            <Button onClick={onEdit} className="flex-1 flex items-center justify-center gap-2">
-              <Edit className="h-4 w-4" />
-              Bearbeiten
-            </Button>
-            <Button
-              variant="destructive" 
-              onClick={onDelete}
-              className="flex items-center justify-center gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              Löschen
-            </Button>
-            <button 
-              type="button" 
-              onClick={onGoBack}
-              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            <Button 
+              variant="outline"
+              onClick={navigationStack.length > 0 ? onGoBack : onClose}
+              className="w-full sm:w-auto sm:min-w-[120px]"
             >
               {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
-            </button>
+            </Button>
           </div>
         </div>
       </DialogContent>
