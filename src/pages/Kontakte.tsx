@@ -460,7 +460,6 @@ const Kontakte = () => {
         onClose={() => {
           setDetailsOpen(false);
           setDeleteDialogOpen(false);
-          setNavigationStack([]);
         }}
         selectedItem={selectedItem}
         itemType={itemType}

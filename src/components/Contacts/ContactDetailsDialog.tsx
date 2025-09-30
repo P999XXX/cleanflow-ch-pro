@@ -91,7 +91,7 @@ export function ContactDetailsDialog({
                   variant="secondary"
                   size="icon"
                   className="rounded-full h-7 w-7 bg-white/95 hover:bg-white dark:bg-primary/20 dark:hover:bg-primary/30 border border-gray-200 dark:border-primary/30 shadow-lg backdrop-blur-sm"
-                  onClick={onClose}
+                  onClick={navigationStack.length > 0 ? onGoBack : onClose}
                 >
                   <X className="h-3 w-3 text-gray-700 dark:text-primary-foreground" />
                 </Button>
@@ -126,7 +126,7 @@ export function ContactDetailsDialog({
                     variant="secondary"
                     size="icon"
                     className="rounded-full h-7 w-7 bg-white/95 hover:bg-white dark:bg-primary/20 dark:hover:bg-primary/30 border border-gray-200 dark:border-primary/30 shadow-lg backdrop-blur-sm"
-                    onClick={onClose}
+                    onClick={navigationStack.length > 0 ? onGoBack : onClose}
                   >
                     <X className="h-3 w-3 text-gray-700 dark:text-primary-foreground" />
                   </Button>
