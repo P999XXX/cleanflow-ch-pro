@@ -53,12 +53,13 @@ const navigationItems = [
     ]
   },
   {
-    title: "Kunden",
+    title: "Objekte",
     items: [
       { title: "Objekte", url: "/objekte", icon: Building2 },
       { title: "Offerten", url: "/offerten", icon: FileText },
       { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
       { title: "Reklamationen", url: "/reklamationen", icon: AlertTriangle },
+      { title: "Materialschrank", url: "/materialschrank", icon: Briefcase },
       { title: "Rechnungen", url: "/rechnungen", icon: Receipt },
     ]
   },
