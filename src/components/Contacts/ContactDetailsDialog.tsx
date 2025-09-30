@@ -59,18 +59,17 @@ export function ContactDetailsDialog({
         <div className="w-full">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64">
+            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-4">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
                 city={selectedItem.city}
                 country={selectedItem.country}
-                className="w-full h-full rounded-t-lg"
+                className="w-full h-full rounded-none"
               />
-              <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-4 right-4 flex items-center gap-2">
+              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
                 <Button
                   variant="secondary"
                   size="icon"
@@ -201,6 +200,19 @@ export function ContactDetailsDialog({
                   onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
                 >
                   <Phone className="h-4 w-4" />
+                </Button>
+              )}
+              {selectedItem.mobile && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10 bg-green-50 dark:bg-green-950 hover:bg-green-100 dark:hover:bg-green-900 border-green-200 dark:border-green-800"
+                  onClick={() => {
+                    const phone = selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41');
+                    window.open(`https://wa.me/${phone}`, '_blank');
+                  }}
+                >
+                  <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
                 </Button>
               )}
               {selectedItem.email && (

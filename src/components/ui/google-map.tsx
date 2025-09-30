@@ -147,10 +147,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   }
 
   return (
-    <div className="relative">
-      <div ref={mapRef} className={`${className} border border-border/50`} />
+    <div className="relative w-full h-full">
+      <div ref={mapRef} className={className} style={{ width: '100%', height: '100%' }} />
       {isLoading && (
-        <div className={`${className} absolute inset-0 bg-muted/30 rounded-lg flex items-center justify-center border border-border/50`}>
+        <div className="absolute inset-0 bg-muted/30 flex items-center justify-center">
           <div className="text-center text-muted-foreground">
             <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50 animate-pulse" />
             <p className="text-sm">Karte wird geladen...</p>
