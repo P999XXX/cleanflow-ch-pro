@@ -451,7 +451,6 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <ContactDetailsDialog
-        key={selectedItem?.id}
         isOpen={detailsOpen}
         onClose={() => setDetailsOpen(false)}
         selectedItem={selectedItem}
