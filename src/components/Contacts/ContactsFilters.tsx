@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Search, X, Filter, Contact, Building, Users, Plus, Grid3X3, List } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 interface ContactsFiltersProps {
   searchTerm: string;
@@ -44,6 +44,7 @@ export function ContactsFilters({
 }: ContactsFiltersProps) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false);
 
   // Generate filter options from available contact types
   const filterOptions = useMemo(() => {
@@ -52,6 +53,15 @@ export function ContactsFilters({
       label: type.charAt(0).toUpperCase() + type.slice(1)
     }));
   }, [availableContactTypes]);
+
+  // Sync selectedFilters with contactTypeFilter prop
+  useEffect(() => {
+    if (contactTypeFilter === 'all') {
+      setSelectedFilters([]);
+    } else {
+      setSelectedFilters(contactTypeFilter.split(','));
+    }
+  }, [contactTypeFilter]);
 
   const handleFilterToggle = (value: string) => {
     const newFilters = selectedFilters.includes(value)
@@ -89,26 +99,26 @@ export function ContactsFilters({
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           {/* Search and Filter Row */}
           <div className="flex flex-col gap-4 w-full lg:flex-1">
-            {/* Search with integrated filter for all viewports */}
+            {/* Search with integrated filter for Mobile/Tablet only */}
             <div className="relative flex-1 lg:max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
               <Input
                 placeholder="Suchen nach Name, E-Mail, Telefon..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className={`pl-9 w-full ${searchTerm ? 'pr-16' : 'pr-10'}`}
+                className={`pl-9 w-full ${searchTerm ? 'pr-16 lg:pr-10' : 'pr-10 lg:pr-3'}`}
               />
               {searchTerm && (
                 <button
                   onClick={onClearSearch}
-                  className="absolute right-10 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10"
+                  className="absolute right-10 lg:right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10"
                 >
                   <X className="h-4 w-4" />
                 </button>
               )}
               
-              {/* Filter Icon in Search Field - All Viewports */}
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+              {/* Filter Icon in Search Field - Mobile/Tablet only */}
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
                 <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                   <PopoverTrigger asChild>
                     <button className="text-muted-foreground hover:text-foreground transition-colors relative">
@@ -118,7 +128,7 @@ export function ContactsFilters({
                       )}
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-64 p-4" align="end">
+                  <PopoverContent className="w-64 p-4 bg-background border shadow-lg" align="end">
                     <div className="space-y-4">
                       <div className="flex items-center justify-between">
                         <h4 className="font-medium text-sm">Kontaktart Filter</h4>
@@ -137,12 +147,12 @@ export function ContactsFilters({
                         {filterOptions.map((option) => (
                           <div key={option.value} className="flex items-center space-x-2">
                             <Checkbox
-                              id={option.value}
+                              id={`mobile-${option.value}`}
                               checked={selectedFilters.includes(option.value)}
                               onCheckedChange={() => handleFilterToggle(option.value)}
                             />
                             <label
-                              htmlFor={option.value}
+                              htmlFor={`mobile-${option.value}`}
                               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                             >
                               {option.label}
@@ -156,9 +166,9 @@ export function ContactsFilters({
               </div>
             </div>
 
-            {/* Filter Badges - All Viewports */}
+            {/* Filter Badges - Mobile/Tablet only */}
             {selectedFilters.length > 0 && (
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 lg:hidden">
                 {selectedFilters.map((filter) => (
                   <Badge
                     key={filter}
@@ -238,6 +248,59 @@ export function ContactsFilters({
 
             {/* Desktop Controls */}
             <div className="hidden lg:flex flex-row gap-3 ml-auto">
+              {/* Desktop Filter Button */}
+              <Popover open={isDesktopFilterOpen} onOpenChange={setIsDesktopFilterOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2 relative"
+                  >
+                    <Filter className="h-4 w-4" />
+                    Kontaktart
+                    {selectedFilters.length > 0 && (
+                      <Badge variant="secondary" className="ml-1 px-1.5 py-0 h-5 min-w-5 flex items-center justify-center bg-primary text-primary-foreground">
+                        {selectedFilters.length}
+                      </Badge>
+                    )}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-4 bg-background border shadow-lg z-50" align="end">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-sm">Kontaktart Filter</h4>
+                      {selectedFilters.length > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={clearFilters}
+                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+                        >
+                          Zurücksetzen
+                        </Button>
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      {filterOptions.map((option) => (
+                        <div key={option.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`desktop-${option.value}`}
+                            checked={selectedFilters.includes(option.value)}
+                            onCheckedChange={() => handleFilterToggle(option.value)}
+                          />
+                          <label
+                            htmlFor={`desktop-${option.value}`}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                          >
+                            {option.label}
+                          </label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+
               <Button
                 variant="outline"
                 size="sm"
