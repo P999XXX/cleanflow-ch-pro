@@ -288,33 +288,33 @@ export function ContactDetailsDialog({
               <div className="mt-6">
                 <Tabs defaultValue="kontakt" className="w-full">
                   {/* Scrollable Tab Container */}
-                  <div className="overflow-x-auto overflow-y-hidden -mx-6 px-6">
-                    <TabsList className="inline-flex w-auto min-w-full bg-background border-b rounded-none h-auto p-0">
+                  <div className="overflow-x-auto overflow-y-hidden -mx-6 px-6 scrollbar-hide">
+                    <TabsList className="inline-flex w-auto min-w-full bg-muted/50 h-auto p-0.5 rounded-md">
                       <TabsTrigger 
                         value="kontakt" 
-                        className="flex items-center gap-2 flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
                       >
                         <Contact className="h-4 w-4" />
                         <span>Kontakt</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="objekte" 
-                        className="flex items-center gap-2 flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
                       >
                         <Building className="h-4 w-4" />
                         <span>Objekte</span>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="reklamationen" 
-                        className="flex items-center gap-2 flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
                       >
                         <AlertTriangle className="h-4 w-4" />
                         <span>Reklamationen</span>
-                        <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
+                        <Badge variant="destructive" className="ml-0.5 px-1.5 py-0.5 text-xs">2</Badge>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="dokumente" 
-                        className="flex items-center gap-2 flex-shrink-0 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent px-4 py-3"
+                        className="flex items-center gap-2 flex-shrink-0 px-3 py-2 text-sm data-[state=active]:bg-background data-[state=active]:shadow-sm"
                       >
                         <FileText className="h-4 w-4" />
                         <span>Dokumente</span>
