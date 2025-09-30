@@ -364,17 +364,13 @@ export function ContactDetailsDialog({
 
           {/* Non-customer and Person content */}
           {!isCustomer && (
-            <div className="-mx-6 p-0">
-              <div className="bg-muted/10">
-                <div className="px-6 pt-4 md:pt-6 pb-6">
-                  <ContactInformationSection 
-                    selectedItem={selectedItem} 
-                    itemType={itemType}
-                    onNavigateToPerson={onNavigateToPerson}
-                    onNavigateToCompany={onNavigateToCompany}
-                  />
-                </div>
-              </div>
+            <div className="px-6 pb-6 space-y-6 bg-muted/10">
+              <ContactInformationSection 
+                selectedItem={selectedItem} 
+                itemType={itemType}
+                onNavigateToPerson={onNavigateToPerson}
+                onNavigateToCompany={onNavigateToCompany}
+              />
             </div>
           )}
 
