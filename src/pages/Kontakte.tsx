@@ -481,7 +481,8 @@ const Kontakte = () => {
             {activeTab === 'employees' && (
               <ContactsCardsView
                 companies={[]}
-                persons={filteredEmployees}
+                persons={[]}
+                employees={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -532,7 +533,8 @@ const Kontakte = () => {
             {activeTab === 'employees' && (
               <ContactsTableView
                 companies={[]}
-                persons={filteredEmployees}
+                persons={[]}
+                employees={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
