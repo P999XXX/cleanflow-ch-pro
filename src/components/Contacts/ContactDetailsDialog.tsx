@@ -103,7 +103,7 @@ export function ContactDetailsDialog({
           <div className={cn(designTokens.dialogs.header, "px-6 relative")}>
             {/* Action Buttons for Persons (absolute positioning) */}
             {itemType === 'person' && (
-              <div className="absolute top-4 right-6 flex items-center gap-2 z-20">
+              <div className="absolute top-4 right-6 flex items-center gap-1.5 z-20">
                 <Button
                   variant="outline"
                   size="icon"
@@ -133,7 +133,7 @@ export function ContactDetailsDialog({
 
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
-              <div className="flex items-center gap-3 flex-1 min-w-0 pr-32">
+              <div className="flex items-center gap-3 flex-1 min-w-0 pr-20">
                 {itemType === 'company' ? (
                   <>
                     <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
@@ -145,7 +145,7 @@ export function ContactDetailsDialog({
                   <>
                     <Users className="h-6 w-6 text-primary flex-shrink-0" />
                     <div className="flex flex-col min-w-0">
-                      <h2 className="text-xl sm:text-2xl font-semibold">
+                      <h2 className="text-xl sm:text-2xl font-semibold truncate whitespace-nowrap">
                         {`${selectedItem.first_name} ${selectedItem.last_name}`}
                       </h2>
                       {selectedItem.position && (
