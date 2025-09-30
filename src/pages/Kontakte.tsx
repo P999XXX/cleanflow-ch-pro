@@ -920,17 +920,17 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col">
+        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-y-auto">
           {/* A11y title/description for Dialog */}
           <DialogHeader className="sr-only">
             <DialogTitle>Details</DialogTitle>
             <DialogDescription>Unternehmens- und Kontaktdetails</DialogDescription>
           </DialogHeader>
           {selectedItem && (
-            <div className="flex flex-col h-full overflow-hidden">
+            <div className="w-full">
               {/* Map Header - Fixed at top */}
               {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-                <div className="relative h-48 sm:h-64 flex-shrink-0">
+                <div className="relative h-48 sm:h-64">
                   <GoogleMap
                     address={selectedItem.address}
                     postal_code={selectedItem.postal_code}
@@ -943,7 +943,7 @@ const Kontakte = () => {
               )}
 
               {/* Header Section - Fixed */}
-              <div className="p-6 pb-4 border-b flex-shrink-0">
+              <div className="p-6 pb-4 border-b">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   {/* Title - Left */}
                   <div className="flex items-center gap-3">
@@ -1139,7 +1139,7 @@ const Kontakte = () => {
 
               {/* Tabs Section - For customers only, fixed */}
               {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
-                <div className="border-b flex-shrink-0">
+                <div className="border-b">
                   <Tabs defaultValue="kontakt" className="w-full">
                     {/* Horizontal scrollable tab list */}
                     <div className="overflow-x-auto scrollbar-hide px-6">
@@ -1168,9 +1168,8 @@ const Kontakte = () => {
                       </TabsList>
                     </div>
 
-                    {/* Scrollable Tab Content */}
-                    <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 400px)' }}>
-                      <TabsContent value="kontakt" className="mt-0 px-6 py-6">{/* Removed mt-4 */}
+                    {/* Tab Content */}
+                    <TabsContent value="kontakt" className="mt-0 px-6 py-6">{/* Removed mt-4 */}
                           {/* Contact Content */}
                           <div className="space-y-6">
                             {/* Contact Information Cards */}
@@ -1339,14 +1338,13 @@ const Kontakte = () => {
                           <p>Dokumente werden hier angezeigt</p>
                         </div>
                       </TabsContent>
-                    </div>
                   </Tabs>
                 </div>
               )}
 
-              {/* Scrollable Content for non-customer companies and persons */}
+              {/* Inhalt für Nicht-Kunden und Personen */}
               {(itemType === 'person' || (itemType === 'company' && (selectedItem.contact_type || '').toLowerCase() !== 'kunde')) && (
-                <div className="overflow-y-auto flex-1 p-6">{/* Made scrollable */}
+                <div className="p-6 space-y-6">
                   {/* Contact Information Cards */}
                   <div className="space-y-4">
                     <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -1543,7 +1541,7 @@ const Kontakte = () => {
               )}
 
               {/* Footer with Close Button - Fixed at bottom */}
-              <DialogFooter className="p-6 border-t flex-shrink-0">
+              <DialogFooter className="p-6 border-t">
                 <Button
                   variant="outline"
                   onClick={() => setSelectedItem(null)}
