@@ -121,10 +121,10 @@ export function ContactsFilters({
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
                 <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                   <PopoverTrigger asChild>
-                    <button className="text-muted-foreground hover:text-foreground transition-colors relative">
+                    <button className="text-primary hover:text-primary/80 transition-colors relative bg-primary/10 hover:bg-primary/20 rounded-md p-1.5">
                       <Filter className="h-4 w-4" />
                       {selectedFilters.length > 0 && (
-                        <span className="absolute -top-1 -right-1 h-2 w-2 bg-primary rounded-full" />
+                        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 bg-primary rounded-full border border-background" />
                       )}
                     </button>
                   </PopoverTrigger>

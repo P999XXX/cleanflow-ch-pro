@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, X,
-  Contact, Building, AlertTriangle, FileText, MessageCircle, MessageSquare 
+  Contact, Building, AlertTriangle, FileText, MessageCircle, MessageSquare, ChevronRight 
 } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
@@ -272,13 +272,14 @@ export function ContactDetailsDialog({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-full h-10 w-10"
+                  className="rounded-full h-10 w-10 relative"
                   onClick={() => {
                     const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
                     window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
                   }}
                 >
                   <MapPin className="h-4 w-4" />
+                  <ChevronRight className="h-2.5 w-2.5 absolute bottom-0.5 right-0.5 text-muted-foreground" />
                 </Button>
               )}
             </div>
@@ -406,14 +407,17 @@ function ContactInformationSection({
           {selectedItem.website && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
             >
-              <Globe className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">Website</p>
-                <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Globe className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">Website</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
         </div>
@@ -436,10 +440,10 @@ function ContactInformationSection({
               <Button
                 key={contact.id}
                 variant="outline"
-                className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
+                className="h-auto p-4 flex items-start justify-between hover:bg-muted/50 group"
                 onClick={() => onNavigateToPerson(contact)}
               >
-                <div className="flex-1 text-left">
+                <div className="flex-1 text-left min-w-0">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-sm text-foreground">
                       {contact.first_name} {contact.last_name}
@@ -459,6 +463,7 @@ function ContactInformationSection({
                     </div>
                   )}
                 </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 ml-3 group-hover:translate-x-1 transition-transform" />
               </Button>
             ))}
           </div>
@@ -473,21 +478,24 @@ function ContactInformationSection({
           </h4>
           <Button
             variant="outline"
-            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
             onClick={() => {
               const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
               window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
             }}
           >
-            <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
-            <div className="text-left">
-              {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
-              <div className="text-sm font-medium">
-                {selectedItem.postal_code && selectedItem.city 
-                  ? `${selectedItem.postal_code} ${selectedItem.city}` 
-                  : selectedItem.postal_code || selectedItem.city}
+            <div className="flex items-center gap-3 min-w-0">
+              <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="text-left min-w-0">
+                {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
+                <div className="text-sm font-medium">
+                  {selectedItem.postal_code && selectedItem.city 
+                    ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                    : selectedItem.postal_code || selectedItem.city}
+                </div>
               </div>
             </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       )}
@@ -523,13 +531,16 @@ function ContactInformationSection({
           </h4>
           <Button
             variant="outline"
-            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
             onClick={() => onNavigateToCompany(selectedItem.customer_company_id)}
           >
-            <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
-            <div className="text-left">
-              <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
+            <div className="flex items-center gap-3 min-w-0">
+              <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="text-left min-w-0">
+                <p className="text-sm font-medium truncate">{selectedItem.customer_companies.name}</p>
+              </div>
             </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground flex-shrink-0 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
       )}
