@@ -427,10 +427,10 @@ const Kontakte = () => {
       <ContactForm 
         isOpen={isFormOpen}
         onClose={handleFormClose}
-        selectedCompany={selectedCompany}
-        selectedPerson={selectedPerson}
-        onCompanySubmit={handleCompanySubmit}
-        onPersonSubmit={handlePersonSubmit}
+        company={selectedCompany}
+        contactPerson={selectedPerson}
+        onSubmitCompany={handleCompanySubmit}
+        onSubmitPerson={handlePersonSubmit}
         initialMode={formMode}
       />
 
