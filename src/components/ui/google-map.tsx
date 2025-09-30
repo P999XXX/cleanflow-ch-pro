@@ -67,14 +67,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         const loader = new Loader({
           apiKey: apiKey,
           version: 'weekly',
-          libraries: ['places', 'marker']
+          libraries: ['places']
         });
 
         const google = await loader.load();
         const geocoder = new google.maps.Geocoder();
         
         // Geocode the address
-        geocoder.geocode({ address: fullAddress, region: 'ch' as any }, (results, status) => {
+        geocoder.geocode({ address: fullAddress }, (results, status) => {
           if (status === 'OK' && results && results[0]) {
             const map = new google.maps.Map(mapRef.current!, {
               zoom: 15,
@@ -92,71 +92,25 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               ]
             });
 
-            // Add marker with theme colors (prefer AdvancedMarkerElement)
-            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
-              new google.maps.marker.AdvancedMarkerElement({
-                map,
-                position: results[0].geometry.location,
-                title: fullAddress,
-              });
-            } else {
-              new google.maps.Marker({
-                position: results[0].geometry.location,
-                map: map,
-                title: fullAddress,
-                icon: {
-                  path: google.maps.SymbolPath.CIRCLE,
-                  scale: 8,
-                  fillColor: '#3b82f6',
-                  fillOpacity: 1,
-                  strokeColor: '#1e40af',
-                  strokeWeight: 2
-                }
-              });
-            }
+            // Add marker with theme colors
+            new google.maps.Marker({
+              position: results[0].geometry.location,
+              map: map,
+              title: fullAddress,
+              icon: {
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: '#3b82f6',
+                fillOpacity: 1,
+                strokeColor: '#1e40af',
+                strokeWeight: 2
+              }
+            });
 
             setIsLoading(false);
           } else {
-            const fallbackAddress = [postal_code, city, country].filter(Boolean).join(', ');
-            if (fallbackAddress && fallbackAddress !== fullAddress) {
-              geocoder.geocode({ address: fallbackAddress, region: 'ch' as any }, (fbResults, fbStatus) => {
-                if (fbStatus === 'OK' && fbResults && fbResults[0]) {
-                  const map = new google.maps.Map(mapRef.current!, {
-                    zoom: 12,
-                    center: fbResults[0].geometry.location,
-                    mapTypeControl: false,
-                    streetViewControl: false,
-                    fullscreenControl: false,
-                    zoomControl: true,
-                    styles: [
-                      { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] }
-                    ]
-                  });
-
-                  if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
-                    new google.maps.marker.AdvancedMarkerElement({
-                      map,
-                      position: fbResults[0].geometry.location,
-                      title: fallbackAddress,
-                    });
-                  } else {
-                    new google.maps.Marker({
-                      position: fbResults[0].geometry.location,
-                      map: map,
-                      title: fallbackAddress,
-                    });
-                  }
-
-                  setIsLoading(false);
-                } else {
-                  setError('Adresse konnte nicht gefunden werden');
-                  setIsLoading(false);
-                }
-              });
-            } else {
-              setError('Adresse konnte nicht gefunden werden');
-              setIsLoading(false);
-            }
+            setError('Adresse konnte nicht gefunden werden');
+            setIsLoading(false);
           }
         });
       } catch (err) {
