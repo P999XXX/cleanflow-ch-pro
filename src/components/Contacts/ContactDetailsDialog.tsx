@@ -102,60 +102,62 @@ export function ContactDetailsDialog({
           {/* Title and Badges Section */}
           <div className={cn(designTokens.dialogs.header, "px-6 relative")}>
             {itemType === 'person' ? (
-              /* Person Layout: Buttons first, then name, then badge */
-              <div className="flex flex-col gap-4">
-                {/* Action Buttons */}
-                <div className="flex items-center justify-end gap-1.5">
+              /* Person Layout: Buttons absolutely positioned, then name, then badge */
+              <>
+                {/* Action Buttons - Absolutely positioned like company view */}
+                <div className="absolute -top-2 right-2 flex items-center gap-2 z-20">
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7"
+                    className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
                     onClick={onEdit}
                   >
-                    <Edit className="h-3 w-3" />
+                    <Edit className="h-3 w-3 text-foreground" />
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7"
+                    className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
                     onClick={onDelete}
                   >
                     <Trash2 className="h-3 w-3 text-destructive" />
                   </Button>
                   <Button
-                    variant="outline"
+                    variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7"
+                    className="rounded-full h-7 w-7 bg-white/90 hover:bg-white shadow-lg"
                     onClick={navigationStack.length > 0 ? onGoBack : onClose}
                   >
-                    <X className="h-3 w-3" />
+                    <X className="h-3 w-3 text-foreground" />
                   </Button>
                 </div>
 
-                {/* Name */}
-                <div className="flex items-center gap-3">
-                  <Users className="h-6 w-6 text-primary flex-shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <h2 className="text-xl sm:text-2xl font-semibold truncate whitespace-nowrap">
-                      {`${selectedItem.first_name} ${selectedItem.last_name}`}
-                    </h2>
-                    {selectedItem.position && (
-                      <span className="text-sm font-normal text-muted-foreground mt-1">
-                        {selectedItem.position}
-                      </span>
-                    )}
+                <div className="flex flex-col gap-3">
+                  {/* Name */}
+                  <div className="flex items-center gap-3 pr-28">
+                    <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <h2 className="text-xl sm:text-2xl font-semibold truncate whitespace-nowrap">
+                        {`${selectedItem.first_name} ${selectedItem.last_name}`}
+                      </h2>
+                      {selectedItem.position && (
+                        <span className="text-sm font-normal text-muted-foreground mt-1">
+                          {selectedItem.position}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-                {/* Badge */}
-                {selectedItem.is_primary_contact && (
-                  <div>
-                    <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
-                      Primärkontakt
-                    </Badge>
-                  </div>
-                )}
-              </div>
+                  {/* Badge */}
+                  {selectedItem.is_primary_contact && (
+                    <div>
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
+                        Primärkontakt
+                      </Badge>
+                    </div>
+                  )}
+                </div>
+              </>
             ) : (
               /* Company Layout: Keep existing structure */
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
