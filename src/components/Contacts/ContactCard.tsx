@@ -46,14 +46,19 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
     >
       <CardHeader className="pb-3 relative">
         {/* Badges positioned at top-right */}
-        <div className="absolute top-3 right-3 flex items-start gap-1.5 flex-wrap justify-end max-w-[60%]">
+        <div className="absolute top-3 right-3 flex items-start gap-1 flex-wrap justify-end max-w-[60%]">
           {type === 'company' ? (
             <>
-              {getStatusBadge(item.status)}
+              <Badge 
+                variant={getStatusBadge(item.status).props.variant}
+                className={`${getStatusBadge(item.status).props.className} font-medium text-[10px] px-1.5 py-0.5`}
+              >
+                {getStatusBadge(item.status).props.children}
+              </Badge>
               {item.industry_category && (
                 <Badge 
                   variant="outline" 
-                  className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-xs"
+                  className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5"
                 >
                   {item.industry_category}
                 </Badge>
@@ -61,7 +66,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               {item.contact_type && (
                 <Badge 
                   variant="outline" 
-                  className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium text-xs"
+                  className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium text-[10px] px-1.5 py-0.5"
                 >
                   {item.contact_type}
                 </Badge>
@@ -69,7 +74,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
             </>
           ) : (
             item.is_primary_contact && (
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-xs">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5">
                 Primär
               </Badge>
             )
