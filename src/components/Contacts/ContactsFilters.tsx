@@ -3,7 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Search, X, Filter, Contact, Building, Users, Plus, Grid3X3, List } from "lucide-react";
+import { useState } from "react";
 
 interface ContactsFiltersProps {
   searchTerm: string;
@@ -38,6 +41,31 @@ export function ContactsFilters({
   onAddClick,
   isMobile,
 }: ContactsFiltersProps) {
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const filterOptions = [
+    { value: "kunde", label: "Kunde" },
+    { value: "interessent", label: "Interessent" },
+    { value: "lieferant", label: "Lieferant" },
+    { value: "partner", label: "Partner" },
+  ];
+
+  const handleFilterToggle = (value: string) => {
+    const newFilters = selectedFilters.includes(value)
+      ? selectedFilters.filter(f => f !== value)
+      : [...selectedFilters, value];
+    setSelectedFilters(newFilters);
+    
+    // Update parent component with "all" if no filters selected, otherwise join filters
+    onContactTypeChange(newFilters.length === 0 ? "all" : newFilters.join(","));
+  };
+
+  const clearFilters = () => {
+    setSelectedFilters([]);
+    onContactTypeChange("all");
+  };
+
   return (
     <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 pb-4 border-b">
       <div className="flex flex-col space-y-4">
@@ -59,27 +87,75 @@ export function ContactsFilters({
         <div className="flex flex-col lg:flex-row lg:items-center gap-4">
           {/* Search and Filter Row */}
           <div className="flex flex-col sm:flex-row gap-4 w-full lg:flex-1">
-            {/* Search */}
+            {/* Search with integrated filter for mobile */}
             <div className="relative flex-1 lg:max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
               <Input
                 placeholder="Suchen nach Name, E-Mail, Telefon..."
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
-                className="pl-9 pr-9 w-full"
+                className="pl-9 pr-24 w-full sm:pr-9"
               />
               {searchTerm && (
                 <button
                   onClick={onClearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-12 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-10 sm:right-3"
                 >
                   <X className="h-4 w-4" />
                 </button>
               )}
+              
+              {/* Mobile Filter Icon in Search Field */}
+              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 sm:hidden">
+                <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
+                  <PopoverTrigger asChild>
+                    <button className="text-muted-foreground hover:text-foreground transition-colors relative">
+                      <Filter className="h-4 w-4" />
+                      {selectedFilters.length > 0 && (
+                        <span className="absolute -top-1 -right-1 h-2 w-2 bg-primary rounded-full" />
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-4" align="end">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-medium text-sm">Kontaktart Filter</h4>
+                        {selectedFilters.length > 0 && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={clearFilters}
+                            className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+                          >
+                            Zurücksetzen
+                          </Button>
+                        )}
+                      </div>
+                      <div className="space-y-3">
+                        {filterOptions.map((option) => (
+                          <div key={option.value} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={option.value}
+                              checked={selectedFilters.includes(option.value)}
+                              onCheckedChange={() => handleFilterToggle(option.value)}
+                            />
+                            <label
+                              htmlFor={option.value}
+                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                            >
+                              {option.label}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
 
-            {/* Contact Type Filter */}
-            <div className="flex items-center gap-2 sm:min-w-[200px]">
+            {/* Contact Type Filter - Desktop/Tablet only */}
+            <div className="hidden sm:flex items-center gap-2 sm:min-w-[200px]">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <Select value={contactTypeFilter} onValueChange={onContactTypeChange}>
                 <SelectTrigger className="w-full">
@@ -95,6 +171,27 @@ export function ContactsFilters({
               </Select>
             </div>
           </div>
+
+          {/* Mobile Filter Badges */}
+          {selectedFilters.length > 0 && (
+            <div className="flex flex-wrap gap-2 sm:hidden">
+              {selectedFilters.map((filter) => (
+                <Badge
+                  key={filter}
+                  variant="secondary"
+                  className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
+                >
+                  {filterOptions.find(o => o.value === filter)?.label}
+                  <button
+                    onClick={() => handleFilterToggle(filter)}
+                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
 
           {/* Add Button - Mobile/Tablet only */}
           <div className="lg:hidden">
