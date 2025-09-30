@@ -547,13 +547,13 @@ function ContactInformationSection({
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {selectedItem.vat_number && (
-              <div className="p-4 bg-muted/20 rounded-lg">
+              <div className="p-4 bg-muted/1 rounded-lg">
                 <p className="text-xs text-muted-foreground">USt-IdNr.</p>
                 <p className="text-sm font-medium">{selectedItem.vat_number}</p>
               </div>
             )}
             {selectedItem.tax_number && (
-              <div className="p-4 bg-muted/20 rounded-lg">
+              <div className="p-4 bg-muted/1 rounded-lg">
                 <p className="text-xs text-muted-foreground">Steuernummer</p>
                 <p className="text-sm font-medium">{selectedItem.tax_number}</p>
               </div>
@@ -590,7 +590,7 @@ function ContactInformationSection({
           <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
             Notizen
           </h4>
-          <div className="p-4 bg-muted/20 rounded-lg">
+          <div className="p-4 bg-muted/1 rounded-lg">
             <p className="text-sm">{selectedItem.notes}</p>
           </div>
         </div>

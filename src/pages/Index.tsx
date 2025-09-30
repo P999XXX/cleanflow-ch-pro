@@ -109,7 +109,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="space-y-4">
               {upcomingTasks.map((task) => (
-                <div key={task.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/30">
+                <div key={task.id} className="flex items-center justify-between p-3 rounded-lg bg-muted/1">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-foreground">
                       {task.title}

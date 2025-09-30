@@ -18,7 +18,7 @@ const Chat = () => {
         </CardHeader>
         <CardContent className="flex-1 flex flex-col">
           {/* Chat Messages Area */}
-          <div className="flex-1 bg-muted/20 rounded-lg p-4 mb-4 overflow-y-auto">
+          <div className="flex-1 bg-muted/1 rounded-lg p-4 mb-4 overflow-y-auto">
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-sm font-semibold">

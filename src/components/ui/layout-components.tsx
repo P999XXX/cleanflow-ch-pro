@@ -28,7 +28,7 @@ export function EmptyState({
   return (
     <Card className={cn("border-dashed border-2 border-muted", className)}>
       <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-        <div className="p-4 rounded-full bg-muted/50 mb-4">
+        <div className="p-4 rounded-full bg-muted/1 mb-4">
           <Icon className="w-8 h-8 text-muted-foreground" />
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
