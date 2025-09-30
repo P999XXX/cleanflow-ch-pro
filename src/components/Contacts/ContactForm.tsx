@@ -59,18 +59,6 @@ export const ContactForm = ({
     contact_type: '',
   });
 
-  const [personData, setPersonData] = useState<ContactPersonInput>({
-    first_name: '',
-    last_name: '',
-    position: '',
-    email: '',
-    phone: '',
-    mobile: '',
-    is_primary_contact: false,
-    notes: '',
-    customer_company_id: '',
-  });
-
   useEffect(() => {
     setMode(initialMode);
   }, [initialMode]);
@@ -114,35 +102,6 @@ export const ContactForm = ({
     }
   }, [company]);
 
-  useEffect(() => {
-    if (contactPerson) {
-      setPersonData({
-        first_name: contactPerson.first_name,
-        last_name: contactPerson.last_name,
-        position: contactPerson.position || '',
-        email: contactPerson.email || '',
-        phone: contactPerson.phone || '',
-        mobile: contactPerson.mobile || '',
-        is_primary_contact: contactPerson.is_primary_contact || false,
-        notes: contactPerson.notes || '',
-        customer_company_id: contactPerson.customer_company_id || '',
-      });
-      setMode('person');
-    } else {
-      setPersonData({
-        first_name: '',
-        last_name: '',
-        position: '',
-        email: '',
-        phone: '',
-        mobile: '',
-        is_primary_contact: false,
-        notes: '',
-        customer_company_id: '',
-      });
-    }
-  }, [contactPerson]);
-
   const validateCompanyForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -168,7 +127,6 @@ export const ContactForm = ({
       newErrors.country = 'Land ist erforderlich';
     }
 
-    // Required fields from the form
     if (!companyData.company_type.trim()) {
       newErrors.company_type = 'Gesellschaftsart ist erforderlich';
     }
@@ -201,27 +159,8 @@ export const ContactForm = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const validatePersonForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!personData.first_name.trim()) {
-      newErrors.first_name = 'Vorname ist erforderlich';
-    }
-
-    if (!personData.last_name.trim()) {
-      newErrors.last_name = 'Nachname ist erforderlich';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleInputChange = (field: string, value: string) => {
-    if (mode === 'company') {
-      setCompanyData({ ...companyData, [field]: value });
-    } else {
-      setPersonData({ ...personData, [field]: value });
-    }
+    setCompanyData({ ...companyData, [field]: value });
     
     // Clear field error when user starts typing
     if (errors[field]) {
@@ -241,20 +180,10 @@ export const ContactForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    let isValid = false;
-    if (mode === 'company') {
-      isValid = validateCompanyForm();
-      if (isValid) {
-        onSubmitCompany(companyData);
-      }
+    const isValid = validateCompanyForm();
+    if (isValid) {
+      onSubmitCompany(companyData);
     } else {
-      isValid = validatePersonForm();
-      if (isValid) {
-        onSubmitPerson(personData);
-      }
-    }
-
-    if (!isValid) {
       toast({
         title: 'Validierungsfehler',
         description: 'Bitte korrigieren Sie die markierten Felder',
@@ -310,8 +239,7 @@ export const ContactForm = ({
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {mode === 'company' ? (
-            <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
                   Firmenname <span className="text-foreground">*</span>
@@ -540,117 +468,8 @@ export const ContactForm = ({
                 />
               </div>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="first_name">
-                    Vorname <span className="text-foreground">*</span>
-                  </Label>
-                  <Input
-                    id="first_name"
-                    value={personData.first_name}
-                    onChange={(e) => handleInputChange('first_name', e.target.value)}
-                    required
-                    className={errors.first_name ? 'border-destructive' : ''}
-                  />
-                  {errors.first_name && <p className="text-sm text-destructive mt-1">{errors.first_name}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="last_name">
-                    Nachname <span className="text-foreground">*</span>
-                  </Label>
-                  <Input
-                    id="last_name"
-                    value={personData.last_name}
-                    onChange={(e) => handleInputChange('last_name', e.target.value)}
-                    required
-                    className={errors.last_name ? 'border-destructive' : ''}
-                  />
-                  {errors.last_name && <p className="text-sm text-destructive mt-1">{errors.last_name}</p>}
-                </div>
-              </div>
 
-              <div>
-                <Label htmlFor="position">Position</Label>
-                <Input
-                  id="position"
-                  value={personData.position}
-                  onChange={(e) => setPersonData({ ...personData, position: e.target.value })}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="customer_company_id">Unternehmen</Label>
-                <Select 
-                  value={personData.customer_company_id || "none"} 
-                  onValueChange={(value) => setPersonData({ ...personData, customer_company_id: value === "none" ? undefined : value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Unternehmen auswählen (optional)" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">Kein Unternehmen</SelectItem>
-                    {companies?.map((company) => (
-                      <SelectItem key={company.id} value={company.id}>
-                        {company.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <Label htmlFor="email_person">E-Mail</Label>
-                <Input
-                  id="email_person"
-                  type="email"
-                  value={personData.email}
-                  onChange={(e) => setPersonData({ ...personData, email: e.target.value })}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="phone_person">Telefon</Label>
-                  <Input
-                    id="phone_person"
-                    value={personData.phone}
-                    onChange={(e) => setPersonData({ ...personData, phone: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="mobile">Mobil</Label>
-                  <Input
-                    id="mobile"
-                    value={personData.mobile}
-                    onChange={(e) => setPersonData({ ...personData, mobile: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_primary_contact"
-                  checked={personData.is_primary_contact}
-                  onCheckedChange={(checked) => setPersonData({ ...personData, is_primary_contact: !!checked })}
-                />
-                <Label htmlFor="is_primary_contact">Primärkontakt</Label>
-              </div>
-
-              <div>
-                <Label htmlFor="notes_person">Notizen</Label>
-                <Textarea
-                  id="notes_person"
-                  value={personData.notes}
-                  onChange={(e) => setPersonData({ ...personData, notes: e.target.value })}
-                  rows={3}
-                />
-              </div>
-            </div>
-          )}
-
-          <div className="flex flex-col items-center gap-3 pt-4">
+            <div className="flex flex-col items-center gap-3 pt-4">
             <Button type="submit" disabled={isLoading} className="w-full">
               {isLoading ? 'Speichere...' : 'Speichern'}
             </Button>
