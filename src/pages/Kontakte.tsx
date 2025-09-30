@@ -1,37 +1,70 @@
-import React, { useState, useMemo, useCallback } from 'react';
-import { Badge } from "@/components/ui/badge";
+import React, { useState, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
-import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
 import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useContactsData } from '@/hooks/contacts/useContactsData';
+import { useContactsFilters } from '@/hooks/contacts/useContactsFilters';
+import { useContactsNavigation } from '@/hooks/contacts/useContactsNavigation';
+import { CustomerCompany, ContactPerson, ViewMode } from '@/types/contacts';
+import { getStatusBadge } from '@/utils/contacts/status-utils';
+import { getCompanyTypeAbbreviation } from '@/utils/contacts/formatting';
+import { CustomerCompany as CompanyType, CustomerCompanyInput } from '@/hooks/useCompanies';
+import { ContactPerson as PersonType, ContactPersonInput } from '@/hooks/useContactPersons';
 
 const Kontakte = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
-  const [contactTypeFilter, setContactTypeFilter] = useState('all');
+  // UI State
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedPerson, setSelectedPerson] = useState(null);
+  const [editingCompany, setEditingCompany] = useState<CompanyType | null>(null);
+  const [editingPerson, setEditingPerson] = useState<PersonType | null>(null);
   const [formMode, setFormMode] = useState<'company' | 'person'>('company');
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [itemType, setItemType] = useState<'company' | 'person'>('company');
-  const [navigationStack, setNavigationStack] = useState<Array<{item: any, type: 'company' | 'person'}>>([]);
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<{item: CompanyType | PersonType, type: 'company' | 'person'} | null>(null);
 
   const isMobile = useIsMobile();
-  const { data: companies, isLoading: companiesLoading } = useCompanies();
-  const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
-  const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
-  const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
+
+  // Custom hooks for data, filters, and navigation
+  const {
+    companies,
+    persons,
+    isLoading,
+    createCompany,
+    updateCompany,
+    deleteCompany,
+    createContactPerson,
+    updateContactPerson,
+    deleteContactPerson,
+  } = useContactsData();
+
+  const {
+    searchTerm,
+    setSearchTerm,
+    contactTypeFilter,
+    setContactTypeFilter,
+    activeTab,
+    setActiveTab,
+    availableContactTypes,
+    filteredCompanies,
+    filteredPersons,
+    clearSearch,
+  } = useContactsFilters(companies as CustomerCompany[], persons as ContactPerson[]);
+
+  const {
+    selectedCompany: navSelectedCompany,
+    selectedPerson: navSelectedPerson,
+    isDetailsOpen,
+    navigationHistory,
+    handleCardClick: navHandleCardClick,
+    handleNavigateToCompany: navHandleNavigateToCompany,
+    handleNavigateToPerson: navHandleNavigateToPerson,
+    handleGoBack: navHandleGoBack,
+    closeDetails,
+  } = useContactsNavigation();
 
   // Set default view mode based on device type
   React.useEffect(() => {
@@ -43,159 +76,59 @@ const Kontakte = () => {
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
-  // Extract unique contact types from companies
-  const availableContactTypes = useMemo(() => {
-    if (!companies) return [];
-    const types = new Set<string>();
-    companies.forEach(company => {
-      if (company.contact_type) {
-        types.add(company.contact_type);
-      }
-    });
-    return Array.from(types).sort();
-  }, [companies]);
-
-  // Optimized filtering with useMemo for performance
-  const filteredCompanies = useMemo(() => {
-    if (!companies) return [];
-    
-    let filtered = companies;
-    
-    // Filter by contact type (supports multiple types comma-separated)
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(company => 
-        selectedTypes.includes(company.contact_type || '')
-      );
-    }
-    
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(company =>
-        company.name.toLowerCase().includes(term) ||
-        company.email?.toLowerCase().includes(term) ||
-        company.city?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term) ||
-        company.phone?.toLowerCase().includes(term)
-      );
-    }
-    
-    return filtered;
-  }, [companies, searchTerm, contactTypeFilter]);
-
-  const filteredPersons = useMemo(() => {
-    if (!contactPersons) return [];
-    
-    let filtered = contactPersons;
-    
-    // Filter by contact type (supports multiple types comma-separated)
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(person => {
-        const fullCompany = companies?.find(company => company.id === person.customer_company_id);
-        return selectedTypes.includes(fullCompany?.contact_type || '');
-      });
-    }
-    
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(person =>
-        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
-        person.email?.toLowerCase().includes(term) ||
-        person.phone?.toLowerCase().includes(term) ||
-        person.mobile?.toLowerCase().includes(term) ||
-        person.position?.toLowerCase().includes(term) ||
-        person.customer_companies?.name?.toLowerCase().includes(term)
-      );
-    }
-    
-    return filtered;
-  }, [contactPersons, searchTerm, contactTypeFilter, companies]);
-
   const totalCount = filteredCompanies.length + filteredPersons.length;
   const isSearching = searchTerm.trim().length > 0;
   const hasNoResults = isSearching && totalCount === 0;
 
-  // Clear search function
-  const clearSearch = useCallback(() => {
-    setSearchTerm('');
-  }, []);
+  // Wrap navigation handlers to work with our types
+  const handleCardClick = useCallback((item: CompanyType | PersonType) => {
+    navHandleCardClick(item as any);
+  }, [navHandleCardClick]);
 
-  // Handle card clicks to open details
-  const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
-    setSelectedItem(item);
-    setItemType(type);
-    setNavigationStack([]);
-    setDetailsOpen(true);
-  }, []);
-
-  // Handle navigation between company and person details
   const handleNavigateToCompany = useCallback((companyId: string) => {
-    const company = companies?.find(c => c.id === companyId);
+    const company = companies.find(c => c.id === companyId);
     if (company) {
-      setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
-      setSelectedItem(company);
-      setItemType('company');
+      navHandleNavigateToCompany(company as any);
     }
-  }, [companies, selectedItem, itemType]);
+  }, [companies, navHandleNavigateToCompany]);
 
-  const handleNavigateToPerson = useCallback((person: any) => {
-    const fullPersonData = contactPersons?.find(p => p.id === person.id);
-    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
-    setSelectedItem(fullPersonData || person);
-    setItemType('person');
-  }, [contactPersons, selectedItem, itemType]);
+  const handleNavigateToPerson = useCallback((person: PersonType) => {
+    navHandleNavigateToPerson(person as any);
+  }, [navHandleNavigateToPerson]);
 
-  // Handle going back in navigation
   const handleGoBack = useCallback(() => {
-    if (navigationStack.length > 0) {
-      const previousItem = navigationStack[navigationStack.length - 1];
-      setNavigationStack(prev => prev.slice(0, -1));
-      setSelectedItem(previousItem.item);
-      setItemType(previousItem.type);
-    } else {
-      setDetailsOpen(false);
-      setNavigationStack([]);
-    }
-  }, [navigationStack]);
+    navHandleGoBack(companies as any[], persons as any[]);
+  }, [navHandleGoBack, companies, persons]);
 
   // Handle edit actions
   const handleEditItem = useCallback(() => {
-    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
-    
-    if (itemType === 'company') {
-      setSelectedCompany(selectedItem);
+    if (navSelectedCompany) {
+      setEditingCompany(navSelectedCompany as CompanyType);
       setFormMode('company');
-    } else {
-      setSelectedPerson(selectedItem);
+    } else if (navSelectedPerson) {
+      setEditingPerson(navSelectedPerson as PersonType);
       setFormMode('person');
     }
-    setDetailsOpen(false);
+    closeDetails();
     setIsFormOpen(true);
-  }, [selectedItem, itemType]);
+  }, [navSelectedCompany, navSelectedPerson, closeDetails]);
 
-  // Handle form close - go back to details if there's a navigation stack
+  // Handle form close
   const handleFormClose = useCallback(() => {
     setIsFormOpen(false);
-    setSelectedCompany(null);
-    setSelectedPerson(null);
-    
-    if (navigationStack.length > 0) {
-      const previousItem = navigationStack[navigationStack.length - 1];
-      setNavigationStack(prev => prev.slice(0, -1));
-      setSelectedItem(previousItem.item);
-      setItemType(previousItem.type);
-      setDetailsOpen(true);
-    }
-  }, [navigationStack]);
+    setEditingCompany(null);
+    setEditingPerson(null);
+  }, []);
 
   // Handle delete actions
   const handleDeleteItem = useCallback(() => {
-    setItemToDelete({ item: selectedItem, type: itemType });
+    if (navSelectedCompany) {
+      setItemToDelete({ item: navSelectedCompany as CompanyType, type: 'company' });
+    } else if (navSelectedPerson) {
+      setItemToDelete({ item: navSelectedPerson as PersonType, type: 'person' });
+    }
     setDeleteDialogOpen(true);
-  }, [selectedItem, itemType]);
+  }, [navSelectedCompany, navSelectedPerson]);
 
   const confirmDelete = useCallback(() => {
     if (itemToDelete) {
@@ -205,27 +138,19 @@ const Kontakte = () => {
         deleteContactPerson.mutate(itemToDelete.item.id);
       }
       setDeleteDialogOpen(false);
-      setDetailsOpen(false);
+      closeDetails();
       setItemToDelete(null);
     }
-  }, [itemToDelete, deleteCompany, deleteContactPerson]);
+  }, [itemToDelete, deleteCompany, deleteContactPerson, closeDetails]);
 
-  const handleCompanySubmit = (companyData) => {
-    if (selectedCompany) {
+  const handleCompanySubmit = (companyData: CustomerCompanyInput) => {
+    if (editingCompany) {
       updateCompany.mutate(
-        { id: selectedCompany.id, company: companyData },
+        { id: editingCompany.id, company: companyData },
         { 
           onSuccess: () => { 
             setIsFormOpen(false); 
-            setSelectedCompany(null);
-            
-            if (navigationStack.length > 0) {
-              const previousItem = navigationStack[navigationStack.length - 1];
-              setNavigationStack(prev => prev.slice(0, -1));
-              setSelectedItem(previousItem.item);
-              setItemType(previousItem.type);
-              setDetailsOpen(true);
-            }
+            setEditingCompany(null);
           } 
         }
       );
@@ -236,22 +161,14 @@ const Kontakte = () => {
     }
   };
 
-  const handlePersonSubmit = (personData) => {
-    if (selectedPerson) {
+  const handlePersonSubmit = (personData: ContactPersonInput) => {
+    if (editingPerson) {
       updateContactPerson.mutate(
-        { id: selectedPerson.id, contactPerson: personData },
+        { id: editingPerson.id, contactPerson: personData },
         { 
           onSuccess: () => { 
             setIsFormOpen(false); 
-            setSelectedPerson(null);
-            
-            if (navigationStack.length > 0) {
-              const previousItem = navigationStack[navigationStack.length - 1];
-              setNavigationStack(prev => prev.slice(0, -1));
-              setSelectedItem(previousItem.item);
-              setItemType(previousItem.type);
-              setDetailsOpen(true);
-            }
+            setEditingPerson(null);
           } 
         }
       );
@@ -262,79 +179,23 @@ const Kontakte = () => {
     }
   };
 
-  // Helper function to get company type abbreviation
-  const getCompanyTypeAbbreviation = (companyType: string) => {
-    const abbreviations: Record<string, string> = {
-      'GmbH': 'GmbH',
-      'AG': 'AG',
-      'Einzelunternehmen': 'EU',
-      'Personengesellschaft': 'PG',
-      'Kapitalgesellschaft': 'KG',
-      'Genossenschaft': 'eG',
-      'Stiftung': 'Stift.',
-      'Verein': 'e.V.',
-      'Kommanditgesellschaft': 'KG',
-      'Offene Handelsgesellschaft': 'OHG',
-      'Gesellschaft bürgerlichen Rechts': 'GbR',
-      'Limited': 'Ltd.',
-      'Unternehmergesellschaft': 'UG'
-    };
-    
-    if (abbreviations[companyType]) {
-      return abbreviations[companyType];
-    }
-    
-    for (const [fullName, abbrev] of Object.entries(abbreviations)) {
-      if (companyType.toLowerCase().includes(fullName.toLowerCase())) {
-        return abbrev;
-      }
-    }
-    
-    return companyType.length > 3 ? companyType.substring(0, 3) + '.' : companyType;
-  };
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline'; className: string }> = {
-      aktiv: { 
-        label: 'Aktiv', 
-        variant: 'default',
-        className: 'bg-success/10 text-success border-success/20'
-      },
-      inaktiv: { 
-        label: 'Inaktiv', 
-        variant: 'secondary',
-        className: 'bg-muted text-muted-foreground border-muted'
-      },
-      potentiell: { 
-        label: 'Potentiell', 
-        variant: 'outline',
-        className: 'bg-primary/10 text-primary border-primary/20'
-      },
-    };
-    const config = statusConfig[status] || statusConfig.aktiv;
-    return (
-      <Badge 
-        variant={config.variant} 
-        className={`${config.className} font-medium border`}
-      >
-        {config.label}
-      </Badge>
-    );
-  };
-
   // Handle add button click based on active tab
   const handleAddClick = () => {
-    if (activeTab === 'companies') {
-      setSelectedCompany(null);
-      setFormMode('company');
-    } else if (activeTab === 'persons') {
-      setSelectedPerson(null);
+    if (activeTab === 'persons') {
+      setEditingPerson(null);
       setFormMode('person');
     } else {
-      setSelectedCompany(null);
+      setEditingCompany(null);
       setFormMode('company');
     }
     setIsFormOpen(true);
+  };
+
+  // Fix activeTab type for filter
+  const handleTabChange = (tab: string) => {
+    if (tab === 'companies' || tab === 'persons') {
+      setActiveTab(tab);
+    }
   };
 
   return (
@@ -347,7 +208,7 @@ const Kontakte = () => {
         contactTypeFilter={contactTypeFilter}
         onContactTypeChange={setContactTypeFilter}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={handleTabChange}
         totalCount={totalCount}
         companiesCount={filteredCompanies.length}
         personsCount={filteredPersons.length}
@@ -362,20 +223,9 @@ const Kontakte = () => {
       <div className="mt-6">
         {effectiveViewMode === 'cards' ? (
           <>
-            {activeTab === 'all' && (
-              <ContactsCardsView
-                companies={filteredCompanies}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
             {activeTab === 'companies' && (
               <ContactsCardsView
-                companies={filteredCompanies}
+                companies={filteredCompanies as CompanyType[]}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
@@ -387,7 +237,7 @@ const Kontakte = () => {
             {activeTab === 'persons' && (
               <ContactsCardsView
                 companies={[]}
-                persons={filteredPersons}
+                persons={filteredPersons as PersonType[]}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -398,21 +248,9 @@ const Kontakte = () => {
           </>
         ) : (
           <>
-            {activeTab === 'all' && (
-              <ContactsTableView
-                companies={filteredCompanies}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
             {activeTab === 'companies' && (
               <ContactsTableView
-                companies={filteredCompanies}
+                companies={filteredCompanies as CompanyType[]}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
@@ -425,7 +263,7 @@ const Kontakte = () => {
             {activeTab === 'persons' && (
               <ContactsTableView
                 companies={[]}
-                persons={filteredPersons}
+                persons={filteredPersons as PersonType[]}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -442,8 +280,8 @@ const Kontakte = () => {
       <ContactForm 
         isOpen={isFormOpen}
         onClose={handleFormClose}
-        company={selectedCompany}
-        contactPerson={selectedPerson}
+        company={editingCompany || undefined}
+        contactPerson={editingPerson || undefined}
         onSubmitCompany={handleCompanySubmit}
         onSubmitPerson={handlePersonSubmit}
         initialMode={formMode}
@@ -451,11 +289,11 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <ContactDetailsDialog
-        isOpen={detailsOpen}
-        onClose={() => setDetailsOpen(false)}
-        selectedItem={selectedItem}
-        itemType={itemType}
-        navigationStack={navigationStack}
+        isOpen={isDetailsOpen}
+        onClose={closeDetails}
+        selectedItem={navSelectedCompany || navSelectedPerson}
+        itemType={navSelectedCompany ? 'company' : 'person'}
+        navigationStack={navigationHistory as any}
         onEdit={handleEditItem}
         onDelete={handleDeleteItem}
         onGoBack={handleGoBack}
