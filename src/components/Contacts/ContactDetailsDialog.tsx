@@ -398,7 +398,7 @@ function ContactInformationSection({
           {selectedItem.email && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
               onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -414,7 +414,7 @@ function ContactInformationSection({
           {selectedItem.phone && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
               onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -430,7 +430,7 @@ function ContactInformationSection({
           {selectedItem.mobile && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
               onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -446,7 +446,7 @@ function ContactInformationSection({
           {selectedItem.website && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
               onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -479,7 +479,7 @@ function ContactInformationSection({
               <Button
                 key={contact.id}
                 variant="outline"
-                className="h-auto p-4 flex items-start justify-between hover:bg-muted/50 group"
+                className="h-auto p-4 flex items-start justify-between hover:bg-muted/20 group"
                 onClick={() => onNavigateToPerson(contact)}
               >
                 <div className="flex-1 text-left min-w-0">
@@ -517,7 +517,7 @@ function ContactInformationSection({
           </h4>
           <Button
             variant="outline"
-            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
             onClick={() => {
               const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
               window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
@@ -570,7 +570,7 @@ function ContactInformationSection({
           </h4>
           <Button
             variant="outline"
-            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50 w-full group"
+            className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/20 w-full group"
             onClick={() => onNavigateToCompany(selectedItem.customer_company_id)}
           >
             <div className="flex items-center gap-3 min-w-0">
