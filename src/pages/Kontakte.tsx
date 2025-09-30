@@ -702,20 +702,20 @@ const Kontakte = () => {
                 placeholder="Suchen nach Name, E-Mail, Telefon..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9 pr-9 w-full"
+                className="pl-9 pr-16 sm:pr-9 w-full"
               />
               {searchTerm && (
                 <button
                   onClick={clearSearch}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-14 sm:right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <X className="h-4 w-4" />
                 </button>
               )}
             </div>
 
-            {/* Contact Type Filter */}
-            <div className="flex items-center gap-2 sm:min-w-[200px]">
+            {/* Contact Type Filter - Desktop */}
+            <div className="hidden sm:flex items-center gap-2 sm:min-w-[200px]">
               <Filter className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               <Select value={contactTypeFilter} onValueChange={setContactTypeFilter}>
                 <SelectTrigger className="w-full">
@@ -723,10 +723,28 @@ const Kontakte = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Alle Kontaktarten</SelectItem>
-                  <SelectItem value="kunde">Kunde</SelectItem>
-                  <SelectItem value="interessent">Interessent</SelectItem>
-                  <SelectItem value="lieferant">Lieferant</SelectItem>
-                  <SelectItem value="partner">Partner</SelectItem>
+                  <SelectItem value="Kunde">Kunde</SelectItem>
+                  <SelectItem value="Lieferant">Lieferant</SelectItem>
+                  <SelectItem value="Dienstleister">Dienstleister</SelectItem>
+                  <SelectItem value="Amtlich">Amtlich</SelectItem>
+                  <SelectItem value="Sonstige">Sonstige</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Contact Type Filter - Mobile (Icon only in search field) */}
+            <div className="sm:hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+              <Select value={contactTypeFilter} onValueChange={setContactTypeFilter}>
+                <SelectTrigger className="w-10 h-10 border-0 p-0 hover:bg-muted/50 rounded-full">
+                  <Filter className="h-4 w-4 text-muted-foreground" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Alle Kontaktarten</SelectItem>
+                  <SelectItem value="Kunde">Kunde</SelectItem>
+                  <SelectItem value="Lieferant">Lieferant</SelectItem>
+                  <SelectItem value="Dienstleister">Dienstleister</SelectItem>
+                  <SelectItem value="Amtlich">Amtlich</SelectItem>
+                  <SelectItem value="Sonstige">Sonstige</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -989,7 +1007,7 @@ const Kontakte = () => {
                 </div>
 
                  {/* Quick Action Icons - Round buttons */}
-                 <div className="flex items-center gap-3 mt-4">
+                 <div className="flex items-center gap-3 mt-4 flex-wrap">
                    {selectedItem.website && (
                      <Button
                        variant="outline"
@@ -1033,11 +1051,27 @@ const Kontakte = () => {
                        <MapPin className="h-4 w-4" />
                      </Button>
                    )}
+                   <Button
+                     variant="outline"
+                     size="icon"
+                     className="rounded-full h-10 w-10"
+                     onClick={handleEditItem}
+                   >
+                     <Edit className="h-4 w-4" />
+                   </Button>
+                   <Button
+                     variant="outline"
+                     size="icon"
+                     className="rounded-full h-10 w-10 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
+                     onClick={handleDeleteItem}
+                   >
+                     <Trash2 className="h-4 w-4" />
+                   </Button>
                  </div>
 
-                 {/* Tabs - Only for customers */}
-                 {itemType === 'company' && selectedItem.contact_type === 'kunde' && (
-                   <div className="mt-6">
+                  {/* Tabs - Only for customers */}
+                  {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
+                    <div className="mt-6">
                      <Tabs defaultValue="kontakt" className="w-full">
                        <TabsList className="grid w-full grid-cols-4 bg-background">
                          <TabsTrigger value="kontakt" className="flex items-center gap-2">
@@ -1431,28 +1465,6 @@ const Kontakte = () => {
                 </div>
               )}
 
-              {/* Bottom Action Buttons */}
-              <div className="p-6 border-t bg-background flex flex-col sm:flex-row items-center gap-3">
-                <Button onClick={handleEditItem} className="w-full sm:flex-1 flex items-center justify-center gap-2">
-                  <Edit className="h-4 w-4" />
-                  Bearbeiten
-                </Button>
-                <Button
-                  variant="destructive" 
-                  onClick={handleDeleteItem}
-                  className="w-full sm:w-auto flex items-center justify-center gap-2"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  Löschen
-                </Button>
-                <button 
-                  type="button" 
-                  onClick={handleGoBack}
-                  className="text-muted-foreground hover:text-foreground transition-colors text-sm"
-                >
-                  {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
-                </button>
-              </div>
             </div>
           )}
         </DialogContent>

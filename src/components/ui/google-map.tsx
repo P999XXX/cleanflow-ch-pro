@@ -109,6 +109,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
             setIsLoading(false);
           } else {
+            console.error('Geocoding error:', status, fullAddress);
             setError('Adresse konnte nicht gefunden werden');
             setIsLoading(false);
           }
