@@ -32,19 +32,25 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   useEffect(() => {
     const fetchApiKey = async () => {
       try {
+        console.log('[GoogleMap] Fetching Maps API key...');
         const { data, error } = await supabase.functions.invoke('get-maps-config');
         
+        console.log('[GoogleMap] Function response:', { data, error });
+        
         if (error) {
+          console.error('[GoogleMap] Function error:', error);
           throw new Error(`Function error: ${error.message}`);
         }
         
         if (data?.apiKey) {
+          console.log('[GoogleMap] API key retrieved successfully');
           setApiKey(data.apiKey);
         } else {
+          console.error('[GoogleMap] No API key in response');
           setError('Google Maps API-Schlüssel nicht konfiguriert');
         }
       } catch (err) {
-        console.error('Error fetching Maps API key:', err);
+        console.error('[GoogleMap] Error fetching Maps API key:', err);
         setError('Google Maps API-Schlüssel konnte nicht geladen werden');
       }
     };
@@ -128,12 +134,20 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
   if (error) {
     return (
-      <div className={`${className} bg-muted/30 rounded-lg flex items-center justify-center border border-dashed border-muted-foreground/25`}>
-        <div className="text-center text-muted-foreground">
+      <div className={`${className} bg-muted/30 rounded-lg flex flex-col items-center justify-center border border-dashed border-muted-foreground/25 gap-3`}>
+        <div className="text-center text-muted-foreground px-4">
           <MapPin className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm font-medium">{error}</p>
-          <p className="text-xs mt-1 px-4">{fullAddress}</p>
+          <p className="text-xs mt-1">{fullAddress}</p>
         </div>
+        <a
+          href={`https://maps.google.com/maps?q=${encodeURIComponent(fullAddress)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-primary hover:underline"
+        >
+          In Google Maps öffnen
+        </a>
       </div>
     );
   }

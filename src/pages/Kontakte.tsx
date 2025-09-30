@@ -926,9 +926,12 @@ const Kontakte = () => {
             <DialogTitle>Details</DialogTitle>
             <DialogDescription>Unternehmens- und Kontaktdetails</DialogDescription>
           </DialogHeader>
-          {selectedItem && (
+          {selectedItem && (() => {
+            const isCustomer = itemType === 'company' && (selectedItem.contact_type || '').toLowerCase() === 'kunde';
+            
+            return (
             <div className="w-full">
-              {/* Map Header - Fixed at top */}
+              {/* Map Header */}
               {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
                 <div className="relative h-48 sm:h-64">
                   <GoogleMap
@@ -942,7 +945,7 @@ const Kontakte = () => {
                 </div>
               )}
 
-              {/* Header Section - Fixed */}
+              {/* Header Section */}
               <div className="p-6 pb-4 border-b">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   {/* Title - Left */}
@@ -1074,71 +1077,8 @@ const Kontakte = () => {
                 </div>
               </div>
 
-                 {/* Quick Action Icons - Round buttons */}
-                 <div className="flex items-center gap-3 mt-4 flex-wrap">
-                   {selectedItem.website && (
-                     <Button
-                       variant="outline"
-                       size="icon"
-                       className="rounded-full h-10 w-10"
-                       onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
-                     >
-                       <Globe className="h-4 w-4" />
-                     </Button>
-                   )}
-                   {selectedItem.phone && (
-                     <Button
-                       variant="outline"
-                       size="icon"
-                       className="rounded-full h-10 w-10"
-                       onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
-                     >
-                       <Phone className="h-4 w-4" />
-                     </Button>
-                   )}
-                   {selectedItem.email && (
-                     <Button
-                       variant="outline"
-                       size="icon"
-                       className="rounded-full h-10 w-10"
-                       onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
-                     >
-                       <Mail className="h-4 w-4" />
-                     </Button>
-                   )}
-                   {(selectedItem.address || selectedItem.city) && (
-                     <Button
-                       variant="outline"
-                       size="icon"
-                       className="rounded-full h-10 w-10"
-                       onClick={() => {
-                         const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
-                         window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
-                       }}
-                     >
-                       <MapPin className="h-4 w-4" />
-                     </Button>
-                   )}
-                   <Button
-                     variant="outline"
-                     size="icon"
-                     className="rounded-full h-10 w-10"
-                     onClick={handleEditItem}
-                   >
-                     <Edit className="h-4 w-4" />
-                   </Button>
-                   <Button
-                     variant="outline"
-                     size="icon"
-                     className="rounded-full h-10 w-10 hover:bg-destructive/10 hover:text-destructive hover:border-destructive/20"
-                     onClick={handleDeleteItem}
-                   >
-                     <Trash2 className="h-4 w-4" />
-                   </Button>
-                 </div>
-
-              {/* Tabs Section - For customers only, fixed */}
-              {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
+              {/* Tabs Section - For customers only */}
+              {isCustomer && (
                 <div className="border-b">
                   <Tabs defaultValue="kontakt" className="w-full">
                     {/* Horizontal scrollable tab list */}
@@ -1342,8 +1282,8 @@ const Kontakte = () => {
                 </div>
               )}
 
-              {/* Inhalt für Nicht-Kunden und Personen */}
-              {(itemType === 'person' || (itemType === 'company' && (selectedItem.contact_type || '').toLowerCase() !== 'kunde')) && (
+              {/* Content for non-customers and persons */}
+              {!isCustomer && (
                 <div className="p-6 space-y-6">
                   {/* Contact Information Cards */}
                   <div className="space-y-4">
@@ -1552,7 +1492,8 @@ const Kontakte = () => {
               </DialogFooter>
 
             </div>
-          )}
+            );
+          })()}
         </DialogContent>
       </Dialog>
 
