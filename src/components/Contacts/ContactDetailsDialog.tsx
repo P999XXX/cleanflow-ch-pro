@@ -74,15 +74,15 @@ export function ContactDetailsDialog({
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                  className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                   onClick={onEdit}
                 >
-                  <Edit className="h-3 w-3 text-primary-foreground" />
+                  <Edit className="h-3 w-3" />
                 </Button>
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                  className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                   onClick={onDelete}
                 >
                   <Trash2 className="h-3 w-3 text-destructive" />
@@ -90,10 +90,10 @@ export function ContactDetailsDialog({
                 <Button
                   variant="secondary"
                   size="icon"
-                  className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                  className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                   onClick={navigationStack.length > 0 ? onGoBack : onClose}
                 >
-                  <X className="h-3 w-3 text-primary-foreground" />
+                  <X className="h-3 w-3" />
                 </Button>
               </div>
             </div>
@@ -109,15 +109,15 @@ export function ContactDetailsDialog({
                   <Button
                     variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                    className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                     onClick={onEdit}
                   >
-                    <Edit className="h-3 w-3 text-primary-foreground" />
+                    <Edit className="h-3 w-3" />
                   </Button>
                   <Button
                     variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                    className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                     onClick={onDelete}
                   >
                     <Trash2 className="h-3 w-3 text-destructive" />
@@ -125,10 +125,10 @@ export function ContactDetailsDialog({
                   <Button
                     variant="secondary"
                     size="icon"
-                    className="rounded-full h-7 w-7 bg-primary/90 hover:bg-primary border border-primary/20 shadow-lg backdrop-blur-sm"
+                    className="rounded-full h-7 w-7 bg-background/95 hover:bg-background border shadow-lg backdrop-blur-sm"
                     onClick={navigationStack.length > 0 ? onGoBack : onClose}
                   >
-                    <X className="h-3 w-3 text-primary-foreground" />
+                    <X className="h-3 w-3" />
                   </Button>
                 </div>
 
