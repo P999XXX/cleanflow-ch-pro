@@ -273,12 +273,12 @@ export function ContactsFilters({
                       {totalCount}
                     </Badge>
                   </TabsTrigger>
-                  <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                    <Building className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm">
-                      <span className="hidden sm:inline">Unternehmen</span>
-                      <span className="sm:hidden">Firma</span>
-                    </span>
+                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
+                  <Building className="h-4 w-4" />
+                  <span className="text-xs sm:text-sm">
+                    <span className="hidden sm:inline">Unternehmen</span>
+                    <span className="sm:hidden">Firmen</span>
+                  </span>
                     <Badge 
                       variant="secondary" 
                       className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
@@ -350,7 +350,7 @@ export function ContactsFilters({
                     <Building className="h-4 w-4" />
                     <span className="text-xs sm:text-sm">
                       <span className="hidden sm:inline">Unternehmen</span>
-                      <span className="sm:hidden">Firma</span>
+                      <span className="sm:hidden">Firmen</span>
                     </span>
                     <Badge 
                       variant="secondary" 
