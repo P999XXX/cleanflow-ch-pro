@@ -59,7 +59,7 @@ export function ContactDetailsDialog({
         <div className="w-full">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-4">
+            <div className="relative h-48 sm:h-64 -mt-6 -mx-6 mb-0 overflow-hidden">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
@@ -69,7 +69,7 @@ export function ContactDetailsDialog({
               />
               
               {/* Action Buttons on Map */}
-              <div className="absolute top-4 right-4 flex items-center gap-2 z-10">
+              <div className="absolute top-6 right-6 flex items-center gap-2 z-10">
                 <Button
                   variant="secondary"
                   size="icon"
@@ -99,7 +99,7 @@ export function ContactDetailsDialog({
           )}
 
           {/* Title and Badges Section */}
-          <div className={designTokens.dialogs.header}>
+          <div className={cn(designTokens.dialogs.header, itemType === 'company' && (selectedItem.address || selectedItem.city) && "pt-4")}>
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
               <div className="flex items-center gap-3 flex-1 min-w-0">
