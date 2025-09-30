@@ -49,7 +49,7 @@ export function ContactDetailsDialog({
       <DialogContent aria-describedby="contact-dialog-desc" className={cn(
         designTokens.containers.dialog.lg,
         designTokens.dialogs.content,
-        "h-[90vh] overflow-hidden flex flex-col"
+        "h-[90vh] overflow-hidden flex flex-col p-0"
       )}>
         <VisuallyHidden>
           <DialogTitle>
@@ -57,16 +57,16 @@ export function ContactDetailsDialog({
           </DialogTitle>
           <p id="contact-dialog-desc">Details zur Kontaktansicht</p>
         </VisuallyHidden>
-        <div className="w-full overflow-y-auto overflow-x-hidden flex-1 -mx-6">
+        <div className="w-full overflow-y-auto overflow-x-hidden flex-1">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 mb-0 mx-6">
+            <div className="relative h-48 sm:h-64 mb-0">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
                 city={selectedItem.city}
                 country={selectedItem.country}
-                className="w-full h-full rounded-md"
+                className="w-full h-full rounded-none"
               />
               
               {/* Action Buttons on Map */}
@@ -100,7 +100,7 @@ export function ContactDetailsDialog({
           )}
 
           {/* Title and Badges Section */}
-          <div className={cn(designTokens.dialogs.header, "mx-6")}>
+          <div className={cn(designTokens.dialogs.header, "px-6")}>
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
               <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -281,7 +281,7 @@ export function ContactDetailsDialog({
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="kontakt" className="mt-4 px-6">
+                  <TabsContent value="kontakt" className="mt-4">
                     <ContactInformationSection 
                       selectedItem={selectedItem} 
                       itemType={itemType}
@@ -289,15 +289,15 @@ export function ContactDetailsDialog({
                     />
                   </TabsContent>
 
-                  <TabsContent value="objekte" className="mt-4 px-6">
+                  <TabsContent value="objekte" className="mt-4">
                     <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
                   </TabsContent>
 
-                  <TabsContent value="reklamationen" className="mt-4 px-6">
+                  <TabsContent value="reklamationen" className="mt-4">
                     <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
                   </TabsContent>
 
-                  <TabsContent value="dokumente" className="mt-4 px-6">
+                  <TabsContent value="dokumente" className="mt-4">
                     <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
                   </TabsContent>
                 </Tabs>
@@ -307,7 +307,7 @@ export function ContactDetailsDialog({
 
           {/* Non-customer and Person content */}
           {!isCustomer && (
-            <div className="p-6 space-y-6 mx-6">
+            <div className="px-6 pb-6 space-y-6">
               <ContactInformationSection 
                 selectedItem={selectedItem} 
                 itemType={itemType}
