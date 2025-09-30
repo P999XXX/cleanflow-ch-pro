@@ -496,6 +496,7 @@ const Kontakte = () => {
               <ContactsTableView
                 companies={filteredCompanies}
                 persons={filteredPersons}
+                employees={filteredEmployees}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
