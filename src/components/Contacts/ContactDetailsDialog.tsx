@@ -1,0 +1,478 @@
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { 
+  Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, 
+  Contact, Building, AlertTriangle, FileText, MessageCircle 
+} from "lucide-react";
+import GoogleMap from "@/components/ui/google-map";
+import { designTokens } from "@/lib/design-tokens";
+import { cn } from "@/lib/utils";
+
+interface ContactDetailsDialogProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedItem: any;
+  itemType: 'company' | 'person';
+  navigationStack: Array<{item: any, type: 'company' | 'person'}>;
+  onEdit: () => void;
+  onDelete: () => void;
+  onGoBack: () => void;
+  onNavigateToCompany: (companyId: string) => void;
+  onNavigateToPerson: (person: any) => void;
+  getStatusBadge: (status: string) => JSX.Element;
+  getCompanyTypeAbbreviation: (type: string) => string;
+}
+
+export function ContactDetailsDialog({
+  isOpen,
+  onClose,
+  selectedItem,
+  itemType,
+  navigationStack,
+  onEdit,
+  onDelete,
+  onGoBack,
+  onNavigateToCompany,
+  onNavigateToPerson,
+  getStatusBadge,
+  getCompanyTypeAbbreviation,
+}: ContactDetailsDialogProps) {
+  if (!selectedItem) return null;
+
+  const isCustomer = itemType === 'company' && selectedItem.contact_type === 'kunde';
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className={cn(
+        designTokens.containers.dialog.lg,
+        designTokens.dialogs.content,
+        "h-[90vh]"
+      )}>
+        <div className="w-full">
+          {/* Map Header */}
+          {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
+            <div className="relative h-48 sm:h-64">
+              <GoogleMap
+                address={selectedItem.address}
+                postal_code={selectedItem.postal_code}
+                city={selectedItem.city}
+                country={selectedItem.country}
+                className="w-full h-full rounded-t-lg"
+              />
+              <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
+            </div>
+          )}
+
+          {/* Title and Badges Section */}
+          <div className={designTokens.dialogs.header}>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              {/* Title */}
+              <div className="flex items-center gap-3">
+                {itemType === 'company' ? (
+                  <>
+                    <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem.name}</h2>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <h2 className="text-xl sm:text-2xl font-semibold">
+                        {`${selectedItem.first_name} ${selectedItem.last_name}`}
+                      </h2>
+                      {selectedItem.position && (
+                        <span className="text-sm font-normal text-muted-foreground mt-1">
+                          {selectedItem.position}
+                        </span>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Badges */}
+              <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+                {itemType === 'company' && (
+                  <>
+                    {getStatusBadge(selectedItem.status)}
+                    {selectedItem.company_type && (
+                      <Badge 
+                        variant="outline" 
+                        className="bg-muted text-muted-foreground border-muted font-medium"
+                      >
+                        {getCompanyTypeAbbreviation(selectedItem.company_type)}
+                      </Badge>
+                    )}
+                    {selectedItem.industry_category && (
+                      <Badge 
+                        variant="outline" 
+                        className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium"
+                      >
+                        {selectedItem.industry_category}
+                      </Badge>
+                    )}
+                    {selectedItem.contact_type && (
+                      <Badge 
+                        variant="outline" 
+                        className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium"
+                      >
+                        {selectedItem.contact_type}
+                      </Badge>
+                    )}
+                  </>
+                )}
+                {itemType === 'person' && selectedItem.is_primary_contact && (
+                  <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
+                    Primärkontakt
+                  </Badge>
+                )}
+              </div>
+            </div>
+
+            {/* Quick Action Icons */}
+            <div className="flex items-center gap-3 mt-4">
+              {selectedItem.website && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10"
+                  onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+                >
+                  <Globe className="h-4 w-4" />
+                </Button>
+              )}
+              {selectedItem.phone && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10"
+                  onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+                >
+                  <Phone className="h-4 w-4" />
+                </Button>
+              )}
+              {selectedItem.email && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10"
+                  onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+                >
+                  <Mail className="h-4 w-4" />
+                </Button>
+              )}
+              {(selectedItem.address || selectedItem.city) && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-10 w-10"
+                  onClick={() => {
+                    const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+                    window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                  }}
+                >
+                  <MapPin className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {/* Tabs for Customers */}
+            {isCustomer && (
+              <div className="mt-6">
+                <Tabs defaultValue="kontakt" className="w-full">
+                  <TabsList className="grid w-full grid-cols-4 bg-background">
+                    <TabsTrigger value="kontakt" className="flex items-center gap-2">
+                      <Contact className="h-4 w-4" />
+                      <span className="hidden sm:inline">Kontakt</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="objekte" className="flex items-center gap-2">
+                      <Building className="h-4 w-4" />
+                      <span className="hidden sm:inline">Objekte</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="reklamationen" className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4" />
+                      <span className="hidden sm:inline">Reklamationen</span>
+                      <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="dokumente" className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      <span className="hidden sm:inline">Dokumente</span>
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="kontakt" className="mt-4 px-6">
+                    <ContactInformationSection 
+                      selectedItem={selectedItem} 
+                      itemType={itemType}
+                      onNavigateToPerson={onNavigateToPerson}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="objekte" className="mt-4 px-6">
+                    <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                  </TabsContent>
+
+                  <TabsContent value="reklamationen" className="mt-4 px-6">
+                    <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                  </TabsContent>
+
+                  <TabsContent value="dokumente" className="mt-4 px-6">
+                    <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            )}
+          </div>
+
+          {/* Non-customer and Person content */}
+          {!isCustomer && (
+            <div className="p-6 space-y-6">
+              <ContactInformationSection 
+                selectedItem={selectedItem} 
+                itemType={itemType}
+                onNavigateToPerson={onNavigateToPerson}
+                onNavigateToCompany={onNavigateToCompany}
+              />
+            </div>
+          )}
+
+          {/* Bottom Action Buttons */}
+          <div className={designTokens.dialogs.footer}>
+            <Button onClick={onEdit} className="flex-1 flex items-center justify-center gap-2">
+              <Edit className="h-4 w-4" />
+              Bearbeiten
+            </Button>
+            <Button
+              variant="destructive" 
+              onClick={onDelete}
+              className="flex items-center justify-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Löschen
+            </Button>
+            <button 
+              type="button" 
+              onClick={onGoBack}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              {navigationStack.length > 0 ? 'Zurück' : 'Schliessen'}
+            </button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Helper Components
+function ContactInformationSection({ 
+  selectedItem, 
+  itemType,
+  onNavigateToPerson,
+  onNavigateToCompany 
+}: any) {
+  return (
+    <div className="space-y-6">
+      {/* Contact Information Cards */}
+      <div className="space-y-4">
+        <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+          Kontaktinformationen
+        </h4>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {selectedItem.email && (
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
+            >
+              <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="text-left min-w-0">
+                <p className="text-xs text-muted-foreground">E-Mail</p>
+                <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+              </div>
+            </Button>
+          )}
+          {selectedItem.phone && (
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
+            >
+              <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="text-left min-w-0">
+                <p className="text-xs text-muted-foreground">Telefon</p>
+                <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+              </div>
+            </Button>
+          )}
+          {selectedItem.mobile && (
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              onClick={() => window.open(`https://wa.me/${selectedItem.mobile.replace(/[^\d]/g, '').replace(/^0/, '41')}`, '_blank')}
+            >
+              <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+              <div className="text-left min-w-0">
+                <p className="text-xs text-muted-foreground">WhatsApp</p>
+                <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+              </div>
+            </Button>
+          )}
+          {selectedItem.website && (
+            <Button
+              variant="outline"
+              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              onClick={() => window.open(selectedItem.website.startsWith('http') ? selectedItem.website : `https://${selectedItem.website}`, '_blank')}
+            >
+              <Globe className="h-5 w-5 text-primary flex-shrink-0" />
+              <div className="text-left min-w-0">
+                <p className="text-xs text-muted-foreground">Website</p>
+                <p className="text-sm font-medium truncate">{selectedItem.website}</p>
+              </div>
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Contact Persons (for companies) */}
+      {itemType === 'company' && selectedItem.contact_persons && selectedItem.contact_persons.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Kontaktpersonen
+              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
+                {selectedItem.contact_persons.length}
+              </Badge>
+            </h4>
+          </div>
+          <div className="grid gap-3">
+            {selectedItem.contact_persons.map((contact: any) => (
+              <Button
+                key={contact.id}
+                variant="outline"
+                className="h-auto p-4 flex items-start justify-between hover:bg-muted/50"
+                onClick={() => onNavigateToPerson(contact)}
+              >
+                <div className="flex-1 text-left">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm text-foreground">
+                      {contact.first_name} {contact.last_name}
+                    </span>
+                    {contact.is_primary_contact && (
+                      <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-xs ml-2">
+                        Primär
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-1 mt-1 text-xs text-muted-foreground">
+                    {contact.position && <span>{contact.position}</span>}
+                  </div>
+                  {contact.notes && (
+                    <div className="mt-2 pt-2 border-t border-border/50">
+                      <p className="text-xs text-muted-foreground line-clamp-2">{contact.notes}</p>
+                    </div>
+                  )}
+                </div>
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Address (for companies) */}
+      {itemType === 'company' && (selectedItem.address || selectedItem.city || selectedItem.postal_code) && (
+        <div className="space-y-4">
+          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+            Adresse
+          </h4>
+          <Button
+            variant="outline"
+            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+            onClick={() => {
+              const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
+              window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+            }}
+          >
+            <MapPin className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="text-left">
+              {selectedItem.address && <div className="text-sm font-medium">{selectedItem.address}</div>}
+              <div className="text-sm font-medium">
+                {selectedItem.postal_code && selectedItem.city 
+                  ? `${selectedItem.postal_code} ${selectedItem.city}` 
+                  : selectedItem.postal_code || selectedItem.city}
+              </div>
+            </div>
+          </Button>
+        </div>
+      )}
+
+      {/* Additional Info (for companies) */}
+      {itemType === 'company' && (selectedItem.vat_number || selectedItem.tax_number) && (
+        <div className="space-y-4">
+          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+            Zusätzliche Informationen
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {selectedItem.vat_number && (
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-xs text-muted-foreground">USt-IdNr.</p>
+                <p className="text-sm font-medium">{selectedItem.vat_number}</p>
+              </div>
+            )}
+            {selectedItem.tax_number && (
+              <div className="p-4 bg-muted/50 rounded-lg">
+                <p className="text-xs text-muted-foreground">Steuernummer</p>
+                <p className="text-sm font-medium">{selectedItem.tax_number}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Company Information (for persons) */}
+      {itemType === 'person' && selectedItem.customer_company_id && selectedItem.customer_companies && (
+        <div className="space-y-4">
+          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+            Unternehmen
+          </h4>
+          <Button
+            variant="outline"
+            className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50 w-full"
+            onClick={() => onNavigateToCompany(selectedItem.customer_company_id)}
+          >
+            <Building2 className="h-5 w-5 text-primary flex-shrink-0" />
+            <div className="text-left">
+              <p className="text-sm font-medium">{selectedItem.customer_companies.name}</p>
+            </div>
+          </Button>
+        </div>
+      )}
+
+      {/* Notes (for persons) */}
+      {itemType === 'person' && selectedItem.notes && (
+        <div className="space-y-4">
+          <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
+            Notizen
+          </h4>
+          <div className="p-4 bg-muted/50 rounded-lg">
+            <p className="text-sm">{selectedItem.notes}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EmptyState({ icon: Icon, text }: { icon: any; text: string }) {
+  return (
+    <div className="text-center py-8 text-muted-foreground">
+      <Icon className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+      <p>{text}</p>
+    </div>
+  );
+}

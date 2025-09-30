@@ -1,0 +1,155 @@
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Mail, Phone, Smartphone, MapPin, Building2 } from "lucide-react";
+import { StatusBadge } from "@/components/ui/status-badges";
+
+interface ContactCardProps {
+  item: any;
+  type: 'company' | 'person';
+  onCardClick: (item: any, type: 'company' | 'person') => void;
+}
+
+export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline'; className: string }> = {
+      aktiv: { 
+        label: 'Aktiv', 
+        variant: 'default',
+        className: 'bg-success/10 text-success border-success/20'
+      },
+      inaktiv: { 
+        label: 'Inaktiv', 
+        variant: 'secondary',
+        className: 'bg-muted text-muted-foreground border-muted'
+      },
+      potentiell: { 
+        label: 'Potentiell', 
+        variant: 'outline',
+        className: 'bg-primary/10 text-primary border-primary/20'
+      },
+    };
+    const config = statusConfig[status] || statusConfig.aktiv;
+    return (
+      <Badge 
+        variant={config.variant} 
+        className={`${config.className} font-medium border`}
+      >
+        {config.label}
+      </Badge>
+    );
+  };
+
+  return (
+    <Card 
+      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col"
+      onClick={() => onCardClick(item, type)}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-semibold text-lg truncate">
+              {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
+            </h3>
+            {type === 'company' ? (
+              <div className="space-y-1">
+                {item.company_type && (
+                  <p className="text-sm font-normal text-muted-foreground">{item.company_type}</p>
+                )}
+                {(item.city || item.postal_code) && (
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <MapPin className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">
+                      {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-1 mt-1">
+                {item.position && (
+                  <p className="text-sm text-muted-foreground truncate">{item.position}</p>
+                )}
+                {item.customer_companies?.name && (
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    <Building2 className="h-3 w-3 flex-shrink-0" />
+                    <span className="truncate">{item.customer_companies.name}</span>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0 ml-2 flex-wrap">
+            {type === 'company' ? (
+              <>
+                {getStatusBadge(item.status)}
+                {item.industry_category && (
+                  <Badge 
+                    variant="outline" 
+                    className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium"
+                  >
+                    {item.industry_category}
+                  </Badge>
+                )}
+                {item.contact_type && (
+                  <Badge 
+                    variant="outline" 
+                    className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium"
+                  >
+                    {item.contact_type}
+                  </Badge>
+                )}
+              </>
+            ) : (
+              item.is_primary_contact && (
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
+                  Primär
+                </Badge>
+              )
+            )}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pt-0 flex-1 flex flex-col justify-end">
+        <div className="flex flex-col gap-2 text-sm">
+          {item.email && (
+            <div className="flex items-center gap-2 min-w-0">
+              <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+              <a 
+                href={`mailto:${item.email}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors truncate"
+                onClick={(e) => e.stopPropagation()}
+                title={item.email}
+              >
+                {item.email}
+              </a>
+            </div>
+          )}
+          {item.phone && (
+            <div className="flex items-center gap-2">
+              <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+              <a 
+                href={`tel:${item.phone}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.phone}
+              </a>
+            </div>
+          )}
+          {item.mobile && (
+            <div className="flex items-center gap-2">
+              <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+              <a 
+                href={`tel:${item.mobile}`} 
+                className="text-foreground/70 hover:text-foreground transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {item.mobile}
+              </a>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
