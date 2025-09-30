@@ -60,7 +60,7 @@ export function ContactDetailsDialog({
         <div className="w-full overflow-y-auto overflow-x-hidden flex-1">
           {/* Map Header */}
           {itemType === 'company' && (selectedItem.address || selectedItem.city) && (
-            <div className="relative h-48 sm:h-64 mb-0">
+            <div className="relative h-64 sm:h-80 mb-0">
               <GoogleMap
                 address={selectedItem.address}
                 postal_code={selectedItem.postal_code}
