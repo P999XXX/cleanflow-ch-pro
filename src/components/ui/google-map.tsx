@@ -19,6 +19,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   className = "w-full h-64 rounded-lg"
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
+  const mapInstanceRef = useRef<any>(null);
+  const lastLocationRef = useRef<any>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [apiKey, setApiKey] = useState<string | null>(null);
@@ -68,49 +71,69 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       return;
     }
 
+    const el = mapRef.current;
+
     const initMap = async () => {
       try {
         const loader = new Loader({
           apiKey: apiKey,
-          version: 'weekly'
+          version: 'weekly',
         });
 
         const google = await loader.load();
         const geocoder = new google.maps.Geocoder();
-        
-        // Geocode the address
-        geocoder.geocode({ address: fullAddress, componentRestrictions: { country: 'CH' } }, (results, status) => {
-          if (status === 'OK' && results && results[0]) {
-            const map = new google.maps.Map(mapRef.current!, {
-              zoom: 15,
-              center: results[0].geometry.location,
-              mapTypeControl: false,
-              streetViewControl: false,
-              fullscreenControl: false,
-              zoomControl: true,
-              styles: [
-                {
-                  featureType: 'poi',
-                  elementType: 'labels',
-                  stylers: [{ visibility: 'off' }]
-                }
-              ]
-            });
 
-            // Add classic Marker (no AdvancedMarkerElement to avoid mapId requirement)
-            new google.maps.Marker({
-              position: results[0].geometry.location,
-              map: map,
-              title: fullAddress
-            });
+        geocoder.geocode(
+          { address: fullAddress, componentRestrictions: { country: 'CH' } },
+          (results, status) => {
+            if (status === 'OK' && results && results[0]) {
+              const location = results[0].geometry.location;
+              lastLocationRef.current = location;
 
-            setIsLoading(false);
-          } else {
-            console.error('Geocoding error:', status, fullAddress);
-            setError('Adresse konnte nicht gefunden werden');
-            setIsLoading(false);
+              let map = mapInstanceRef.current as any;
+              if (!map) {
+                map = new google.maps.Map(el!, {
+                  zoom: 15,
+                  center: location,
+                  mapTypeControl: false,
+                  streetViewControl: false,
+                  fullscreenControl: false,
+                  zoomControl: true,
+                  styles: [
+                    {
+                      featureType: 'poi',
+                      elementType: 'labels',
+                      stylers: [{ visibility: 'off' }],
+                    },
+                  ],
+                });
+                mapInstanceRef.current = map;
+              } else {
+                map.setCenter(location);
+              }
+
+              // Marker (simple)
+              new google.maps.Marker({
+                position: location,
+                map,
+                title: fullAddress,
+              });
+
+              setIsLoading(false);
+
+              // Ensure proper layout after dialog becomes visible
+              setTimeout(() => {
+                // @ts-ignore - event is available on maps namespace
+                google.maps.event.trigger(map!, 'resize');
+                map!.setCenter(location);
+              }, 0);
+            } else {
+              console.error('Geocoding error:', status, fullAddress);
+              setError('Adresse konnte nicht gefunden werden');
+              setIsLoading(false);
+            }
           }
-        });
+        );
       } catch (err) {
         console.error('Google Maps loading error:', err);
         setError('Karte konnte nicht geladen werden');
@@ -118,8 +141,25 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       }
     };
 
-    initMap();
-  }, [fullAddress, apiKey]);
+    // Wait until the container is visible/measured
+    let ro: ResizeObserver | null = null;
+    if (el && (el.offsetWidth === 0 || el.offsetHeight === 0)) {
+      ro = new ResizeObserver((entries) => {
+        const cr = entries[0]?.contentRect;
+        if (cr && cr.width > 0 && cr.height > 0) {
+          ro?.disconnect();
+          initMap();
+        }
+      });
+      ro.observe(el);
+    } else {
+      initMap();
+    }
+
+    return () => {
+      ro?.disconnect();
+    };
+  }, [fullAddress, apiKey, error]);
 
   if (!fullAddress) {
     return (

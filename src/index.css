@@ -193,4 +193,12 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Dedicated horizontal scroll container for mobile (iOS/Android) */
+  .hscroll-x {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
+  }
 }
