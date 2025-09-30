@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, Building2, Plus, Search, Edit, Trash2, Phone, Smartphone, Mail, MapPin, Grid3X3, List, X, Contact, Building, MessageCircle, Globe, FileText, AlertTriangle, Star, Filter } from "lucide-react";
@@ -1073,25 +1073,27 @@ const Kontakte = () => {
                   {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
                     <div className="mt-6">
                      <Tabs defaultValue="kontakt" className="w-full">
-                       <TabsList className="grid grid-cols-4 lg:grid-cols-4">
-                         <TabsTrigger value="kontakt" className="flex items-center gap-1 px-2">
-                           <Contact className="h-4 w-4" />
-                           <span className="text-xs sm:text-sm">Kontakt</span>
-                         </TabsTrigger>
-                         <TabsTrigger value="objekte" className="flex items-center gap-1 px-2">
-                           <Building className="h-4 w-4" />
-                           <span className="text-xs sm:text-sm">Objekte</span>
-                         </TabsTrigger>
-                         <TabsTrigger value="reklamationen" className="flex items-center gap-1 px-2">
-                           <AlertTriangle className="h-4 w-4" />
-                           <span className="text-xs sm:text-sm">Reklamationen</span>
-                           <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
-                         </TabsTrigger>
-                         <TabsTrigger value="dokumente" className="flex items-center gap-1 px-2">
-                           <FileText className="h-4 w-4" />
-                           <span className="text-xs sm:text-sm">Dokumente</span>
-                         </TabsTrigger>
-                        </TabsList>
+                       <div className="overflow-x-auto">
+                         <TabsList className="inline-flex w-auto min-w-full">
+                           <TabsTrigger value="kontakt" className="flex items-center gap-2 px-4">
+                             <Contact className="h-4 w-4" />
+                             <span className="whitespace-nowrap">Kontakt</span>
+                           </TabsTrigger>
+                           <TabsTrigger value="objekte" className="flex items-center gap-2 px-4">
+                             <Building className="h-4 w-4" />
+                             <span className="whitespace-nowrap">Objekte</span>
+                           </TabsTrigger>
+                           <TabsTrigger value="reklamationen" className="flex items-center gap-2 px-4 relative">
+                             <AlertTriangle className="h-4 w-4" />
+                             <span className="whitespace-nowrap">Reklamationen</span>
+                             <Badge variant="destructive" className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center text-[10px] leading-none">2</Badge>
+                           </TabsTrigger>
+                           <TabsTrigger value="dokumente" className="flex items-center gap-2 px-4">
+                             <FileText className="h-4 w-4" />
+                             <span className="whitespace-nowrap">Dokumente</span>
+                           </TabsTrigger>
+                         </TabsList>
+                       </div>
 
                         <TabsContent value="kontakt" className="mt-4 px-6">
                           {/* Contact Content */}
@@ -1467,6 +1469,16 @@ const Kontakte = () => {
 
             </div>
           )}
+          
+          <DialogFooter className="mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setSelectedItem(null)}
+              className="w-full sm:w-auto sm:ml-auto bg-white shadow-sm"
+            >
+              Schließen
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
