@@ -1073,23 +1073,23 @@ const Kontakte = () => {
                   {itemType === 'company' && selectedItem.contact_type === 'Kunde' && (
                     <div className="mt-6">
                      <Tabs defaultValue="kontakt" className="w-full">
-                       <TabsList className="grid w-full grid-cols-4 bg-background">
-                         <TabsTrigger value="kontakt" className="flex items-center gap-2">
+                       <TabsList className="grid grid-cols-4 lg:grid-cols-4">
+                         <TabsTrigger value="kontakt" className="flex items-center gap-1 px-2">
                            <Contact className="h-4 w-4" />
-                           <span className="hidden sm:inline">Kontakt</span>
+                           <span className="text-xs sm:text-sm">Kontakt</span>
                          </TabsTrigger>
-                         <TabsTrigger value="objekte" className="flex items-center gap-2">
+                         <TabsTrigger value="objekte" className="flex items-center gap-1 px-2">
                            <Building className="h-4 w-4" />
-                           <span className="hidden sm:inline">Objekte</span>
+                           <span className="text-xs sm:text-sm">Objekte</span>
                          </TabsTrigger>
-                         <TabsTrigger value="reklamationen" className="flex items-center gap-2">
+                         <TabsTrigger value="reklamationen" className="flex items-center gap-1 px-2">
                            <AlertTriangle className="h-4 w-4" />
-                           <span className="hidden sm:inline">Reklamationen</span>
+                           <span className="text-xs sm:text-sm">Reklamationen</span>
                            <Badge variant="destructive" className="ml-1 px-1.5 py-0.5 text-xs">2</Badge>
                          </TabsTrigger>
-                         <TabsTrigger value="dokumente" className="flex items-center gap-2">
+                         <TabsTrigger value="dokumente" className="flex items-center gap-1 px-2">
                            <FileText className="h-4 w-4" />
-                           <span className="hidden sm:inline">Dokumente</span>
+                           <span className="text-xs sm:text-sm">Dokumente</span>
                          </TabsTrigger>
                         </TabsList>
 
@@ -1268,7 +1268,7 @@ const Kontakte = () => {
                 </div>
 
               {/* Non-customer content (no tabs) and person content */}
-              {(itemType === 'person' || (itemType === 'company' && selectedItem.contact_type !== 'kunde')) && (
+              {(itemType === 'person' || (itemType === 'company' && (selectedItem.contact_type || '').toLowerCase() !== 'kunde')) && (
                 <div className="p-6 space-y-6">
                   {/* Contact Information Cards */}
                   <div className="space-y-4">

@@ -67,14 +67,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         const loader = new Loader({
           apiKey: apiKey,
           version: 'weekly',
-          libraries: ['places']
+          libraries: ['places', 'marker']
         });
 
         const google = await loader.load();
         const geocoder = new google.maps.Geocoder();
         
         // Geocode the address
-        geocoder.geocode({ address: fullAddress }, (results, status) => {
+        geocoder.geocode({ address: fullAddress, componentRestrictions: { country: 'CH' } }, (results, status) => {
           if (status === 'OK' && results && results[0]) {
             const map = new google.maps.Map(mapRef.current!, {
               zoom: 15,
@@ -92,20 +92,21 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               ]
             });
 
-            // Add marker with theme colors
-            new google.maps.Marker({
-              position: results[0].geometry.location,
-              map: map,
-              title: fullAddress,
-              icon: {
-                path: google.maps.SymbolPath.CIRCLE,
-                scale: 8,
-                fillColor: '#3b82f6',
-                fillOpacity: 1,
-                strokeColor: '#1e40af',
-                strokeWeight: 2
-              }
-            });
+            // Add marker using AdvancedMarkerElement
+            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
+              new google.maps.marker.AdvancedMarkerElement({
+                position: results[0].geometry.location,
+                map,
+                title: fullAddress
+              });
+            } else {
+              // Fallback to classic Marker if AdvancedMarker not available
+              new google.maps.Marker({
+                position: results[0].geometry.location,
+                map: map,
+                title: fullAddress
+              });
+            }
 
             setIsLoading(false);
           } else {
