@@ -30,8 +30,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     .filter(Boolean)
     .join(', ');
 
-  // Fetch API key from Edge Function
+  // Fetch API key from Edge Function (wait for auth session)
   useEffect(() => {
+    let unsub: { unsubscribe: () => void } | null = null;
+    let fetched = false;
+
     const fetchApiKey = async () => {
       try {
         const { data, error } = await supabase.functions.invoke('get-maps-config');
@@ -44,14 +47,35 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           setApiKey(data.apiKey);
         } else {
           setError('Google Maps API-Schlüssel nicht konfiguriert');
+          setIsLoading(false);
         }
       } catch (err) {
         console.error('Error fetching Maps API key:', err);
         setError('Google Maps API-Schlüssel konnte nicht geladen werden');
+        setIsLoading(false);
       }
     };
 
-    fetchApiKey();
+    const init = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        fetched = true;
+        fetchApiKey();
+      }
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (!fetched && session) {
+          fetched = true;
+          fetchApiKey();
+        }
+      });
+      unsub = subscription;
+    };
+
+    init();
+
+    return () => {
+      unsub?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

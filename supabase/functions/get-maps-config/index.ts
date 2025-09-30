@@ -16,6 +16,7 @@ serve(async (req) => {
     // Verify user is authenticated
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
+      console.log('get-maps-config: Missing Authorization header');
       return new Response(
         JSON.stringify({ error: 'No authorization header' }),
         { 
@@ -39,6 +40,7 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
     if (authError || !user) {
+      console.log('get-maps-config: Unauthorized user', { authError: authError?.message });
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { 
@@ -52,6 +54,7 @@ serve(async (req) => {
     const mapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
     
     if (!mapsApiKey) {
+      console.log('get-maps-config: GOOGLE_MAPS_API_KEY not configured');
       return new Response(
         JSON.stringify({ error: 'Google Maps API key not configured' }),
         { 
@@ -60,6 +63,8 @@ serve(async (req) => {
         }
       );
     }
+
+    console.log('get-maps-config: Returning API key for user', user.id);
 
     // Return the API key securely
     return new Response(
