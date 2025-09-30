@@ -322,27 +322,25 @@ export function ContactDetailsDialog({
                     </TabsList>
                   </div>
 
-                  <div className="px-6">
-                    <TabsContent value="kontakt" className="mt-4">
-                      <ContactInformationSection 
-                        selectedItem={selectedItem} 
-                        itemType={itemType}
-                        onNavigateToPerson={onNavigateToPerson}
-                      />
-                    </TabsContent>
+                  <TabsContent value="kontakt" className="mt-4">
+                    <ContactInformationSection 
+                      selectedItem={selectedItem} 
+                      itemType={itemType}
+                      onNavigateToPerson={onNavigateToPerson}
+                    />
+                  </TabsContent>
 
-                    <TabsContent value="objekte" className="mt-4">
-                      <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
-                    </TabsContent>
+                  <TabsContent value="objekte" className="mt-4">
+                    <EmptyState icon={Building} text="Objekte werden hier angezeigt" />
+                  </TabsContent>
 
-                    <TabsContent value="reklamationen" className="mt-4">
-                      <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
-                    </TabsContent>
+                  <TabsContent value="reklamationen" className="mt-4">
+                    <EmptyState icon={AlertTriangle} text="Reklamationen werden hier angezeigt" />
+                  </TabsContent>
 
-                    <TabsContent value="dokumente" className="mt-4">
-                      <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
-                    </TabsContent>
-                  </div>
+                  <TabsContent value="dokumente" className="mt-4">
+                    <EmptyState icon={FileText} text="Dokumente werden hier angezeigt" />
+                  </TabsContent>
                 </Tabs>
               </div>
             )}
@@ -350,14 +348,12 @@ export function ContactDetailsDialog({
 
           {/* Non-customer and Person content */}
           {!isCustomer && (
-            <div className="px-6 pb-6 space-y-6">
-              <ContactInformationSection 
-                selectedItem={selectedItem} 
-                itemType={itemType}
-                onNavigateToPerson={onNavigateToPerson}
-                onNavigateToCompany={onNavigateToCompany}
-              />
-            </div>
+            <ContactInformationSection 
+              selectedItem={selectedItem} 
+              itemType={itemType}
+              onNavigateToPerson={onNavigateToPerson}
+              onNavigateToCompany={onNavigateToCompany}
+            />
           )}
 
         </div>
@@ -374,7 +370,7 @@ function ContactInformationSection({
   onNavigateToCompany 
 }: any) {
   return (
-    <div className="space-y-6 mt-2">
+    <div className="px-6 pb-6 space-y-6 mt-2">{/* Add padding for consistent spacing */}
       {/* Contact Information Cards */}
       <div className="space-y-4">
         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
@@ -384,40 +380,49 @@ function ContactInformationSection({
           {selectedItem.email && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`mailto:${selectedItem.email}`, '_self')}
             >
-              <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">E-Mail</p>
-                <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">E-Mail</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.email}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.phone && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`tel:${selectedItem.phone}`, '_self')}
             >
-              <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">Telefon</p>
-                <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">Telefon</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.phone}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.mobile && (
             <Button
               variant="outline"
-              className="h-auto p-4 flex items-center gap-3 justify-start hover:bg-muted/50"
+              className="h-auto p-4 flex items-center gap-3 justify-between hover:bg-muted/50"
               onClick={() => window.open(`tel:${selectedItem.mobile}`, '_self')}
             >
-              <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-              <div className="text-left min-w-0">
-                <p className="text-xs text-muted-foreground">Mobile Nummer</p>
-                <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+              <div className="flex items-center gap-3 min-w-0">
+                <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                <div className="text-left min-w-0">
+                  <p className="text-xs text-muted-foreground">Mobile Nummer</p>
+                  <p className="text-sm font-medium truncate">{selectedItem.mobile}</p>
+                </div>
               </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             </Button>
           )}
           {selectedItem.website && (
@@ -524,13 +529,13 @@ function ContactInformationSection({
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {selectedItem.vat_number && (
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-background rounded-lg border border-border">
                 <p className="text-xs text-muted-foreground">USt-IdNr.</p>
                 <p className="text-sm font-medium">{selectedItem.vat_number}</p>
               </div>
             )}
             {selectedItem.tax_number && (
-              <div className="p-4 bg-muted/50 rounded-lg">
+              <div className="p-4 bg-background rounded-lg border border-border">
                 <p className="text-xs text-muted-foreground">Steuernummer</p>
                 <p className="text-sm font-medium">{selectedItem.tax_number}</p>
               </div>
@@ -567,7 +572,7 @@ function ContactInformationSection({
           <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
             Notizen
           </h4>
-          <div className="p-4 bg-muted/50 rounded-lg">
+          <div className="p-4 bg-background rounded-lg border border-border">
             <p className="text-sm">{selectedItem.notes}</p>
           </div>
         </div>
