@@ -224,6 +224,27 @@ export function ContactsFilters({
               </div>
             </div>
 
+            {/* Filter Badges - Mobile/Tablet only, directly after search */}
+            {selectedFilters.length > 0 && (
+              <div className="lg:hidden flex flex-wrap gap-2">
+                {selectedFilters.map((filter) => (
+                  <Badge
+                    key={filter}
+                    variant="secondary"
+                    className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
+                  >
+                    {filterOptions.find(o => o.value === filter)?.label}
+                    <button
+                      onClick={() => handleFilterToggle(filter)}
+                      className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+            )}
+
             {/* Add Button - Mobile/Tablet only */}
             <div className="lg:hidden">
               <Button
@@ -360,27 +381,6 @@ export function ContactsFilters({
           {/* Filter Badges - Desktop only, on new line below search/tabs */}
           {selectedFilters.length > 0 && (
             <div className="hidden lg:flex flex-wrap gap-2">
-              {selectedFilters.map((filter) => (
-                <Badge
-                  key={filter}
-                  variant="secondary"
-                  className="bg-primary/10 text-primary border-primary/20 pl-2 pr-1 py-1 flex items-center gap-1"
-                >
-                  {filterOptions.find(o => o.value === filter)?.label}
-                  <button
-                    onClick={() => handleFilterToggle(filter)}
-                    className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
-                  >
-                    <X className="h-3 w-3" />
-                  </button>
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          {/* Filter Badges - Mobile/Tablet */}
-          {selectedFilters.length > 0 && (
-            <div className="lg:hidden flex flex-wrap gap-2">
               {selectedFilters.map((filter) => (
                 <Badge
                   key={filter}
