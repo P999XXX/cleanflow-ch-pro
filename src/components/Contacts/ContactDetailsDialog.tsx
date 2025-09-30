@@ -100,10 +100,40 @@ export function ContactDetailsDialog({
           )}
 
           {/* Title and Badges Section */}
-          <div className={cn(designTokens.dialogs.header, "px-6")}>
+          <div className={cn(designTokens.dialogs.header, "px-6 relative")}>
+            {/* Action Buttons for Persons (absolute positioning) */}
+            {itemType === 'person' && (
+              <div className="absolute top-4 right-6 flex items-center gap-2 z-20">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-7 w-7"
+                  onClick={onEdit}
+                >
+                  <Edit className="h-3 w-3" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-7 w-7"
+                  onClick={onDelete}
+                >
+                  <Trash2 className="h-3 w-3 text-destructive" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full h-7 w-7"
+                  onClick={navigationStack.length > 0 ? onGoBack : onClose}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               {/* Title */}
-              <div className="flex items-center gap-3 flex-1 min-w-0">
+              <div className="flex items-center gap-3 flex-1 min-w-0 pr-32">
                 {itemType === 'company' ? (
                   <>
                     <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
@@ -128,35 +158,7 @@ export function ContactDetailsDialog({
                 )}
               </div>
 
-              {/* Action Buttons for non-map views (persons) */}
-              {itemType === 'person' && (
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full h-7 w-7"
-                    onClick={onEdit}
-                  >
-                    <Edit className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full h-7 w-7"
-                    onClick={onDelete}
-                  >
-                    <Trash2 className="h-3 w-3 text-destructive" />
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full h-7 w-7"
-                    onClick={navigationStack.length > 0 ? onGoBack : onClose}
-                  >
-                    <X className="h-3 w-3" />
-                  </Button>
-                </div>
-              )}
+              {/* Action Buttons for non-map views (persons) - REMOVED, now absolute */}
 
               {/* Badges */}
               <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
@@ -331,7 +333,7 @@ function ContactInformationSection({
   onNavigateToCompany 
 }: any) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-2">
       {/* Contact Information Cards */}
       <div className="space-y-4">
         <h4 className="font-medium text-sm uppercase tracking-wide text-muted-foreground">
