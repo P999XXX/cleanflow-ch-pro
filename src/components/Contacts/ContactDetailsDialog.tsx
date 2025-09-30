@@ -104,8 +104,8 @@ export function ContactDetailsDialog({
             {itemType === 'person' ? (
               /* Person Layout: Buttons absolutely positioned, then name, then badge */
               <>
-                {/* Action Buttons - Sticky positioned */}
-                <div className="sticky top-0 right-2 flex items-center gap-2 z-20 justify-end pt-2 pr-2">
+                {/* Action Buttons - Absolutely positioned */}
+                <div className="absolute top-2 right-2 flex items-center gap-2 z-20">
                   <Button
                     variant="secondary"
                     size="icon"
