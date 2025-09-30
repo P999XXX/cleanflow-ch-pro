@@ -920,7 +920,7 @@ const Kontakte = () => {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-y-auto">
+        <DialogContent className="max-w-4xl h-[90vh] p-0 gap-0 overflow-y-auto overflow-x-hidden">
           {/* A11y title/description for Dialog */}
           <DialogHeader className="sr-only">
             <DialogTitle>Details</DialogTitle>
@@ -1082,8 +1082,8 @@ const Kontakte = () => {
                 <div className="border-b">
                   <Tabs defaultValue="kontakt" className="w-full">
                     {/* Horizontal scrollable tab list */}
-                    <div className="overflow-x-auto scrollbar-hide px-6">
-                      <TabsList className="inline-flex w-auto min-w-full h-12 bg-transparent p-0 rounded-none border-b">
+                    <div className="overflow-x-auto scrollbar-hide px-6 flex justify-end">
+                      <TabsList className="inline-flex w-max h-12 bg-transparent p-0 rounded-none border-b">
                         <TabsTrigger value="kontakt" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
                           <Contact className="h-4 w-4" />
                           <span className="whitespace-nowrap">Kontakt</span>
@@ -1109,7 +1109,7 @@ const Kontakte = () => {
                     </div>
 
                     {/* Tab Content */}
-                    <TabsContent value="kontakt" className="mt-0 px-6 py-6">{/* Removed mt-4 */}
+                    <TabsContent value="kontakt" className="mt-0 px-6 py-6 max-w-full overflow-x-hidden">{/* Removed mt-4 */}
                           {/* Contact Content */}
                           <div className="space-y-6">
                             {/* Contact Information Cards */}
@@ -1258,21 +1258,21 @@ const Kontakte = () => {
                         </div>
                       </TabsContent>
 
-                      <TabsContent value="objekte" className="mt-0 px-6 py-6">
+                      <TabsContent value="objekte" className="mt-0 px-6 py-6 max-w-full overflow-x-hidden">
                         <div className="text-center py-8 text-muted-foreground">
                           <Building className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                           <p>Objekte werden hier angezeigt</p>
                         </div>
                       </TabsContent>
 
-                      <TabsContent value="reklamationen" className="mt-0 px-6 py-6">
+                      <TabsContent value="reklamationen" className="mt-0 px-6 py-6 max-w-full overflow-x-hidden">
                         <div className="text-center py-8 text-muted-foreground">
                           <AlertTriangle className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                           <p>Reklamationen werden hier angezeigt</p>
                         </div>
                       </TabsContent>
 
-                      <TabsContent value="dokumente" className="mt-0 px-6 py-6">
+                      <TabsContent value="dokumente" className="mt-0 px-6 py-6 max-w-full overflow-x-hidden">
                         <div className="text-center py-8 text-muted-foreground">
                           <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
                           <p>Dokumente werden hier angezeigt</p>
