@@ -89,7 +89,7 @@ export function AppHeader() {
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-background border shadow-lg z-50" align="end" forceMount>
+          <DropdownMenuContent className="w-56 bg-muted/1 border shadow-lg z-50" align="end" forceMount>
             <div className="flex items-center justify-start gap-2 p-2">
               <div className="flex flex-col space-y-1 leading-none">
                 <p className="font-medium">{getDisplayName()}</p>
