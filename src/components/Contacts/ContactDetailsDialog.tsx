@@ -272,14 +272,13 @@ export function ContactDetailsDialog({
                 <Button
                   variant="outline"
                   size="icon"
-                  className="rounded-full h-10 w-10 relative"
+                  className="rounded-full h-10 w-10"
                   onClick={() => {
                     const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
                     window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
                   }}
                 >
                   <MapPin className="h-4 w-4" />
-                  <ChevronRight className="h-2.5 w-2.5 absolute bottom-0.5 right-0.5 text-muted-foreground" />
                 </Button>
               )}
             </div>

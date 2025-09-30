@@ -44,69 +44,70 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
       className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col"
       onClick={() => onCardClick(item, type)}
     >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-lg truncate">
-              {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
-            </h3>
-            {type === 'company' ? (
-              <div className="space-y-1">
-                {item.company_type && (
-                  <p className="text-sm font-normal text-muted-foreground">{item.company_type}</p>
-                )}
-                {(item.city || item.postal_code) && (
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <MapPin className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">
-                      {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
-                    </span>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="space-y-1 mt-1">
-                {item.position && (
-                  <p className="text-sm text-muted-foreground truncate">{item.position}</p>
-                )}
-                {item.customer_companies?.name && (
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Building2 className="h-3 w-3 flex-shrink-0" />
-                    <span className="truncate">{item.customer_companies.name}</span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-          <div className="flex items-center gap-2 flex-shrink-0 ml-2 flex-wrap">
-            {type === 'company' ? (
-              <>
-                {getStatusBadge(item.status)}
-                {item.industry_category && (
-                  <Badge 
-                    variant="outline" 
-                    className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium"
-                  >
-                    {item.industry_category}
-                  </Badge>
-                )}
-                {item.contact_type && (
-                  <Badge 
-                    variant="outline" 
-                    className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium"
-                  >
-                    {item.contact_type}
-                  </Badge>
-                )}
-              </>
-            ) : (
-              item.is_primary_contact && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium">
-                  Primär
+      <CardHeader className="pb-3 relative">
+        {/* Badges positioned at top-right */}
+        <div className="absolute top-3 right-3 flex items-start gap-1.5 flex-wrap justify-end max-w-[60%]">
+          {type === 'company' ? (
+            <>
+              {getStatusBadge(item.status)}
+              {item.industry_category && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-xs"
+                >
+                  {item.industry_category}
                 </Badge>
-              )
-            )}
-          </div>
+              )}
+              {item.contact_type && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium text-xs"
+                >
+                  {item.contact_type}
+                </Badge>
+              )}
+            </>
+          ) : (
+            item.is_primary_contact && (
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-xs">
+                Primär
+              </Badge>
+            )
+          )}
+        </div>
+
+        {/* Title and info below badges */}
+        <div className="pr-2">
+          <h3 className="font-semibold text-lg truncate pr-20">
+            {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
+          </h3>
+          {type === 'company' ? (
+            <div className="space-y-1 mt-1">
+              {item.company_type && (
+                <p className="text-sm font-normal text-muted-foreground">{item.company_type}</p>
+              )}
+              {(item.city || item.postal_code) && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">
+                    {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-1 mt-1">
+              {item.position && (
+                <p className="text-sm text-muted-foreground truncate">{item.position}</p>
+              )}
+              {item.customer_companies?.name && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Building2 className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">{item.customer_companies.name}</span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </CardHeader>
       <CardContent className="pt-0 flex-1 flex flex-col justify-end">
