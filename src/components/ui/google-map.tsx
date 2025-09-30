@@ -66,8 +66,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       try {
         const loader = new Loader({
           apiKey: apiKey,
-          version: 'weekly',
-          libraries: ['places', 'marker']
+          version: 'weekly'
         });
 
         const google = await loader.load();
@@ -92,21 +91,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
               ]
             });
 
-            // Add marker using AdvancedMarkerElement
-            if (google.maps.marker && google.maps.marker.AdvancedMarkerElement) {
-              new google.maps.marker.AdvancedMarkerElement({
-                position: results[0].geometry.location,
-                map,
-                title: fullAddress
-              });
-            } else {
-              // Fallback to classic Marker if AdvancedMarker not available
-              new google.maps.Marker({
-                position: results[0].geometry.location,
-                map: map,
-                title: fullAddress
-              });
-            }
+            // Add classic Marker (no AdvancedMarkerElement to avoid mapId requirement)
+            new google.maps.Marker({
+              position: results[0].geometry.location,
+              map: map,
+              title: fullAddress
+            });
 
             setIsLoading(false);
           } else {

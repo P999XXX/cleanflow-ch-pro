@@ -921,6 +921,11 @@ const Kontakte = () => {
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] p-0 gap-0 flex flex-col">
+          {/* A11y title/description for Dialog */}
+          <DialogHeader className="sr-only">
+            <DialogTitle>Details</DialogTitle>
+            <DialogDescription>Unternehmens- und Kontaktdetails</DialogDescription>
+          </DialogHeader>
           {selectedItem && (
             <div className="flex flex-col h-full overflow-hidden">
               {/* Map Header - Fixed at top */}
@@ -1138,16 +1143,16 @@ const Kontakte = () => {
                   <Tabs defaultValue="kontakt" className="w-full">
                     {/* Horizontal scrollable tab list */}
                     <div className="overflow-x-auto scrollbar-hide px-6">
-                      <TabsList className="inline-flex w-auto min-w-full h-12">
-                        <TabsTrigger value="kontakt" className="flex items-center gap-2 px-4">
+                      <TabsList className="inline-flex w-auto min-w-full h-12 bg-transparent p-0 rounded-none border-b">
+                        <TabsTrigger value="kontakt" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
                           <Contact className="h-4 w-4" />
                           <span className="whitespace-nowrap">Kontakt</span>
                         </TabsTrigger>
-                        <TabsTrigger value="objekte" className="flex items-center gap-2 px-4">
+                        <TabsTrigger value="objekte" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
                           <Building className="h-4 w-4" />
                           <span className="whitespace-nowrap">Objekte</span>
                         </TabsTrigger>
-                        <TabsTrigger value="reklamationen" className="flex items-center gap-2 px-4 relative">
+                        <TabsTrigger value="reklamationen" className="shrink-0 flex items-center gap-2 px-4 relative -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
                           <AlertTriangle className="h-4 w-4" />
                           <span className="whitespace-nowrap">Reklamationen</span>
                           <sup>
@@ -1156,7 +1161,7 @@ const Kontakte = () => {
                             </Badge>
                           </sup>
                         </TabsTrigger>
-                        <TabsTrigger value="dokumente" className="flex items-center gap-2 px-4">
+                        <TabsTrigger value="dokumente" className="shrink-0 flex items-center gap-2 px-4 -mb-[2px] border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=inactive]:text-muted-foreground">
                           <FileText className="h-4 w-4" />
                           <span className="whitespace-nowrap">Dokumente</span>
                         </TabsTrigger>
