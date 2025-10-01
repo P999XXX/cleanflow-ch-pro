@@ -17,7 +17,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons' | 'employees' | 'contact-persons'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons'>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -114,7 +114,7 @@ const Kontakte = () => {
 
   const filteredPersons = useMemo(() => {
     return filteredAllContacts.filter(c => 
-      c.contact_type === 'Privatkunde' || c.contact_type === 'Person'
+      c.contact_type === 'Privatkunde' || c.contact_type === 'Person' || c.contact_type === 'Mitarbeiter'
     );
   }, [filteredAllContacts]);
 
@@ -399,11 +399,10 @@ const Kontakte = () => {
         contactTypeFilter={contactTypeFilter}
         onContactTypeChange={setContactTypeFilter}
         activeTab={activeTab}
-        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees' | 'contact-persons')}
+        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons')}
         totalCount={totalCount}
         companiesCount={filteredCompanies.length}
         personsCount={filteredPersons.length}
-        employeesCount={filteredEmployees.length}
         businessCustomersCount={filteredBusinessCustomers.length}
         privateCustomersCount={filteredPrivateCustomers.length}
         viewMode={viewMode}
@@ -443,29 +442,6 @@ const Kontakte = () => {
             {activeTab === 'persons' && (
               <ContactsCardsView
                 companies={[]}
-                persons={filteredPrivateCustomers.filter(c => c.type === 'person')}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
-            {activeTab === 'employees' && (
-              <ContactsCardsView
-                companies={[]}
-                persons={[]}
-                employees={filteredEmployees.filter(c => c.type === 'person')}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
-            {activeTab === 'contact-persons' && (
-              <ContactsCardsView
-                companies={[]}
                 persons={filteredPersons}
                 showSections={true}
                 isSearching={isSearching}
@@ -503,31 +479,6 @@ const Kontakte = () => {
               />
             )}
             {activeTab === 'persons' && (
-              <ContactsTableView
-                companies={[]}
-                persons={filteredPrivateCustomers.filter(c => c.type === 'person')}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
-            {activeTab === 'employees' && (
-              <ContactsTableView
-                companies={[]}
-                persons={[]}
-                employees={filteredEmployees.filter(c => c.type === 'person')}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
-            {activeTab === 'contact-persons' && (
               <ContactsTableView
                 companies={[]}
                 persons={filteredPersons}

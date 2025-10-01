@@ -18,7 +18,6 @@ interface ContactsFiltersProps {
   totalCount: number;
   companiesCount: number;
   personsCount: number;
-  employeesCount: number;
   businessCustomersCount?: number;
   privateCustomersCount?: number;
   viewMode: 'table' | 'cards';
@@ -39,7 +38,6 @@ export function ContactsFilters({
   totalCount,
   companiesCount,
   personsCount,
-  employeesCount,
   businessCustomersCount = 0,
   privateCustomersCount = 0,
   viewMode,
@@ -276,7 +274,7 @@ export function ContactsFilters({
             {/* Tabs and Actions - Desktop: on same line */}
             <div className="hidden lg:flex lg:items-start gap-6 flex-1">
               <Tabs value={activeTab} onValueChange={onTabChange} className="w-auto">
-                <TabsList className="grid grid-cols-4 w-auto">
+                <TabsList className="grid grid-cols-3 w-auto">
                   <TabsTrigger value="all" className="flex items-center gap-1 px-2">
                     <Contact className="h-4 w-4" />
                     <span className="text-xs sm:text-sm">Alle</span>
@@ -314,18 +312,6 @@ export function ContactsFilters({
                       }`}
                     >
                       {personsCount}
-                    </Badge>
-                  </TabsTrigger>
-                  <TabsTrigger value="employees" className="flex items-center gap-1 px-2">
-                    <UserCheck className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm">Mitarbeiter</span>
-                    <Badge 
-                      variant="secondary" 
-                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                        activeTab === 'employees' ? 'font-bold' : 'font-medium'
-                      }`}
-                    >
-                      {employeesCount}
                     </Badge>
                   </TabsTrigger>
                 </TabsList>
@@ -397,18 +383,6 @@ export function ContactsFilters({
                         }`}
                       >
                         {personsCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="employees" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <UserCheck className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Mitarbeiter</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'employees' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {employeesCount}
                       </Badge>
                     </TabsTrigger>
                   </TabsList>

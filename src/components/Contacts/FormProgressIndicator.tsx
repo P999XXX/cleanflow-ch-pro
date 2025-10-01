@@ -14,8 +14,8 @@ export const FormProgressIndicator = ({
   stepLabels 
 }: FormProgressIndicatorProps) => {
   return (
-    <div className="w-full py-6 px-2">
-      <div className="flex items-center justify-between w-full">
+    <div className="w-full py-4 px-2">
+      <div className="flex items-center w-full">
         {stepLabels.map((label, index) => {
           const stepNumber = index + 1;
           const isCompleted = stepNumber < currentStep;
@@ -23,36 +23,39 @@ export const FormProgressIndicator = ({
 
           return (
             <React.Fragment key={stepNumber}>
-              <div className="flex flex-col items-center flex-shrink-0">
+              {/* Step Circle and Label */}
+              <div className="flex flex-col items-center">
                 <div
                   className={cn(
-                    "w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300",
-                    isCompleted && "bg-primary text-primary-foreground shadow-lg",
-                    isCurrent && "bg-primary text-primary-foreground ring-4 ring-primary/30 shadow-xl scale-110",
-                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground"
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200",
+                    isCompleted && "bg-primary text-primary-foreground",
+                    isCurrent && "bg-primary text-primary-foreground",
+                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground border-2 border-muted-foreground/20"
                   )}
                 >
                   {isCompleted ? (
-                    <Check className="h-6 w-6" />
+                    <Check className="h-4 w-4" />
                   ) : (
                     stepNumber
                   )}
                 </div>
                 <span
                   className={cn(
-                    "mt-3 text-xs sm:text-sm font-medium text-center whitespace-nowrap",
-                    isCurrent ? "text-foreground font-bold" : "text-muted-foreground"
+                    "mt-2 text-xs font-medium text-center max-w-[80px]",
+                    isCurrent ? "text-foreground" : "text-muted-foreground"
                   )}
                 >
                   {label}
                 </span>
               </div>
+
+              {/* Connector Line */}
               {stepNumber < totalSteps && (
-                <div className="flex-1 px-3 flex items-center">
+                <div className="flex-1 px-2 pb-6">
                   <div
                     className={cn(
-                      "w-full h-1 rounded-full transition-all duration-300",
-                      stepNumber < currentStep ? "bg-primary shadow-sm" : "bg-muted"
+                      "w-full h-0.5 transition-all duration-200",
+                      stepNumber < currentStep ? "bg-primary" : "bg-muted"
                     )}
                   />
                 </div>
