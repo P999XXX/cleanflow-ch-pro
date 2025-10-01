@@ -92,12 +92,17 @@ export function ContactsFilters({
 
   const handleFilterToggle = (value: string) => {
     if (value === 'all') {
-      // Select all available filter options (excluding 'all' itself)
-      const allFilterValues = filterOptions
-        .filter(option => option.value !== 'all')
-        .map(option => option.value);
-      setSelectedFilters(allFilterValues);
-      onContactTypeChange(allFilterValues.join(","));
+      // If all are already selected, deselect all; otherwise select all
+      if (allFiltersSelected) {
+        setSelectedFilters([]);
+        onContactTypeChange("all");
+      } else {
+        const allFilterValues = filterOptions
+          .filter(option => option.value !== 'all')
+          .map(option => option.value);
+        setSelectedFilters(allFilterValues);
+        onContactTypeChange(allFilterValues.join(","));
+      }
       return;
     }
     
