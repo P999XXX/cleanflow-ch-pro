@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
@@ -55,10 +55,8 @@ export const ContactForm = ({
     status: 'aktiv',
     company_type: '',
     industry_category: '',
-    contact_type: 'Geschäftskunde',
+    contact_type: 'Unternehmen',
   });
-
-  const [isBusinessCustomer, setIsBusinessCustomer] = useState(true);
 
   // Reset stage when dialog opens/closes
   useEffect(() => {
@@ -87,9 +85,8 @@ export const ContactForm = ({
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || 'Geschäftskunde',
+        contact_type: company.contact_type || 'Unternehmen',
       });
-      setIsBusinessCustomer(company.contact_type === 'Geschäftskunde' || !company.contact_type);
     } else {
       setCompanyData({
         name: '',
@@ -105,9 +102,8 @@ export const ContactForm = ({
         status: 'aktiv',
         company_type: '',
         industry_category: '',
-        contact_type: 'Geschäftskunde',
+        contact_type: 'Unternehmen',
       });
-      setIsBusinessCustomer(true);
     }
   }, [company]);
 
@@ -191,11 +187,7 @@ export const ContactForm = ({
     
     const isValid = validateCompanyForm();
     if (isValid) {
-      const dataToSubmit = {
-        ...companyData,
-        contact_type: 'Geschäftskunde' // Always set to Geschäftskunde for companies
-      };
-      onSubmitCompany(dataToSubmit);
+      onSubmitCompany(companyData);
     } else {
       toast({
         title: 'Validierungsfehler',
@@ -288,19 +280,23 @@ export const ContactForm = ({
 
         {stage === 'form' && selectedType === 'company' && (
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Kundentyp Checkbox */}
-            <div className="flex items-center space-x-2 p-4 bg-muted/30 rounded-lg border border-border/50">
-              <Checkbox
-                id="business-customer"
-                checked={isBusinessCustomer}
-                onCheckedChange={(checked) => setIsBusinessCustomer(checked as boolean)}
-              />
-              <label
-                htmlFor="business-customer"
-                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+            {/* Typ Radio Buttons */}
+            <div className="p-4 bg-muted/50 rounded-lg">
+              <Label className="text-base font-semibold mb-3 block">Typ</Label>
+              <RadioGroup 
+                value={companyData.contact_type} 
+                onValueChange={(value) => handleInputChange('contact_type', value)}
+                className="flex gap-6"
               >
-                Geschäftskunde
-              </label>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Unternehmen" id="unternehmen" />
+                  <Label htmlFor="unternehmen" className="font-normal cursor-pointer">Unternehmen</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Geschäftskunde" id="geschaeftskunde" />
+                  <Label htmlFor="geschaeftskunde" className="font-normal cursor-pointer">Geschäftskunde</Label>
+                </div>
+              </RadioGroup>
             </div>
 
           <div className="grid grid-cols-1 gap-4">
