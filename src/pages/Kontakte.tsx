@@ -1,19 +1,18 @@
-import { useState, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
+import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
+import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
-import { ContactsContent } from '@/components/Contacts/ContactsContent';
+import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
+import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
-import { DeleteContactDialog } from '@/components/Contacts/DeleteContactDialog';
-import { useContactsData } from '@/hooks/useContactsData';
-import { useContactsActions } from '@/hooks/useContactsActions';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { getCompanyTypeAbbreviation, getStatusBadge } from '@/lib/contactUtils';
 
-/**
- * Main Kontakte page - refactored for better maintainability
- * Coordinates between filters, content views, and dialogs
- */
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
@@ -31,70 +30,397 @@ const Kontakte = () => {
   const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
 
   const isMobile = useIsMobile();
-  
-  // Fetch and filter all contact data using custom hook
-  const { 
-    companies, 
-    persons, 
-    employees, 
-    totalCount, 
-    availableContactTypes 
-  } = useContactsData(searchTerm, contactTypeFilter);
+  const { data: companies, isLoading: companiesLoading } = useCompanies();
+  const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
+  const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
+  const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
+  const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
 
-  // Get all action handlers from custom hook
-  const {
-    handleCardClick,
-    handleNavigateToCompany,
-    handleNavigateToPerson,
-    handleGoBack,
-    handleEditItem,
-    handleFormClose,
-    handleDeleteItem,
-    handleAddClick,
-    handleCompanySubmit,
-    handlePersonSubmit,
-    confirmDelete,
-  } = useContactsActions({
-    companies,
-    contactPersons: persons,
-    navigationStack,
-    setNavigationStack,
-    setSelectedItem,
-    setItemType,
-    setDetailsOpen,
-    setIsFormOpen,
-    setDeleteDialogOpen,
-    setSelectedCompany,
-    setSelectedPerson,
-    setItemToDelete,
-    selectedItem,
-    itemType,
-  });
-
-  // Handle URL parameters for filtering
+  // Handle URL parameters for filtering (e.g., ?type=kunde)
   useEffect(() => {
     const typeParam = searchParams.get('type');
     if (typeParam) {
+      // Capitalize first letter to match database values
       const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
       setContactTypeFilter(formattedType);
     }
   }, [searchParams]);
 
   // Set default view mode based on device type
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isMobile && viewMode === 'cards') {
       setViewMode('table');
     }
-  }, [isMobile, viewMode]);
+  }, [isMobile]);
 
+  // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
+
+  // Extract unique contact types from companies
+  const availableContactTypes = useMemo(() => {
+    if (!companies) return [];
+    const types = new Set<string>();
+    companies.forEach(company => {
+      if (company.contact_type) {
+        types.add(company.contact_type);
+      }
+    });
+    return Array.from(types).sort();
+  }, [companies]);
+
+  // Optimized filtering with useMemo for performance
+  const filteredCompanies = useMemo(() => {
+    if (!companies) return [];
+    
+    let filtered = companies;
+    
+    // Filter by contact type (supports multiple types comma-separated)
+    if (contactTypeFilter !== 'all') {
+      const selectedTypes = contactTypeFilter.split(',');
+      filtered = filtered.filter(company => 
+        selectedTypes.includes(company.contact_type || '')
+      );
+    }
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(company =>
+        company.name.toLowerCase().includes(term) ||
+        company.email?.toLowerCase().includes(term) ||
+        company.city?.toLowerCase().includes(term) ||
+        company.address?.toLowerCase().includes(term) ||
+        company.phone?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [companies, searchTerm, contactTypeFilter]);
+
+  const filteredPersons = useMemo(() => {
+    if (!contactPersons) return [];
+    
+    let filtered = contactPersons.filter(person => !person.is_employee);
+    
+    // Filter by contact type (supports multiple types comma-separated)
+    if (contactTypeFilter !== 'all') {
+      const selectedTypes = contactTypeFilter.split(',');
+      filtered = filtered.filter(person => {
+        const fullCompany = companies?.find(company => company.id === person.customer_company_id);
+        return selectedTypes.includes(fullCompany?.contact_type || '');
+      });
+    }
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(person =>
+        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
+        person.email?.toLowerCase().includes(term) ||
+        person.phone?.toLowerCase().includes(term) ||
+        person.mobile?.toLowerCase().includes(term) ||
+        person.position?.toLowerCase().includes(term) ||
+        person.customer_companies?.name?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [contactPersons, searchTerm, contactTypeFilter, companies]);
+
+  const filteredEmployees = useMemo(() => {
+    if (!contactPersons) return [];
+    
+    let filtered = contactPersons.filter(person => person.is_employee === true);
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(person =>
+        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
+        person.email?.toLowerCase().includes(term) ||
+        person.phone?.toLowerCase().includes(term) ||
+        person.mobile?.toLowerCase().includes(term) ||
+        person.position?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [contactPersons, searchTerm]);
+
+  const totalCount = filteredCompanies.length + filteredPersons.length + filteredEmployees.length;
   const isSearching = searchTerm.trim().length > 0;
   const hasNoResults = isSearching && totalCount === 0;
 
-  const clearSearch = useCallback(() => setSearchTerm(''), []);
+  // Clear search function
+  const clearSearch = useCallback(() => {
+    setSearchTerm('');
+  }, []);
+
+  // Handle card clicks to open details
+  const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
+    setIsFormOpen(false);
+    setDeleteDialogOpen(false);
+    setSelectedItem(item);
+    setItemType(type);
+    setNavigationStack([]);
+    setDetailsOpen(true);
+  }, []);
+
+  // Handle navigation between company and person details
+  const handleNavigateToCompany = useCallback((companyId: string) => {
+    const company = companies?.find(c => c.id === companyId);
+    if (company) {
+      setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
+      setSelectedItem(company);
+      setItemType('company');
+    }
+  }, [companies, selectedItem, itemType]);
+
+  const handleNavigateToPerson = useCallback((person: any) => {
+    const fullPersonData = contactPersons?.find(p => p.id === person.id);
+    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
+    setSelectedItem(fullPersonData || person);
+    setItemType('person');
+  }, [contactPersons, selectedItem, itemType]);
+
+  // Handle going back in navigation
+  const handleGoBack = useCallback(() => {
+    if (navigationStack.length > 0) {
+      const previousItem = navigationStack[navigationStack.length - 1];
+      setNavigationStack(prev => prev.slice(0, -1));
+      setSelectedItem(previousItem.item);
+      setItemType(previousItem.type);
+    } else {
+      setDetailsOpen(false);
+      setNavigationStack([]);
+    }
+  }, [navigationStack]);
+
+  // Handle edit actions
+  const handleEditItem = useCallback(() => {
+    setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
+    
+    if (itemType === 'company') {
+      setSelectedCompany(selectedItem);
+    } else {
+      setSelectedPerson(selectedItem);
+    }
+    setDetailsOpen(false);
+    setDeleteDialogOpen(false);
+    setIsFormOpen(true);
+  }, [selectedItem, itemType]);
+
+  // Handle form close - go back to details if there's a navigation stack
+  const handleFormClose = useCallback(() => {
+    setIsFormOpen(false);
+    setSelectedCompany(null);
+    setSelectedPerson(null);
+    
+    if (navigationStack.length > 0) {
+      const previousItem = navigationStack[navigationStack.length - 1];
+      setNavigationStack(prev => prev.slice(0, -1));
+      setSelectedItem(previousItem.item);
+      setItemType(previousItem.type);
+      setDetailsOpen(true);
+    }
+  }, [navigationStack]);
+
+  // Handle delete actions
+  const handleDeleteItem = useCallback(() => {
+    setItemToDelete({ item: selectedItem, type: itemType });
+    setDeleteDialogOpen(true);
+  }, [selectedItem, itemType]);
+
+  const confirmDelete = useCallback(() => {
+    if (itemToDelete) {
+      if (itemToDelete.type === 'company') {
+        deleteCompany.mutate(itemToDelete.item.id);
+      } else {
+        deleteContactPerson.mutate(itemToDelete.item.id);
+      }
+      setDeleteDialogOpen(false);
+      setDetailsOpen(false);
+      setItemToDelete(null);
+    }
+  }, [itemToDelete, deleteCompany, deleteContactPerson]);
+
+  const handleCompanySubmit = (companyData) => {
+    if (selectedCompany) {
+      updateCompany.mutate(
+        { id: selectedCompany.id, company: companyData },
+        { 
+          onSuccess: () => { 
+            // Vibration für mobile Geräte
+            if (navigator.vibrate) {
+              navigator.vibrate(50);
+            }
+            setIsFormOpen(false); 
+            setSelectedCompany(null);
+            
+            if (navigationStack.length > 0) {
+              const previousItem = navigationStack[navigationStack.length - 1];
+              setNavigationStack(prev => prev.slice(0, -1));
+              setSelectedItem(previousItem.item);
+              setItemType(previousItem.type);
+              setDetailsOpen(true);
+            }
+          } 
+        }
+      );
+    } else {
+      createCompany.mutate(companyData, {
+        onSuccess: () => {
+          // Vibration für mobile Geräte
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
+          }
+          setIsFormOpen(false);
+        }
+      });
+    }
+  };
+
+  const handlePersonSubmit = async (personData, employeeDetails, children) => {
+    if (selectedPerson) {
+      updateContactPerson.mutate(
+        { id: selectedPerson.id, contactPerson: personData },
+        { 
+          onSuccess: async (updatedPerson) => {
+            // If employee data is provided, save it
+            if (personData.is_employee && employeeDetails) {
+              await createOrUpdateEmployeeDetails.mutateAsync({
+                contactPersonId: updatedPerson.id,
+                details: employeeDetails
+              });
+
+              // Save children if any
+              if (children && children.length > 0) {
+                // TODO: Handle children updates
+              }
+            }
+
+            // Vibration für mobile Geräte
+            if (navigator.vibrate) {
+              navigator.vibrate(50);
+            }
+            
+            setIsFormOpen(false); 
+            setSelectedPerson(null);
+            
+            if (navigationStack.length > 0) {
+              const previousItem = navigationStack[navigationStack.length - 1];
+              setNavigationStack(prev => prev.slice(0, -1));
+              setSelectedItem(previousItem.item);
+              setItemType(previousItem.type);
+              setDetailsOpen(true);
+            }
+          } 
+        }
+      );
+    } else {
+      createContactPerson.mutate(personData, {
+        onSuccess: async (createdPerson) => {
+          // If employee data is provided, save it
+          if (personData.is_employee && employeeDetails) {
+            const employeeDetailsResult = await createOrUpdateEmployeeDetails.mutateAsync({
+              contactPersonId: createdPerson.id,
+              details: employeeDetails
+            });
+
+            // Save children if any
+            if (children && children.length > 0 && employeeDetailsResult) {
+              for (const child of children) {
+                await createEmployeeChild.mutateAsync({
+                  employeeDetailsId: employeeDetailsResult.id,
+                  child
+                });
+              }
+            }
+          }
+
+          // Vibration für mobile Geräte
+          if (navigator.vibrate) {
+            navigator.vibrate(50);
+          }
+
+          setIsFormOpen(false);
+        }
+      });
+    }
+  };
+
+  // Helper function to get company type abbreviation
+  const getCompanyTypeAbbreviation = (companyType: string) => {
+    const abbreviations: Record<string, string> = {
+      'GmbH': 'GmbH',
+      'AG': 'AG',
+      'Einzelunternehmen': 'EU',
+      'Personengesellschaft': 'PG',
+      'Kapitalgesellschaft': 'KG',
+      'Genossenschaft': 'eG',
+      'Stiftung': 'Stift.',
+      'Verein': 'e.V.',
+      'Kommanditgesellschaft': 'KG',
+      'Offene Handelsgesellschaft': 'OHG',
+      'Gesellschaft bürgerlichen Rechts': 'GbR',
+      'Limited': 'Ltd.',
+      'Unternehmergesellschaft': 'UG'
+    };
+    
+    if (abbreviations[companyType]) {
+      return abbreviations[companyType];
+    }
+    
+    for (const [fullName, abbrev] of Object.entries(abbreviations)) {
+      if (companyType.toLowerCase().includes(fullName.toLowerCase())) {
+        return abbrev;
+      }
+    }
+    
+    return companyType.length > 3 ? companyType.substring(0, 3) + '.' : companyType;
+  };
+
+  const getStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline'; className: string }> = {
+      aktiv: { 
+        label: 'Aktiv', 
+        variant: 'default',
+        className: 'bg-success/10 text-success border-success/20'
+      },
+      inaktiv: { 
+        label: 'Inaktiv', 
+        variant: 'secondary',
+        className: 'bg-muted text-muted-foreground border-muted'
+      },
+      potentiell: { 
+        label: 'Potentiell', 
+        variant: 'outline',
+        className: 'bg-primary/10 text-primary border-primary/20'
+      },
+    };
+    const config = statusConfig[status] || statusConfig.aktiv;
+    return (
+      <Badge 
+        variant={config.variant} 
+        className={`${config.className} font-medium border`}
+      >
+        {config.label}
+      </Badge>
+    );
+  };
+
+  // Handle add button click - reset form state
+  const handleAddClick = () => {
+    setDetailsOpen(false);
+    setDeleteDialogOpen(false);
+    setSelectedCompany(null);
+    setSelectedPerson(null);
+    setIsFormOpen(true);
+  };
 
   return (
     <div className="container mx-auto p-4 space-y-4">
+      {/* Header and Filters */}
       <ContactsFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -104,9 +430,9 @@ const Kontakte = () => {
         activeTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees')}
         totalCount={totalCount}
-        companiesCount={companies.length}
-        personsCount={persons.length}
-        employeesCount={employees.length}
+        companiesCount={filteredCompanies.length}
+        personsCount={filteredPersons.length}
+        employeesCount={filteredEmployees.length}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={handleAddClick}
@@ -114,29 +440,124 @@ const Kontakte = () => {
         availableContactTypes={availableContactTypes}
       />
 
+      {/* Main Content */}
       <div className="mt-6">
-        <ContactsContent
-          viewMode={effectiveViewMode}
-          activeTab={activeTab}
-          companies={companies}
-          persons={persons}
-          employees={employees}
-          isSearching={isSearching}
-          hasNoResults={hasNoResults}
-          onClearSearch={clearSearch}
-          onCardClick={handleCardClick}
-        />
+        {effectiveViewMode === 'cards' ? (
+          <>
+            {activeTab === 'all' && (
+              <ContactsCardsView
+                companies={filteredCompanies}
+                persons={filteredPersons}
+                employees={filteredEmployees}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+            {activeTab === 'companies' && (
+              <ContactsCardsView
+                companies={filteredCompanies}
+                persons={[]}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+            {activeTab === 'persons' && (
+              <ContactsCardsView
+                companies={[]}
+                persons={filteredPersons}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+            {activeTab === 'employees' && (
+              <ContactsCardsView
+                companies={[]}
+                persons={[]}
+                employees={filteredEmployees}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {activeTab === 'all' && (
+              <ContactsTableView
+                companies={filteredCompanies}
+                persons={filteredPersons}
+                employees={filteredEmployees}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+            {activeTab === 'companies' && (
+              <ContactsTableView
+                companies={filteredCompanies}
+                persons={[]}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+            {activeTab === 'persons' && (
+              <ContactsTableView
+                companies={[]}
+                persons={filteredPersons}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+            {activeTab === 'employees' && (
+              <ContactsTableView
+                companies={[]}
+                persons={[]}
+                employees={filteredEmployees}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+          </>
+        )}
       </div>
 
+      {/* Contact Form Dialog */}
       <ContactForm 
         isOpen={isFormOpen}
         onClose={handleFormClose}
         company={selectedCompany}
         contactPerson={selectedPerson}
-        onSubmitCompany={(data) => handleCompanySubmit(data, selectedCompany)}
-        onSubmitPerson={(data, details, children) => handlePersonSubmit(data, details, children, selectedPerson)}
+        onSubmitCompany={handleCompanySubmit}
+        onSubmitPerson={handlePersonSubmit}
       />
 
+      {/* Details Dialog */}
       <ContactDetailsDialog
         isOpen={detailsOpen}
         onClose={() => {
@@ -156,11 +577,29 @@ const Kontakte = () => {
         getCompanyTypeAbbreviation={getCompanyTypeAbbreviation}
       />
 
-      <DeleteContactDialog
-        open={deleteDialogOpen}
-        onOpenChange={setDeleteDialogOpen}
-        onConfirm={() => confirmDelete(itemToDelete)}
-      />
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Kontakt löschen?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Diese Aktion kann nicht rückgängig gemacht werden. Der Kontakt wird permanent gelöscht und alle verknüpften Daten gehen verloren.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex flex-col items-center gap-3 pt-4">
+            <Button onClick={confirmDelete} variant="destructive" className="w-full">
+              Löschen
+            </Button>
+            <button 
+              type="button" 
+              onClick={() => setDeleteDialogOpen(false)}
+              className="text-muted-foreground hover:text-foreground transition-colors text-sm"
+            >
+              Abbrechen
+            </button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
