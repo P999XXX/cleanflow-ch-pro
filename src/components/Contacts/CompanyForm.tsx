@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
 
 interface CompanyFormProps {
@@ -30,6 +31,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
     status: 'aktiv',
     company_type: '',
     industry_category: '',
+    contact_type: 'kunde',
   });
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
+        contact_type: company.contact_type || 'kunde',
       });
     } else {
       setFormData({
@@ -64,6 +67,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: 'aktiv',
         company_type: '',
         industry_category: '',
+        contact_type: 'kunde',
       });
     }
   }, [company]);
@@ -86,6 +90,24 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="mb-6 p-4 bg-muted/50 rounded-lg">
+            <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
+            <RadioGroup 
+              value={formData.contact_type || 'kunde'} 
+              onValueChange={(value) => setFormData({ ...formData, contact_type: value })}
+              className="flex gap-6"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="kunde" id="kunde" />
+                <Label htmlFor="kunde" className="font-normal cursor-pointer">Kunde</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="geschaeftskunde" id="geschaeftskunde" />
+                <Label htmlFor="geschaeftskunde" className="font-normal cursor-pointer">Geschäftskunde</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <Label htmlFor="name">Firmenname *</Label>
