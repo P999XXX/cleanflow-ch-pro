@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 export interface UnifiedContact {
   id: string;
   name: string;
-  contact_type: 'Geschäftskunde' | 'Privatkunde' | 'Mitarbeiter';
+  contact_type: 'Unternehmen' | 'Geschäftskunde' | 'Privatkunde' | 'Mitarbeiter' | 'Person';
   email?: string;
   phone?: string;
   mobile?: string;
@@ -49,7 +49,7 @@ export const useAllContacts = () => {
       const unifiedCompanies: UnifiedContact[] = (companies || []).map(company => ({
         id: company.id,
         name: company.name,
-        contact_type: 'Geschäftskunde' as const,
+        contact_type: (company.contact_type || 'Unternehmen') as 'Unternehmen' | 'Geschäftskunde',
         email: company.email || undefined,
         phone: company.phone || undefined,
         mobile: undefined,
@@ -75,7 +75,7 @@ export const useAllContacts = () => {
         id: person.id,
         name: `${person.first_name} ${person.last_name}`,
         contact_type: (person.contact_type || 
-          (person.is_employee ? 'Mitarbeiter' : 'Privatkunde')) as 'Privatkunde' | 'Mitarbeiter',
+          (person.is_employee ? 'Mitarbeiter' : 'Privatkunde')) as 'Privatkunde' | 'Mitarbeiter' | 'Person',
         email: person.email || undefined,
         phone: person.phone || undefined,
         mobile: person.mobile || undefined,

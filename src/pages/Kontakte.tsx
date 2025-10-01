@@ -60,7 +60,7 @@ const Kontakte = () => {
 
   // Available contact types for filters - unified system
   const availableContactTypes = useMemo(() => {
-    return ['Geschäftskunde', 'Privatkunde', 'Mitarbeiter'];
+    return ['Unternehmen', 'Geschäftskunde', 'Privatkunde', 'Mitarbeiter', 'Person'];
   }, []);
 
   // Optimized filtering with useMemo for performance - unified contacts
@@ -95,7 +95,9 @@ const Kontakte = () => {
 
   // Separate by type for display
   const filteredCompanies = useMemo(() => {
-    return filteredAllContacts.filter(c => c.type === 'company');
+    return filteredAllContacts.filter(c => 
+      c.contact_type === 'Unternehmen' || c.contact_type === 'Geschäftskunde'
+    );
   }, [filteredAllContacts]);
 
   const filteredBusinessCustomers = useMemo(() => {
@@ -111,7 +113,9 @@ const Kontakte = () => {
   }, [filteredAllContacts]);
 
   const filteredPersons = useMemo(() => {
-    return filteredAllContacts.filter(c => c.type === 'person');
+    return filteredAllContacts.filter(c => 
+      c.contact_type === 'Privatkunde' || c.contact_type === 'Person'
+    );
   }, [filteredAllContacts]);
 
   const totalCount = filteredAllContacts.length;
