@@ -142,8 +142,8 @@ export function ContactsTableView({
               <TableHeader>
                 <TableRow>
                   <TableHead className="lg:w-1/4">Name</TableHead>
-                  <TableHead className="lg:w-1/4">Unternehmen</TableHead>
-                  <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                  <TableHead className="lg:w-1/4">E-Mail</TableHead>
+                  <TableHead className="lg:w-1/4">Telefon</TableHead>
                   <TableHead className="text-right lg:w-1/4"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -154,29 +154,27 @@ export function ContactsTableView({
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => onCardClick(person, 'person')}
                   >
-                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
+                    <TableCell className="font-medium lg:w-1/4">
                       <div>
                         <div>{person.name}</div>
                         {person.position && <div className="text-sm text-muted-foreground font-light">{person.position}</div>}
                       </div>
                     </TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
                     <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex flex-wrap lg:flex-nowrap items-center gap-3">
-                        {person.email && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3" />
-                            <a 
-                              href={`mailto:${person.email}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {person.email}
-                            </a>
-                          </div>
-                        )}
+                      {person.email ? (
+                        <a 
+                          href={`mailto:${person.email}`} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground/70 hover:text-foreground transition-colors" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {person.email}
+                        </a>
+                      ) : '-'}
+                    </TableCell>
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                      <div className="flex flex-col gap-1">
                         {person.phone && (
                           <div className="flex items-center gap-1 text-sm">
                             <Phone className="h-3 w-3" />
@@ -205,6 +203,7 @@ export function ContactsTableView({
                             </a>
                           </div>
                         )}
+                        {!person.phone && !person.mobile && '-'}
                       </div>
                     </TableCell>
                     <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
