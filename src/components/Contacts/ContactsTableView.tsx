@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, Smartphone, Search, Building2, Users, UserCheck } from "lucide-react";
+import { Mail, Phone, Smartphone, Search, Building2, Users } from "lucide-react";
 
 interface ContactsTableViewProps {
   companies: any[];
@@ -19,7 +19,6 @@ interface ContactsTableViewProps {
 export function ContactsTableView({
   companies,
   persons,
-  employees = [],
   showSections = false,
   isSearching,
   hasNoResults,
@@ -165,9 +164,16 @@ export function ContactsTableView({
                     onClick={() => onCardClick(person, 'person')}
                   >
                     <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
-                      <div>
-                        <div>{`${person.first_name} ${person.last_name}`}</div>
-                        {person.position && <div className="text-sm text-muted-foreground">{person.position}</div>}
+                      <div className="flex items-center gap-2">
+                        <div>
+                          <div>{person.name}</div>
+                          {person.position && <div className="text-sm text-muted-foreground">{person.position}</div>}
+                        </div>
+                        {person.is_employee && (
+                          <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium">
+                            Mitarbeiter
+                          </Badge>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
@@ -230,98 +236,6 @@ export function ContactsTableView({
                           </Badge>
                         )}
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
-        </div>
-      )}
-
-      {/* Employees Table */}
-      {employees.length > 0 && (
-        <div className="space-y-3">
-          {showSections && (
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <UserCheck className="h-5 w-5" />
-              Mitarbeiter
-              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                {employees.length}
-              </Badge>
-            </h3>
-          )}
-          <Card>
-            <Table className="lg:table-fixed">
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="lg:w-1/4">Name</TableHead>
-                  <TableHead className="lg:w-1/4">Position</TableHead>
-                  <TableHead className="lg:w-1/4">Kontakt</TableHead>
-                  <TableHead className="text-right lg:w-1/4"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {employees.map((employee) => (
-                  <TableRow 
-                    key={employee.id}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={() => onCardClick(employee, 'person')}
-                  >
-                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
-                      {`${employee.first_name} ${employee.last_name}`}
-                    </TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{employee.position || '-'}</TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex flex-wrap lg:flex-nowrap items-center gap-3">
-                        {employee.email && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3" />
-                            <a 
-                              href={`mailto:${employee.email}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {employee.email}
-                            </a>
-                          </div>
-                        )}
-                        {employee.phone && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Phone className="h-3 w-3" />
-                            <a 
-                              href={`tel:${employee.phone}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {employee.phone}
-                            </a>
-                          </div>
-                        )}
-                        {employee.mobile && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Smartphone className="h-3 w-3" />
-                            <a 
-                              href={`tel:${employee.mobile}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {employee.mobile}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
-                      <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium">
-                        Mitarbeiter
-                      </Badge>
                     </TableCell>
                   </TableRow>
                 ))}

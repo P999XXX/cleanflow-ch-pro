@@ -1,12 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContactCard } from "./ContactCard";
-import { Search, Building2, Users, UserCheck } from "lucide-react";
+import { Search, Building2, Users } from "lucide-react";
 
 interface ContactsCardsViewProps {
   companies: any[];
   persons: any[];
-  employees?: any[];
   showSections?: boolean;
   isSearching: boolean;
   hasNoResults: boolean;
@@ -17,7 +16,6 @@ interface ContactsCardsViewProps {
 export function ContactsCardsView({
   companies,
   persons,
-  employees = [],
   showSections = false,
   isSearching,
   hasNoResults,
@@ -80,31 +78,6 @@ export function ContactsCardsView({
               <ContactCard 
                 key={`person-${person.id}`} 
                 item={person} 
-                type="person"
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Employees Section */}
-      {employees.length > 0 && (
-        <div className="space-y-4">
-          {showSections && (
-            <h3 className="text-lg font-semibold flex items-center gap-2">
-              <UserCheck className="h-5 w-5" />
-              Mitarbeiter
-              <Badge variant="secondary" className="ml-2 rounded-full bg-primary/10 text-primary border-0 px-2 py-0.5 text-xs font-medium">
-                {employees.length}
-              </Badge>
-            </h3>
-          )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-            {employees.map((employee) => (
-              <ContactCard 
-                key={`employee-${employee.id}`} 
-                item={employee} 
                 type="person"
                 onCardClick={onCardClick}
               />
