@@ -13,9 +13,7 @@ import { useToast } from '@/hooks/use-toast';
 import { ContactPersonForm } from './ContactPersonForm';
 import { ContactTypeSelector, ContactType } from './ContactTypeSelector';
 import { EmployeeDetailsInput } from '@/hooks/useEmployeeDetails';
-
 type ContactFormStage = 'select' | 'form';
-
 interface ContactFormProps {
   isOpen: boolean;
   onClose: () => void;
@@ -25,22 +23,24 @@ interface ContactFormProps {
   contactPerson?: ContactPerson;
   isLoading?: boolean;
 }
-
-export const ContactForm = ({ 
-  isOpen, 
-  onClose, 
-  onSubmitCompany, 
-  onSubmitPerson, 
-  company, 
-  contactPerson, 
+export const ContactForm = ({
+  isOpen,
+  onClose,
+  onSubmitCompany,
+  onSubmitPerson,
+  company,
+  contactPerson,
   isLoading
 }: ContactFormProps) => {
-  const { data: companies } = useCompanies();
-  const { toast } = useToast();
+  const {
+    data: companies
+  } = useCompanies();
+  const {
+    toast
+  } = useToast();
   const [stage, setStage] = useState<ContactFormStage>('select');
   const [selectedType, setSelectedType] = useState<ContactType | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
-
   const [companyData, setCompanyData] = useState<CustomerCompanyInput>({
     name: '',
     address: '',
@@ -55,7 +55,7 @@ export const ContactForm = ({
     status: 'aktiv',
     company_type: '',
     industry_category: '',
-    contact_type: 'Unternehmen',
+    contact_type: 'Unternehmen'
   });
 
   // Reset stage when dialog opens/closes
@@ -65,10 +65,9 @@ export const ContactForm = ({
       setSelectedType(null);
     } else if (company || contactPerson) {
       setStage('form');
-      setSelectedType(company ? 'company' : (contactPerson?.is_employee ? 'employee' : 'person'));
+      setSelectedType(company ? 'company' : contactPerson?.is_employee ? 'employee' : 'person');
     }
   }, [isOpen, company, contactPerson]);
-
   useEffect(() => {
     if (company) {
       setCompanyData({
@@ -85,7 +84,7 @@ export const ContactForm = ({
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || 'Unternehmen',
+        contact_type: company.contact_type || 'Unternehmen'
       });
     } else {
       setCompanyData({
@@ -102,89 +101,84 @@ export const ContactForm = ({
         status: 'aktiv',
         company_type: '',
         industry_category: '',
-        contact_type: 'Unternehmen',
+        contact_type: 'Unternehmen'
       });
     }
   }, [company]);
-
   const validateCompanyForm = (): boolean => {
     const newErrors: Record<string, string> = {};
-
     if (!companyData.name.trim()) {
       newErrors.name = 'Firmenname ist erforderlich';
     }
-
     if (!companyData.address.trim()) {
       newErrors.address = 'Adresse ist erforderlich';
     }
-
     if (!companyData.postal_code.trim()) {
       newErrors.postal_code = 'PLZ ist erforderlich';
     } else if (!/^\d{4}$/.test(companyData.postal_code)) {
       newErrors.postal_code = 'PLZ muss 4 Ziffern enthalten';
     }
-
     if (!companyData.city.trim()) {
       newErrors.city = 'Ort ist erforderlich';
     }
-
     if (!companyData.country.trim()) {
       newErrors.country = 'Land ist erforderlich';
     }
-
     if (!companyData.company_type.trim()) {
       newErrors.company_type = 'Gesellschaftsart ist erforderlich';
     }
-
     if (!companyData.industry_category.trim()) {
       newErrors.industry_category = 'Branche ist erforderlich';
     }
-
     if (!companyData.contact_type.trim()) {
       newErrors.contact_type = 'Kontaktart ist erforderlich';
     }
-
     if (!companyData.status.trim()) {
       newErrors.status = 'Status ist erforderlich';
     }
-
     if (!companyData.phone.trim()) {
       newErrors.phone = 'Telefon ist erforderlich';
     } else if (!/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
       newErrors.phone = 'Ungültiges Telefonformat';
     }
-
     if (!companyData.email.trim()) {
       newErrors.email = 'E-Mail ist erforderlich';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
       newErrors.email = 'Ungültige E-Mail-Adresse';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleInputChange = (field: string, value: string) => {
-    setCompanyData({ ...companyData, [field]: value });
-    
+    setCompanyData({
+      ...companyData,
+      [field]: value
+    });
+
     // Clear field error when user starts typing
     if (errors[field]) {
-      setErrors({ ...errors, [field]: '' });
+      setErrors({
+        ...errors,
+        [field]: ''
+      });
     }
   };
-
   const handleSelectChange = (field: string, value: string) => {
-    setCompanyData({ ...companyData, [field]: value });
-    
+    setCompanyData({
+      ...companyData,
+      [field]: value
+    });
+
     // Clear field error when user selects a value
     if (errors[field]) {
-      setErrors({ ...errors, [field]: '' });
+      setErrors({
+        ...errors,
+        [field]: ''
+      });
     }
   };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
     const isValid = validateCompanyForm();
     if (isValid) {
       onSubmitCompany(companyData);
@@ -192,102 +186,71 @@ export const ContactForm = ({
       toast({
         title: 'Validierungsfehler',
         description: 'Bitte korrigieren Sie die markierten Felder',
-        variant: 'destructive',
+        variant: 'destructive'
       });
     }
   };
-
   const handleTypeSelect = (type: ContactType) => {
     setSelectedType(type);
     setStage('form');
   };
-
   const handleBack = () => {
     setStage('select');
     setSelectedType(null);
   };
-
   const getTitle = () => {
     if (company) return 'Unternehmen bearbeiten';
     if (contactPerson) return 'Kontaktperson bearbeiten';
-    
     if (stage === 'select') return 'Kontakt hinzufügen';
-    
     switch (selectedType) {
-      case 'company': return 'Neues Unternehmen';
-      case 'person': return 'Neue Kontaktperson';
-      case 'employee': return 'Neuer Mitarbeiter';
-      default: return 'Neuer Kontakt';
+      case 'company':
+        return 'Neues Unternehmen';
+      case 'person':
+        return 'Neue Kontaktperson';
+      case 'employee':
+        return 'Neuer Mitarbeiter';
+      default:
+        return 'Neuer Kontakt';
     }
   };
-
   const getDescription = () => {
     if (company) return 'Bearbeiten Sie die Unternehmensdaten';
     if (contactPerson) return contactPerson.is_employee ? 'Bearbeiten Sie die Mitarbeiterdaten' : 'Bearbeiten Sie die Kontaktdaten';
-    
     if (stage === 'select') return 'Wählen Sie die Art des Kontakts aus';
-    
     switch (selectedType) {
-      case 'company': return 'Fügen Sie ein neues Unternehmen hinzu';
-      case 'person': return 'Fügen Sie eine neue Kontaktperson hinzu';
-      case 'employee': return 'Fügen Sie einen neuen Mitarbeiter hinzu';
-      default: return 'Fügen Sie einen neuen Kontakt hinzu';
+      case 'company':
+        return 'Fügen Sie ein neues Unternehmen hinzu';
+      case 'person':
+        return 'Fügen Sie eine neue Kontaktperson hinzu';
+      case 'employee':
+        return 'Fügen Sie einen neuen Mitarbeiter hinzu';
+      default:
+        return 'Fügen Sie einen neuen Kontakt hinzu';
     }
   };
 
   // Show ContactPersonForm for person or employee types
   if (stage === 'form' && (selectedType === 'person' || selectedType === 'employee')) {
-    return (
-      <ContactPersonForm
-        isOpen={isOpen}
-        onClose={onClose}
-        onSubmit={onSubmitPerson}
-        contactPerson={contactPerson}
-        isLoading={isLoading}
-        initialIsEmployee={selectedType === 'employee'}
-        onBack={!company && !contactPerson ? handleBack : undefined}
-      />
-    );
+    return <ContactPersonForm isOpen={isOpen} onClose={onClose} onSubmit={onSubmitPerson} contactPerson={contactPerson} isLoading={isLoading} initialIsEmployee={selectedType === 'employee'} onBack={!company && !contactPerson ? handleBack : undefined} />;
   }
-
-  return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+  return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl">
         <DialogHeader>
           <div className="flex items-center gap-2">
-            {stage === 'form' && !company && !contactPerson && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleBack}
-                className="h-8 w-8"
-              >
+            {stage === 'form' && !company && !contactPerson && <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
                 <ChevronLeft className="h-4 w-4" />
-              </Button>
-            )}
-            <div className="flex-1">
-              <DialogTitle>{getTitle()}</DialogTitle>
-              <DialogDescription>
-                {getDescription()}
-              </DialogDescription>
-            </div>
+              </Button>}
+            
           </div>
         </DialogHeader>
 
-        {stage === 'select' && (
-          <ContactTypeSelector onSelect={handleTypeSelect} onClose={onClose} />
-        )}
+        {stage === 'select' && <ContactTypeSelector onSelect={handleTypeSelect} onClose={onClose} />}
 
-        {stage === 'form' && selectedType === 'company' && (
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {stage === 'form' && selectedType === 'company' && <form onSubmit={handleSubmit} className="space-y-4">
             {/* Typ Radio Buttons */}
             <div className="p-4 bg-muted/50 rounded-lg">
               <Label className="text-base font-semibold mb-3 block">Typ</Label>
-              <RadioGroup 
-                value={companyData.contact_type} 
-                onValueChange={(value) => handleInputChange('contact_type', value)}
-                className="flex gap-6"
-              >
+              <RadioGroup value={companyData.contact_type} onValueChange={value => handleInputChange('contact_type', value)} className="flex gap-6">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="Unternehmen" id="unternehmen" />
                   <Label htmlFor="unternehmen" className="font-normal cursor-pointer">Unternehmen</Label>
@@ -304,13 +267,7 @@ export const ContactForm = ({
                 <Label htmlFor="name">
                   Firmenname <span className="text-foreground">*</span>
                 </Label>
-                <Input
-                  id="name"
-                  value={companyData.name}
-                  onChange={(e) => handleInputChange('name', e.target.value)}
-                  required
-                  className={errors.name ? 'border-destructive' : ''}
-                />
+                <Input id="name" value={companyData.name} onChange={e => handleInputChange('name', e.target.value)} required className={errors.name ? 'border-destructive' : ''} />
                 {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
               </div>
 
@@ -318,13 +275,7 @@ export const ContactForm = ({
                 <Label htmlFor="address">
                   Adresse <span className="text-foreground">*</span>
                 </Label>
-                <Input
-                  id="address"
-                  value={companyData.address}
-                  onChange={(e) => handleInputChange('address', e.target.value)}
-                  required
-                  className={errors.address ? 'border-destructive' : ''}
-                />
+                <Input id="address" value={companyData.address} onChange={e => handleInputChange('address', e.target.value)} required className={errors.address ? 'border-destructive' : ''} />
                 {errors.address && <p className="text-sm text-destructive mt-1">{errors.address}</p>}
               </div>
 
@@ -333,26 +284,14 @@ export const ContactForm = ({
                   <Label htmlFor="postal_code">
                     PLZ <span className="text-foreground">*</span>
                   </Label>
-                  <Input
-                    id="postal_code"
-                    value={companyData.postal_code}
-                    onChange={(e) => handleInputChange('postal_code', e.target.value)}
-                    required
-                    className={errors.postal_code ? 'border-destructive' : ''}
-                  />
+                  <Input id="postal_code" value={companyData.postal_code} onChange={e => handleInputChange('postal_code', e.target.value)} required className={errors.postal_code ? 'border-destructive' : ''} />
                   {errors.postal_code && <p className="text-sm text-destructive mt-1">{errors.postal_code}</p>}
                 </div>
                 <div>
                   <Label htmlFor="city">
                     Ort <span className="text-foreground">*</span>
                   </Label>
-                  <Input
-                    id="city"
-                    value={companyData.city}
-                    onChange={(e) => handleInputChange('city', e.target.value)}
-                    required
-                    className={errors.city ? 'border-destructive' : ''}
-                  />
+                  <Input id="city" value={companyData.city} onChange={e => handleInputChange('city', e.target.value)} required className={errors.city ? 'border-destructive' : ''} />
                   {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
                 </div>
               </div>
@@ -361,13 +300,7 @@ export const ContactForm = ({
                 <Label htmlFor="country">
                   Land <span className="text-foreground">*</span>
                 </Label>
-                <Input
-                  id="country"
-                  value={companyData.country}
-                  onChange={(e) => handleInputChange('country', e.target.value)}
-                  required
-                  className={errors.country ? 'border-destructive' : ''}
-                />
+                <Input id="country" value={companyData.country} onChange={e => handleInputChange('country', e.target.value)} required className={errors.country ? 'border-destructive' : ''} />
                 {errors.country && <p className="text-sm text-destructive mt-1">{errors.country}</p>}
               </div>
 
@@ -376,10 +309,7 @@ export const ContactForm = ({
                   <Label htmlFor="company_type">
                     Gesellschaftsart <span className="text-foreground">*</span>
                   </Label>
-                  <Select 
-                    value={companyData.company_type} 
-                    onValueChange={(value) => handleSelectChange('company_type', value)}
-                  >
+                  <Select value={companyData.company_type} onValueChange={value => handleSelectChange('company_type', value)}>
                     <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Gesellschaftsart auswählen" />
                     </SelectTrigger>
@@ -402,10 +332,7 @@ export const ContactForm = ({
                   <Label htmlFor="industry_category">
                     Branche <span className="text-foreground">*</span>
                   </Label>
-                  <Select 
-                    value={companyData.industry_category} 
-                    onValueChange={(value) => handleSelectChange('industry_category', value)}
-                  >
+                  <Select value={companyData.industry_category} onValueChange={value => handleSelectChange('industry_category', value)}>
                     <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
                       <SelectValue placeholder="Branche auswählen" />
                     </SelectTrigger>
@@ -431,10 +358,7 @@ export const ContactForm = ({
                   <Label htmlFor="status">
                     Status <span className="text-foreground">*</span>
                   </Label>
-                  <Select 
-                    value={companyData.status} 
-                    onValueChange={(value) => handleSelectChange('status', value)}
-                  >
+                  <Select value={companyData.status} onValueChange={value => handleSelectChange('status', value)}>
                     <SelectTrigger className={errors.status ? 'border-destructive' : ''}>
                       <SelectValue />
                     </SelectTrigger>
@@ -453,27 +377,14 @@ export const ContactForm = ({
                   <Label htmlFor="phone">
                     Telefon <span className="text-foreground">*</span>
                   </Label>
-                  <Input
-                    id="phone"
-                    value={companyData.phone}
-                    onChange={(e) => handleInputChange('phone', e.target.value)}
-                    required
-                    className={errors.phone ? 'border-destructive' : ''}
-                  />
+                  <Input id="phone" value={companyData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={errors.phone ? 'border-destructive' : ''} />
                   {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
                 </div>
                 <div>
                   <Label htmlFor="email">
                     E-Mail <span className="text-foreground">*</span>
                   </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={companyData.email}
-                    onChange={(e) => handleInputChange('email', e.target.value)}
-                    required
-                    className={errors.email ? 'border-destructive' : ''}
-                  />
+                  <Input id="email" type="email" value={companyData.email} onChange={e => handleInputChange('email', e.target.value)} required className={errors.email ? 'border-destructive' : ''} />
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                 </div>
               </div>
@@ -481,30 +392,17 @@ export const ContactForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="website">Website</Label>
-                    <Input
-                      id="website"
-                      value={companyData.website}
-                      onChange={(e) => handleInputChange('website', e.target.value)}
-                    />
+                    <Input id="website" value={companyData.website} onChange={e => handleInputChange('website', e.target.value)} />
                   </div>
                   <div>
                     <Label htmlFor="vat_number">MwSt-Nummer</Label>
-                    <Input
-                      id="vat_number"
-                      value={companyData.vat_number}
-                      onChange={(e) => handleInputChange('vat_number', e.target.value)}
-                    />
+                    <Input id="vat_number" value={companyData.vat_number} onChange={e => handleInputChange('vat_number', e.target.value)} />
                   </div>
               </div>
 
               <div>
                 <Label htmlFor="notes">Notizen</Label>
-                <Textarea
-                  id="notes"
-                  value={companyData.notes}
-                  onChange={(e) => handleInputChange('notes', e.target.value)}
-                  rows={3}
-                />
+                <Textarea id="notes" value={companyData.notes} onChange={e => handleInputChange('notes', e.target.value)} rows={3} />
               </div>
             </div>
 
@@ -513,12 +411,10 @@ export const ContactForm = ({
                 Abbrechen
               </Button>
               <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Lädt...' : (company ? 'Aktualisieren' : 'Speichern')}
+                {isLoading ? 'Lädt...' : company ? 'Aktualisieren' : 'Speichern'}
               </Button>
             </div>
-          </form>
-        )}
+          </form>}
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
