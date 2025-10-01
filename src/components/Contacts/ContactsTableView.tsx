@@ -26,6 +26,17 @@ export function ContactsTableView({
   onCardClick,
   getStatusBadge,
 }: ContactsTableViewProps) {
+  const getStatusBorderClass = (status?: string) => {
+    switch (status) {
+      case 'aktiv':
+        return 'border-l-4 border-l-green-500';
+      case 'inaktiv':
+        return 'border-l-4 border-l-orange-500';
+      default:
+        return 'border-l-4 border-l-gray-300';
+    }
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* No results message */}
@@ -66,7 +77,7 @@ export function ContactsTableView({
                 {companies.map((company) => (
                   <TableRow 
                     key={company.id}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                    className={`cursor-pointer hover:bg-muted/50 transition-colors ${getStatusBorderClass(company.status)}`}
                     onClick={() => onCardClick(company, 'company')}
                   >
                     <TableCell className="font-medium lg:w-1/4">
@@ -151,7 +162,7 @@ export function ContactsTableView({
                 {persons.map((person) => (
                   <TableRow 
                     key={person.id}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                    className={`cursor-pointer hover:bg-muted/50 transition-colors ${getStatusBorderClass(person.status)}`}
                     onClick={() => onCardClick(person, 'person')}
                   >
                     <TableCell className="font-medium lg:w-1/4">
