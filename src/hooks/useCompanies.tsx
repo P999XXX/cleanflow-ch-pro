@@ -108,6 +108,7 @@ export const useCompanyMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer-companies'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Unternehmen wurde erfolgreich erstellt',
@@ -136,6 +137,7 @@ export const useCompanyMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer-companies'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Unternehmen wurde erfolgreich aktualisiert',
@@ -162,6 +164,7 @@ export const useCompanyMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer-companies'] });
       queryClient.invalidateQueries({ queryKey: ['contact-persons'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Unternehmen wurde erfolgreich gelöscht',

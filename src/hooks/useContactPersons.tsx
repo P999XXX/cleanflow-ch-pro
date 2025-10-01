@@ -103,6 +103,7 @@ export const useContactPersonMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contact-persons'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Kontaktperson wurde erfolgreich erstellt',
@@ -131,6 +132,7 @@ export const useContactPersonMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contact-persons'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Kontaktperson wurde erfolgreich aktualisiert',
@@ -156,6 +158,7 @@ export const useContactPersonMutations = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['contact-persons'] });
+      queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Kontaktperson wurde erfolgreich gelöscht',
