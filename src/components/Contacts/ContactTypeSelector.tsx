@@ -12,7 +12,7 @@ export const ContactTypeSelector = ({
 }: ContactTypeSelectorProps) => {
   return <div className="space-y-8 p-6">
       <div className="text-center space-y-2">
-        <h3 className="text-lg font-semibold">Kontakt hinzufügen</h3>
+        <h2 className="text-2xl font-semibold">Kontakt hinzufügen</h2>
         <p className="text-sm text-muted-foreground">Wählen Sie die Art des Kontakts aus</p>
       </div>
       
