@@ -56,14 +56,14 @@ export function ContactsFilters({
     
     // Filter options based on active tab
     if (activeTab === 'persons') {
-      // For persons tab: show only person-related types
+      // For persons tab: show only person-related types (exclude company types)
       filteredTypes = availableContactTypes.filter(type => 
-        type !== 'Unternehmen'
+        type !== 'Unternehmen' && type !== 'Geschäftskunde'
       );
     } else if (activeTab === 'companies') {
-      // For companies tab: show only company types
+      // For companies tab: show only company types (Unternehmen and Geschäftskunde)
       filteredTypes = availableContactTypes.filter(type => 
-        type === 'Unternehmen'
+        type === 'Unternehmen' || type === 'Geschäftskunde'
       );
     }
     
