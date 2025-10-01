@@ -166,7 +166,7 @@ export function ContactsTableView({
                     <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
                       <div>
                         <div>{person.name}</div>
-                        {person.position && <div className="text-sm text-muted-foreground">{person.position}</div>}
+                        {person.position && <div className="text-sm text-muted-foreground font-light">{person.position}</div>}
                       </div>
                     </TableCell>
                     <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
