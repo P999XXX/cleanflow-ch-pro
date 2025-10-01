@@ -55,6 +55,11 @@ const Kontakte = () => {
     }
   }, [isMobile]);
 
+  // Reset filters when tab changes for better UX
+  useEffect(() => {
+    setContactTypeFilter('all');
+  }, [activeTab]);
+
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 

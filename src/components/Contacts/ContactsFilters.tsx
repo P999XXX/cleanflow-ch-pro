@@ -50,7 +50,7 @@ export function ContactsFilters({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false);
 
-  // Generate filter options based on active tab
+  // Generate filter options based on active tab - tab-specific filtering
   const filterOptions = useMemo(() => {
     let filteredTypes = availableContactTypes;
     
@@ -67,11 +67,11 @@ export function ContactsFilters({
       );
     }
     
-    const options = filteredTypes.map(type => ({
+    // Return only specific contact types - no "Alle Kontaktarten" option
+    return filteredTypes.map(type => ({
       value: type,
       label: type.charAt(0).toUpperCase() + type.slice(1)
     }));
-    return [{ value: 'all', label: 'Alle Kontaktarten' }, ...options];
   }, [availableContactTypes, activeTab]);
 
   // Sync selectedFilters with contactTypeFilter prop
@@ -79,39 +79,18 @@ export function ContactsFilters({
     if (contactTypeFilter === 'all') {
       setSelectedFilters([]);
     } else {
-      setSelectedFilters(contactTypeFilter.split(','));
+      setSelectedFilters(contactTypeFilter.split(',').filter(Boolean));
     }
   }, [contactTypeFilter]);
 
-  // Check if all filters are selected
-  const allFiltersSelected = useMemo(() => {
-    const availableFilters = filterOptions.filter(option => option.value !== 'all');
-    return availableFilters.length > 0 && 
-           availableFilters.every(option => selectedFilters.includes(option.value));
-  }, [selectedFilters, filterOptions]);
-
+  // Simplified filter toggle - only specific contact types
   const handleFilterToggle = (value: string) => {
-    if (value === 'all') {
-      // If all are already selected, deselect all; otherwise select all
-      if (allFiltersSelected) {
-        setSelectedFilters([]);
-        onContactTypeChange("all");
-      } else {
-        const allFilterValues = filterOptions
-          .filter(option => option.value !== 'all')
-          .map(option => option.value);
-        setSelectedFilters(allFilterValues);
-        onContactTypeChange(allFilterValues.join(","));
-      }
-      return;
-    }
-    
     const newFilters = selectedFilters.includes(value)
       ? selectedFilters.filter(f => f !== value)
       : [...selectedFilters, value];
     setSelectedFilters(newFilters);
     
-    // Update parent component with "all" if no filters selected, otherwise join filters
+    // Update parent: "all" if no filters selected, otherwise join filters
     onContactTypeChange(newFilters.length === 0 ? "all" : newFilters.join(","));
   };
 
@@ -192,7 +171,7 @@ export function ContactsFilters({
                              <div key={option.value} className="flex items-center space-x-2">
                                <Checkbox
                                  id={`mobile-${option.value}`}
-                                 checked={option.value === 'all' ? allFiltersSelected : selectedFilters.includes(option.value)}
+                                 checked={selectedFilters.includes(option.value)}
                                  onCheckedChange={() => handleFilterToggle(option.value)}
                                />
                                <label
@@ -248,7 +227,7 @@ export function ContactsFilters({
                            <div key={option.value} className="flex items-center space-x-2">
                              <Checkbox
                                id={`desktop-${option.value}`}
-                               checked={option.value === 'all' ? allFiltersSelected : selectedFilters.includes(option.value)}
+                               checked={selectedFilters.includes(option.value)}
                                onCheckedChange={() => handleFilterToggle(option.value)}
                              />
                              <label
