@@ -425,7 +425,7 @@ const Kontakte = () => {
             )}
             {activeTab === 'companies' && (
               <ContactsCardsView
-                companies={filteredBusinessCustomers.filter(c => c.type === 'company')}
+                companies={filteredCompanies}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
@@ -462,7 +462,7 @@ const Kontakte = () => {
             )}
             {activeTab === 'companies' && (
               <ContactsTableView
-                companies={filteredBusinessCustomers.filter(c => c.type === 'company')}
+                companies={filteredCompanies}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
