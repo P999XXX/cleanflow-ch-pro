@@ -75,6 +75,7 @@ export type Database = {
           id: string
           is_employee: boolean | null
           is_primary_contact: boolean | null
+          is_private_customer: boolean | null
           last_name: string
           mobile: string | null
           notes: string | null
@@ -91,6 +92,7 @@ export type Database = {
           id?: string
           is_employee?: boolean | null
           is_primary_contact?: boolean | null
+          is_private_customer?: boolean | null
           last_name: string
           mobile?: string | null
           notes?: string | null
@@ -107,6 +109,7 @@ export type Database = {
           id?: string
           is_employee?: boolean | null
           is_primary_contact?: boolean | null
+          is_private_customer?: boolean | null
           last_name?: string
           mobile?: string | null
           notes?: string | null
@@ -143,6 +146,7 @@ export type Database = {
           email: string | null
           id: string
           industry_category: string | null
+          is_customer: boolean | null
           name: string
           notes: string | null
           phone: string | null
@@ -163,6 +167,7 @@ export type Database = {
           email?: string | null
           id?: string
           industry_category?: string | null
+          is_customer?: boolean | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -183,6 +188,7 @@ export type Database = {
           email?: string | null
           id?: string
           industry_category?: string | null
+          is_customer?: boolean | null
           name?: string
           notes?: string | null
           phone?: string | null

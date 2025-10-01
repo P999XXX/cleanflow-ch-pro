@@ -55,6 +55,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               >
                 {getStatusBadge(item.status).props.children}
               </Badge>
+              {item.is_customer && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-400 font-medium text-[10px] px-1.5 py-0.5"
+                >
+                  Kunde
+                </Badge>
+              )}
               {item.industry_category && (
                 <Badge 
                   variant="outline" 
@@ -63,21 +71,31 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   {item.industry_category}
                 </Badge>
               )}
-              {item.contact_type && (
+            </>
+          ) : (
+            <>
+              {item.is_employee && (
                 <Badge 
                   variant="outline" 
                   className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium text-[10px] px-1.5 py-0.5"
                 >
-                  {item.contact_type}
+                  Mitarbeiter
+                </Badge>
+              )}
+              {item.is_private_customer && (
+                <Badge 
+                  variant="outline" 
+                  className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium text-[10px] px-1.5 py-0.5"
+                >
+                  Privatkunde
+                </Badge>
+              )}
+              {item.is_primary_contact && (
+                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5">
+                  Primär
                 </Badge>
               )}
             </>
-          ) : (
-            item.is_primary_contact && (
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5">
-                Primär
-              </Badge>
-            )
           )}
         </div>
 
