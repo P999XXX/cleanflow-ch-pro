@@ -75,7 +75,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
           ) : (
             <>
               {item.is_employee && (
-                <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium text-[10px] px-1.5 py-0.5">
+                <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5">
                   Mitarbeiter
                 </Badge>
               )}

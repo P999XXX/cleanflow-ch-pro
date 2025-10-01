@@ -219,7 +219,7 @@ export function ContactsTableView({
                     <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2 flex-wrap">
                         {person.is_employee && (
-                          <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium">
+                          <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium">
                             Mitarbeiter
                           </Badge>
                         )}
