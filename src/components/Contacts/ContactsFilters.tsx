@@ -83,6 +83,13 @@ export function ContactsFilters({
     }
   }, [contactTypeFilter]);
 
+  // Check if all filters are selected
+  const allFiltersSelected = useMemo(() => {
+    const availableFilters = filterOptions.filter(option => option.value !== 'all');
+    return availableFilters.length > 0 && 
+           availableFilters.every(option => selectedFilters.includes(option.value));
+  }, [selectedFilters, filterOptions]);
+
   const handleFilterToggle = (value: string) => {
     if (value === 'all') {
       // Select all available filter options (excluding 'all' itself)
@@ -175,23 +182,23 @@ export function ContactsFilters({
                             </Button>
                           )}
                         </div>
-                        <div className="space-y-3">
-                          {filterOptions.map((option) => (
-                            <div key={option.value} className="flex items-center space-x-2">
-                              <Checkbox
-                                id={`mobile-${option.value}`}
-                                checked={selectedFilters.includes(option.value)}
-                                onCheckedChange={() => handleFilterToggle(option.value)}
-                              />
-                              <label
-                                htmlFor={`mobile-${option.value}`}
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                              >
-                                {option.label}
-                              </label>
-                            </div>
-                          ))}
-                        </div>
+                         <div className="space-y-3">
+                           {filterOptions.map((option) => (
+                             <div key={option.value} className="flex items-center space-x-2">
+                               <Checkbox
+                                 id={`mobile-${option.value}`}
+                                 checked={option.value === 'all' ? allFiltersSelected : selectedFilters.includes(option.value)}
+                                 onCheckedChange={() => handleFilterToggle(option.value)}
+                               />
+                               <label
+                                 htmlFor={`mobile-${option.value}`}
+                                 className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                               >
+                                 {option.label}
+                               </label>
+                             </div>
+                           ))}
+                         </div>
                       </div>
                     </PopoverContent>
                   </Popover>
@@ -231,23 +238,23 @@ export function ContactsFilters({
                           </Button>
                         )}
                       </div>
-                      <div className="space-y-3">
-                        {filterOptions.map((option) => (
-                          <div key={option.value} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`desktop-${option.value}`}
-                              checked={selectedFilters.includes(option.value)}
-                              onCheckedChange={() => handleFilterToggle(option.value)}
-                            />
-                            <label
-                              htmlFor={`desktop-${option.value}`}
-                              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
-                            >
-                              {option.label}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
+                       <div className="space-y-3">
+                         {filterOptions.map((option) => (
+                           <div key={option.value} className="flex items-center space-x-2">
+                             <Checkbox
+                               id={`desktop-${option.value}`}
+                               checked={option.value === 'all' ? allFiltersSelected : selectedFilters.includes(option.value)}
+                               onCheckedChange={() => handleFilterToggle(option.value)}
+                             />
+                             <label
+                               htmlFor={`desktop-${option.value}`}
+                               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                             >
+                               {option.label}
+                             </label>
+                           </div>
+                         ))}
+                       </div>
                     </div>
                   </PopoverContent>
                 </Popover>
