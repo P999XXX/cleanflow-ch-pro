@@ -16,6 +16,7 @@ export interface ContactPerson {
   notes?: string;
   customer_company_id?: string;
   company_id: string;
+  status?: string;
   created_at: string;
   updated_at: string;
   customer_companies?: {
@@ -35,6 +36,7 @@ export interface ContactPersonInput {
   is_private_customer?: boolean;
   notes?: string;
   customer_company_id?: string;
+  status?: string;
 }
 
 export const useContactPersons = () => {
@@ -57,6 +59,7 @@ export const useContactPersons = () => {
           notes,
           customer_company_id,
           company_id,
+          status,
           created_at,
           updated_at,
           customer_companies (

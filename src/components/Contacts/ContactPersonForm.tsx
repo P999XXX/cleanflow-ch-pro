@@ -48,6 +48,7 @@ export const ContactPersonForm = ({
     is_private_customer: !initialIsEmployee,
     notes: '',
     customer_company_id: undefined,
+    status: 'aktiv',
   });
   
   const [employeeData, setEmployeeData] = useState<Partial<EmployeeDetailsInput>>({});
@@ -72,6 +73,7 @@ export const ContactPersonForm = ({
         is_private_customer: contactPerson.is_private_customer || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id,
+        status: contactPerson.status || 'aktiv',
       });
       setCompanyId(contactPerson.company_id || '');
     } else {
@@ -89,6 +91,7 @@ export const ContactPersonForm = ({
         is_private_customer: !isEmp,
         notes: '',
         customer_company_id: undefined,
+        status: 'aktiv',
       });
       setEmployeeData({});
       setChildren([]);
@@ -228,6 +231,22 @@ export const ContactPersonForm = ({
                   value={formData.position}
                   onChange={(e) => setFormData({ ...formData, position: e.target.value })}
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="status">Status *</Label>
+                <Select
+                  value={formData.status}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="aktiv">Aktiv</SelectItem>
+                    <SelectItem value="inaktiv">Inaktiv</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               {!isEmployee && personType !== 'private' && (

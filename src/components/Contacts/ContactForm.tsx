@@ -365,7 +365,6 @@ export const ContactForm = ({
                     <SelectContent>
                       <SelectItem value="aktiv">Aktiv</SelectItem>
                       <SelectItem value="inaktiv">Inaktiv</SelectItem>
-                      <SelectItem value="potentiell">Potentieller Kunde</SelectItem>
                     </SelectContent>
                   </Select>
                   {errors.status && <p className="text-sm text-destructive mt-1">{errors.status}</p>}
