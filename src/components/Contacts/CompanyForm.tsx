@@ -31,7 +31,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
     status: 'aktiv',
     company_type: '',
     industry_category: '',
-    contact_type: 'kunde',
+    contact_type: 'Unternehmen',
   });
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || 'kunde',
+        contact_type: company.contact_type || 'Unternehmen',
       });
     } else {
       setFormData({
@@ -67,7 +67,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: 'aktiv',
         company_type: '',
         industry_category: '',
-        contact_type: 'kunde',
+        contact_type: 'Unternehmen',
       });
     }
   }, [company]);
@@ -93,16 +93,16 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
             <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
             <RadioGroup 
-              value={formData.contact_type || 'kunde'} 
+              value={formData.contact_type || 'Unternehmen'} 
               onValueChange={(value) => setFormData({ ...formData, contact_type: value })}
               className="flex gap-6"
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="kunde" id="kunde" />
-                <Label htmlFor="kunde" className="font-normal cursor-pointer">Kunde</Label>
+                <RadioGroupItem value="Unternehmen" id="unternehmen" />
+                <Label htmlFor="unternehmen" className="font-normal cursor-pointer">Unternehmen</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="geschaeftskunde" id="geschaeftskunde" />
+                <RadioGroupItem value="Geschäftskunde" id="geschaeftskunde" />
                 <Label htmlFor="geschaeftskunde" className="font-normal cursor-pointer">Geschäftskunde</Label>
               </div>
             </RadioGroup>

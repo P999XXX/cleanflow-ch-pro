@@ -35,7 +35,7 @@ export const ContactPersonForm = ({
   onBack
 }: ContactPersonFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [personType, setPersonType] = useState<'private' | 'employee'>(initialIsEmployee ? 'employee' : 'private');
+  const [personType, setPersonType] = useState<'private' | 'employee' | 'person'>(initialIsEmployee ? 'employee' : 'private');
   const [formData, setFormData] = useState<ContactPersonInput>({
     first_name: '',
     last_name: '',
@@ -114,15 +114,15 @@ export const ContactPersonForm = ({
     const submitData = {
       ...formData,
       is_employee: isEmployee,
-      is_private_customer: !isEmployee,
-      contact_type: isEmployee ? 'Mitarbeiter' : 'Privatkunde'
+      is_private_customer: personType === 'private',
+      contact_type: isEmployee ? 'Mitarbeiter' : personType === 'private' ? 'Privatkunde' : 'Person'
     };
     
     onSubmit(submitData, isEmployee ? employeeData : undefined, isEmployee ? children : undefined);
   };
 
   const handlePersonTypeChange = (value: string) => {
-    const newType = value as 'private' | 'employee';
+    const newType = value as 'private' | 'employee' | 'person';
     setPersonType(newType);
     setFormData({
       ...formData,
@@ -191,6 +191,10 @@ export const ContactPersonForm = ({
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="employee" id="mitarbeiter" />
                       <Label htmlFor="mitarbeiter" className="font-normal cursor-pointer">Mitarbeiter</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="person" id="person" />
+                      <Label htmlFor="person" className="font-normal cursor-pointer">Person</Label>
                     </div>
                   </RadioGroup>
                 </div>
