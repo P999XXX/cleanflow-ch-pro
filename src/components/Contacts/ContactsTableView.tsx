@@ -57,8 +57,8 @@ export function ContactsTableView({
               <TableHeader>
                 <TableRow>
                   <TableHead className="lg:w-1/4">Name</TableHead>
-                  <TableHead className="lg:w-1/4">Ort</TableHead>
-                  <TableHead className="lg:w-1/4">Kontakt</TableHead>
+                  <TableHead className="lg:w-1/4">E-Mail</TableHead>
+                  <TableHead className="lg:w-1/4">Telefon</TableHead>
                   <TableHead className="text-right lg:w-1/4"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -69,57 +69,48 @@ export function ContactsTableView({
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                     onClick={() => onCardClick(company, 'company')}
                   >
-                    <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">{company.name}</TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code || '-'}
-                    </TableCell>
-                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex flex-wrap lg:flex-nowrap items-center gap-3">
-                        {company.email && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Mail className="h-3 w-3" />
-                            <a 
-                              href={`mailto:${company.email}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {company.email}
-                            </a>
-                          </div>
-                        )}
-                        {company.phone && (
-                          <div className="flex items-center gap-1 text-sm">
-                            <Phone className="h-3 w-3" />
-                            <a 
-                              href={`tel:${company.phone}`} 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-foreground/70 hover:text-foreground transition-colors" 
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              {company.phone}
-                            </a>
+                    <TableCell className="font-medium lg:w-1/4">
+                      <div>
+                        <div>{company.name}</div>
+                        {(company.city || company.postal_code) && (
+                          <div className="text-sm text-muted-foreground font-light">
+                            {company.city && company.postal_code ? `${company.postal_code} ${company.city}` : company.city || company.postal_code}
                           </div>
                         )}
                       </div>
                     </TableCell>
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                      {company.email ? (
+                        <a 
+                          href={`mailto:${company.email}`} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground/70 hover:text-foreground transition-colors" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {company.email}
+                        </a>
+                      ) : '-'}
+                    </TableCell>
+                    <TableCell className="lg:w-1/4 lg:whitespace-nowrap">
+                      {company.phone ? (
+                        <a 
+                          href={`tel:${company.phone}`} 
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground/70 hover:text-foreground transition-colors" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {company.phone}
+                        </a>
+                      ) : '-'}
+                    </TableCell>
                     <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2 flex-wrap">
-                        {getStatusBadge(company.status)}
-                        {company.industry_category && (
-                          <Badge 
-                            variant="outline" 
-                            className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium"
-                          >
-                            {company.industry_category}
-                          </Badge>
-                        )}
                         {company.contact_type && (
                           <Badge 
-                            variant="outline" 
-                            className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium"
+                            variant="secondary" 
+                            className="bg-primary/10 text-primary border-primary/20 font-medium"
                           >
                             {company.contact_type}
                           </Badge>

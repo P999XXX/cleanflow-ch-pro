@@ -49,24 +49,10 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
         <div className="absolute top-3 right-3 flex items-start gap-1 flex-wrap justify-end max-w-[60%]">
           {type === 'company' ? (
             <>
-              <Badge 
-                variant={getStatusBadge(item.status).props.variant}
-                className={`${getStatusBadge(item.status).props.className} font-medium text-[10px] px-1.5 py-0.5`}
-              >
-                {getStatusBadge(item.status).props.children}
-              </Badge>
-              {item.industry_category && (
-                <Badge 
-                  variant="outline" 
-                  className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5"
-                >
-                  {item.industry_category}
-                </Badge>
-              )}
               {item.contact_type && (
                 <Badge 
-                  variant="outline" 
-                  className="bg-orange-500/10 text-orange-700 border-orange-500/20 dark:text-orange-400 font-medium text-[10px] px-1.5 py-0.5"
+                  variant="secondary" 
+                  className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5"
                 >
                   {item.contact_type}
                 </Badge>
