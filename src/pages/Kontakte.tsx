@@ -17,7 +17,7 @@ const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons' | 'employees'>('all');
-  const [contactTypeFilter, setContactTypeFilter] = useState('all');
+  const [showCustomersOnly, setShowCustomersOnly] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [selectedPerson, setSelectedPerson] = useState(null);
@@ -36,13 +36,11 @@ const Kontakte = () => {
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
   const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
 
-  // Handle URL parameters for filtering (e.g., ?type=kunde)
+  // Handle URL parameters for filtering (e.g., ?customers=true)
   useEffect(() => {
-    const typeParam = searchParams.get('type');
-    if (typeParam) {
-      // Capitalize first letter to match database values
-      const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
-      setContactTypeFilter(formattedType);
+    const customersParam = searchParams.get('customers');
+    if (customersParam === 'true') {
+      setShowCustomersOnly(true);
     }
   }, [searchParams]);
 
@@ -56,30 +54,15 @@ const Kontakte = () => {
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
-  // Extract unique contact types from companies
-  const availableContactTypes = useMemo(() => {
-    if (!companies) return [];
-    const types = new Set<string>();
-    companies.forEach(company => {
-      if (company.contact_type) {
-        types.add(company.contact_type);
-      }
-    });
-    return Array.from(types).sort();
-  }, [companies]);
-
   // Optimized filtering with useMemo for performance
   const filteredCompanies = useMemo(() => {
     if (!companies) return [];
     
     let filtered = companies;
     
-    // Filter by contact type (supports multiple types comma-separated)
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(company => 
-        selectedTypes.includes(company.contact_type || '')
-      );
+    // Filter by customer status
+    if (showCustomersOnly) {
+      filtered = filtered.filter(company => company.is_customer === true);
     }
     
     // Filter by search term
@@ -95,7 +78,7 @@ const Kontakte = () => {
     }
     
     return filtered;
-  }, [companies, searchTerm, contactTypeFilter]);
+  }, [companies, searchTerm, showCustomersOnly]);
 
   const filteredPersons = useMemo(() => {
     if (!contactPersons) return [];
@@ -103,13 +86,9 @@ const Kontakte = () => {
     // Zeige ALLE Personen (inkl. Mitarbeiter)
     let filtered = contactPersons;
     
-    // Filter by contact type (supports multiple types comma-separated)
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(person => {
-        const fullCompany = companies?.find(company => company.id === person.customer_company_id);
-        return selectedTypes.includes(fullCompany?.contact_type || '');
-      });
+    // Filter by customer status
+    if (showCustomersOnly) {
+      filtered = filtered.filter(person => person.is_private_customer === true);
     }
     
     // Filter by search term
@@ -126,7 +105,7 @@ const Kontakte = () => {
     }
     
     return filtered;
-  }, [contactPersons, searchTerm, contactTypeFilter, companies]);
+  }, [contactPersons, searchTerm, showCustomersOnly]);
 
   const filteredEmployees = useMemo(() => {
     if (!contactPersons) return [];
@@ -426,19 +405,19 @@ const Kontakte = () => {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onClearSearch={clearSearch}
-        contactTypeFilter={contactTypeFilter}
-        onContactTypeChange={setContactTypeFilter}
         activeTab={activeTab}
         onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees')}
-        totalCount={totalCount}
-        companiesCount={filteredCompanies.length}
-        personsCount={filteredPersons.length}
-        employeesCount={filteredEmployees.length}
+        showCustomersOnly={showCustomersOnly}
+        onCustomerFilterToggle={() => setShowCustomersOnly(!showCustomersOnly)}
+        counts={{
+          all: totalCount,
+          companies: filteredCompanies.length,
+          persons: filteredPersons.length,
+          employees: filteredEmployees.length,
+        }}
         viewMode={viewMode}
-        onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
+        onViewModeChange={(mode) => setViewMode(mode)}
         onAddClick={handleAddClick}
-        isMobile={isMobile}
-        availableContactTypes={availableContactTypes}
       />
 
       {/* Main Content */}
