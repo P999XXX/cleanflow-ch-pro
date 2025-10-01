@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
 
@@ -30,6 +31,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
     status: 'aktiv',
     company_type: '',
     industry_category: '',
+    is_customer: true,
   });
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
+        is_customer: company.is_customer ?? true,
       });
     } else {
       setFormData({
@@ -64,6 +67,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         status: 'aktiv',
         company_type: '',
         industry_category: '',
+        is_customer: true,
       });
     }
   }, [company]);
@@ -86,6 +90,18 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Ist Kunde Checkbox ganz oben */}
+          <div className="flex items-center space-x-2 pb-2 border-b">
+            <Checkbox
+              id="is_customer"
+              checked={formData.is_customer}
+              onCheckedChange={(checked) => setFormData({ ...formData, is_customer: checked as boolean })}
+            />
+            <Label htmlFor="is_customer" className="cursor-pointer font-medium">
+              Ist Kunde
+            </Label>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="md:col-span-2">
               <Label htmlFor="name">Firmenname *</Label>

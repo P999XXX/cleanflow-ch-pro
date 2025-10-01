@@ -100,7 +100,8 @@ const Kontakte = () => {
   const filteredPersons = useMemo(() => {
     if (!contactPersons) return [];
     
-    let filtered = contactPersons.filter(person => !person.is_employee);
+    // Zeige ALLE Personen (inkl. Mitarbeiter)
+    let filtered = contactPersons;
     
     // Filter by contact type (supports multiple types comma-separated)
     if (contactTypeFilter !== 'all') {

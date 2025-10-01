@@ -43,6 +43,7 @@ export const ContactPersonForm = ({
     mobile: '',
     is_primary_contact: false,
     is_employee: initialIsEmployee,
+    is_private_customer: false,
     notes: '',
     customer_company_id: undefined,
   });
@@ -64,6 +65,7 @@ export const ContactPersonForm = ({
         mobile: contactPerson.mobile || '',
         is_primary_contact: contactPerson.is_primary_contact || false,
         is_employee: contactPerson.is_employee || false,
+        is_private_customer: contactPerson.is_private_customer || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id,
       });
@@ -78,6 +80,7 @@ export const ContactPersonForm = ({
         mobile: '',
         is_primary_contact: false,
         is_employee: initialIsEmployee,
+        is_private_customer: false,
         notes: '',
         customer_company_id: undefined,
       });
@@ -152,6 +155,20 @@ export const ContactPersonForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-4">
+              {/* Ist Privatkunde Checkbox ganz oben */}
+              {!initialIsEmployee && (
+                <div className="flex items-center space-x-2 pb-2 border-b">
+                  <Checkbox
+                    id="is_private_customer"
+                    checked={formData.is_private_customer}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_private_customer: checked as boolean })}
+                  />
+                  <Label htmlFor="is_private_customer" className="cursor-pointer font-medium">
+                    Ist Privatkunde
+                  </Label>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">Vorname *</Label>
