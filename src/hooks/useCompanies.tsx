@@ -18,7 +18,6 @@ export interface CustomerCompany {
   company_type?: string;
   industry_category?: string;
   contact_type?: string;
-  is_customer?: boolean;
   created_at: string;
   updated_at: string;
   company_id: string;
@@ -50,7 +49,6 @@ export interface CustomerCompanyInput {
   company_type?: string;
   industry_category?: string;
   contact_type?: string;
-  is_customer?: boolean;
 }
 
 export const useCompanies = () => {
