@@ -230,7 +230,7 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              {!isEmployee && (
+              {!isEmployee && personType !== 'private' && (
                 <div className="space-y-2">
                   <Label htmlFor="customer_company_id">Unternehmen</Label>
                   <Select
