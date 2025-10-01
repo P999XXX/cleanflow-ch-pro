@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
@@ -54,7 +55,7 @@ export const ContactForm = ({
     status: 'aktiv',
     company_type: '',
     industry_category: '',
-    contact_type: '',
+    contact_type: 'Kunde',
   });
 
   // Reset stage when dialog opens/closes
@@ -84,7 +85,7 @@ export const ContactForm = ({
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || '',
+        contact_type: company.contact_type || 'Kunde',
       });
     } else {
       setCompanyData({
@@ -101,7 +102,7 @@ export const ContactForm = ({
         status: 'aktiv',
         company_type: '',
         industry_category: '',
-        contact_type: '',
+        contact_type: 'Kunde',
       });
     }
   }, [company]);
@@ -279,6 +280,21 @@ export const ContactForm = ({
 
         {stage === 'form' && selectedType === 'company' && (
           <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="p-4 bg-muted/50 rounded-lg">
+            <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
+            <RadioGroup value={companyData.contact_type || 'Kunde'} onValueChange={(v) => handleSelectChange('contact_type', v)} className="flex gap-6">
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Kunde" id="kunde" />
+                <Label htmlFor="kunde" className="font-normal cursor-pointer">Kunde</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Geschäftskunde" id="geschaeftskunde" />
+                <Label htmlFor="geschaeftskunde" className="font-normal cursor-pointer">Geschäftskunde</Label>
+              </div>
+            </RadioGroup>
+            {errors.contact_type && <p className="text-sm text-destructive mt-2">{errors.contact_type}</p>}
+          </div>
+
           <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
@@ -407,27 +423,6 @@ export const ContactForm = ({
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="contact_type">
-                    Kontaktart <span className="text-foreground">*</span>
-                  </Label>
-                  <Select 
-                    value={companyData.contact_type} 
-                    onValueChange={(value) => handleSelectChange('contact_type', value)}
-                  >
-                    <SelectTrigger className={errors.contact_type ? 'border-destructive' : ''}>
-                      <SelectValue placeholder="Kontaktart auswählen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Kunde">Kunde</SelectItem>
-                      <SelectItem value="Lieferant">Lieferant</SelectItem>
-                      <SelectItem value="Dienstleister">Dienstleister</SelectItem>
-                      <SelectItem value="Amtlich">Amtlich</SelectItem>
-                      <SelectItem value="Sonstige">Sonstige</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.contact_type && <p className="text-sm text-destructive mt-1">{errors.contact_type}</p>}
-                </div>
                 <div>
                   <Label htmlFor="status">
                     Status <span className="text-foreground">*</span>
