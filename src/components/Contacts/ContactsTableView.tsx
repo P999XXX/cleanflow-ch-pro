@@ -164,16 +164,9 @@ export function ContactsTableView({
                     onClick={() => onCardClick(person, 'person')}
                   >
                     <TableCell className="font-medium lg:w-1/4 lg:whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <div>{person.name}</div>
-                          {person.position && <div className="text-sm text-muted-foreground">{person.position}</div>}
-                        </div>
-                        {person.is_employee && (
-                          <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium">
-                            Mitarbeiter
-                          </Badge>
-                        )}
+                      <div>
+                        <div>{person.name}</div>
+                        {person.position && <div className="text-sm text-muted-foreground">{person.position}</div>}
                       </div>
                     </TableCell>
                     <TableCell className="lg:w-1/4 lg:whitespace-nowrap">{person.customer_companies?.name || '-'}</TableCell>
@@ -225,6 +218,11 @@ export function ContactsTableView({
                     </TableCell>
                     <TableCell className="text-right lg:w-1/4 lg:whitespace-nowrap">
                       <div className="flex items-center justify-end gap-2 flex-wrap">
+                        {person.is_employee && (
+                          <Badge variant="secondary" className="bg-blue-500/10 text-blue-700 border-blue-500/20 dark:text-blue-400 font-medium">
+                            Mitarbeiter
+                          </Badge>
+                        )}
                         {person.is_private_customer && (
                           <Badge variant="secondary" className="bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-400 font-medium">
                             Privatkunde

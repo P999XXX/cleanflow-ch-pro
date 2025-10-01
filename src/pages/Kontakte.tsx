@@ -95,9 +95,7 @@ const Kontakte = () => {
 
   // Separate by type for display
   const filteredCompanies = useMemo(() => {
-    return filteredAllContacts.filter(c => 
-      c.contact_type === 'Unternehmen' || c.contact_type === 'Geschäftskunde'
-    );
+    return filteredAllContacts.filter(c => c.type === 'company');
   }, [filteredAllContacts]);
 
   const filteredBusinessCustomers = useMemo(() => {
@@ -113,9 +111,7 @@ const Kontakte = () => {
   }, [filteredAllContacts]);
 
   const filteredPersons = useMemo(() => {
-    return filteredAllContacts.filter(c => 
-      c.contact_type === 'Privatkunde' || c.contact_type === 'Person' || c.contact_type === 'Mitarbeiter'
-    );
+    return filteredAllContacts.filter(c => c.type === 'person');
   }, [filteredAllContacts]);
 
   const totalCount = filteredAllContacts.length;
