@@ -55,7 +55,7 @@ export const ContactForm = ({
     status: 'aktiv',
     company_type: '',
     industry_category: '',
-    contact_type: 'Kunde',
+    contact_type: 'Geschäftskunde',
   });
 
   // Reset stage when dialog opens/closes
@@ -85,7 +85,7 @@ export const ContactForm = ({
         status: company.status || 'aktiv',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || 'Kunde',
+        contact_type: company.contact_type || 'Geschäftskunde',
       });
     } else {
       setCompanyData({
@@ -102,7 +102,7 @@ export const ContactForm = ({
         status: 'aktiv',
         company_type: '',
         industry_category: '',
-        contact_type: 'Kunde',
+        contact_type: 'Geschäftskunde',
       });
     }
   }, [company]);
@@ -280,21 +280,6 @@ export const ContactForm = ({
 
         {stage === 'form' && selectedType === 'company' && (
           <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="p-4 bg-muted/50 rounded-lg">
-            <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
-            <RadioGroup value={companyData.contact_type || 'Kunde'} onValueChange={(v) => handleSelectChange('contact_type', v)} className="flex gap-6">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Kunde" id="kunde" />
-                <Label htmlFor="kunde" className="font-normal cursor-pointer">Kunde</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="Geschäftskunde" id="geschaeftskunde" />
-                <Label htmlFor="geschaeftskunde" className="font-normal cursor-pointer">Geschäftskunde</Label>
-              </div>
-            </RadioGroup>
-            {errors.contact_type && <p className="text-sm text-destructive mt-2">{errors.contact_type}</p>}
-          </div>
-
           <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ContactPersonInput } from "@/hooks/useContactPersons";
 import { useCompanies } from "@/hooks/useCompanies";
@@ -34,6 +35,7 @@ export const ContactPersonForm = ({
   onBack
 }: ContactPersonFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [personType, setPersonType] = useState<'private' | 'employee'>(initialIsEmployee ? 'employee' : 'private');
   const [formData, setFormData] = useState<ContactPersonInput>({
     first_name: '',
     last_name: '',
@@ -43,6 +45,7 @@ export const ContactPersonForm = ({
     mobile: '',
     is_primary_contact: false,
     is_employee: initialIsEmployee,
+    is_private_customer: !initialIsEmployee,
     notes: '',
     customer_company_id: undefined,
   });
@@ -55,6 +58,8 @@ export const ContactPersonForm = ({
 
   useEffect(() => {
     if (contactPerson) {
+      const isEmp = contactPerson.is_employee || false;
+      setPersonType(isEmp ? 'employee' : 'private');
       setFormData({
         first_name: contactPerson.first_name || '',
         last_name: contactPerson.last_name || '',
@@ -63,12 +68,15 @@ export const ContactPersonForm = ({
         phone: contactPerson.phone || '',
         mobile: contactPerson.mobile || '',
         is_primary_contact: contactPerson.is_primary_contact || false,
-        is_employee: contactPerson.is_employee || false,
+        is_employee: isEmp,
+        is_private_customer: contactPerson.is_private_customer || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id,
       });
       setCompanyId(contactPerson.company_id || '');
     } else {
+      const isEmp = initialIsEmployee;
+      setPersonType(isEmp ? 'employee' : 'private');
       setFormData({
         first_name: '',
         last_name: '',
@@ -77,7 +85,8 @@ export const ContactPersonForm = ({
         phone: '',
         mobile: '',
         is_primary_contact: false,
-        is_employee: initialIsEmployee,
+        is_employee: isEmp,
+        is_private_customer: !isEmp,
         notes: '',
         customer_company_id: undefined,
       });
@@ -95,13 +104,24 @@ export const ContactPersonForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (initialIsEmployee && currentStep < 3) {
+    const isEmployee = personType === 'employee';
+    if (isEmployee && currentStep < 3) {
       // Move to next step if employee
       setCurrentStep(currentStep + 1);
       return;
     }
     
-    onSubmit(formData, initialIsEmployee ? employeeData : undefined, initialIsEmployee ? children : undefined);
+    onSubmit(formData, isEmployee ? employeeData : undefined, isEmployee ? children : undefined);
+  };
+
+  const handlePersonTypeChange = (value: string) => {
+    const newType = value as 'private' | 'employee';
+    setPersonType(newType);
+    setFormData({
+      ...formData,
+      is_employee: newType === 'employee',
+      is_private_customer: newType === 'private',
+    });
   };
 
   const handlePrevious = () => {
@@ -110,8 +130,9 @@ export const ContactPersonForm = ({
     }
   };
 
-  const totalSteps = initialIsEmployee ? 3 : 1;
-  const stepLabels = initialIsEmployee 
+  const isEmployee = personType === 'employee';
+  const totalSteps = isEmployee ? 3 : 1;
+  const stepLabels = isEmployee 
     ? ["Basis-Kontakt", "HR-Details", "Kinder"]
     : ["Kontaktdaten"];
 
@@ -135,13 +156,13 @@ export const ContactPersonForm = ({
               {contactPerson ? (
                 contactPerson.is_employee ? 'Mitarbeiter bearbeiten' : 'Kontaktperson bearbeiten'
               ) : (
-                initialIsEmployee ? 'Neuer Mitarbeiter' : 'Neue Kontaktperson'
+                'Neue Kontaktperson'
               )}
             </DialogTitle>
           </div>
         </DialogHeader>
 
-        {initialIsEmployee && (
+        {isEmployee && (
           <FormProgressIndicator 
             currentStep={currentStep} 
             totalSteps={totalSteps}
@@ -152,6 +173,21 @@ export const ContactPersonForm = ({
         <form onSubmit={handleSubmit} className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-4">
+              {!contactPerson && (
+                <div className="p-4 bg-muted/50 rounded-lg">
+                  <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
+                  <RadioGroup value={personType} onValueChange={handlePersonTypeChange} className="flex gap-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="private" id="privatkunde" />
+                      <Label htmlFor="privatkunde" className="font-normal cursor-pointer">Privatkunde</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="employee" id="mitarbeiter" />
+                      <Label htmlFor="mitarbeiter" className="font-normal cursor-pointer">Mitarbeiter</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">Vorname *</Label>
@@ -183,7 +219,7 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              {!initialIsEmployee && (
+              {!isEmployee && (
                 <div className="space-y-2">
                   <Label htmlFor="customer_company_id">Unternehmen</Label>
                   <Select
@@ -236,7 +272,7 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              {!initialIsEmployee && (
+              {!isEmployee && (
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="is_primary_contact"
@@ -261,7 +297,7 @@ export const ContactPersonForm = ({
             </div>
           )}
 
-          {currentStep === 2 && initialIsEmployee && (
+          {currentStep === 2 && isEmployee && (
             <EmployeeFormStep2 
               employeeData={employeeData}
               onChange={setEmployeeData}
@@ -269,7 +305,7 @@ export const ContactPersonForm = ({
             />
           )}
 
-          {currentStep === 3 && initialIsEmployee && (
+          {currentStep === 3 && isEmployee && (
             <EmployeeFormStep3 
               children={children}
               onChange={setChildren}
@@ -292,7 +328,7 @@ export const ContactPersonForm = ({
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Lädt...' : (
-                  initialIsEmployee && currentStep < 3 ? (
+                  isEmployee && currentStep < 3 ? (
                     <>
                       Weiter
                       <ChevronRight className="h-4 w-4 ml-2" />
