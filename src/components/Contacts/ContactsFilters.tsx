@@ -50,14 +50,29 @@ export function ContactsFilters({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false);
 
-  // Generate filter options from available contact types
+  // Generate filter options based on active tab
   const filterOptions = useMemo(() => {
-    const options = availableContactTypes.map(type => ({
+    let filteredTypes = availableContactTypes;
+    
+    // Filter options based on active tab
+    if (activeTab === 'persons') {
+      // For persons tab: show only person-related types
+      filteredTypes = availableContactTypes.filter(type => 
+        type !== 'Unternehmen'
+      );
+    } else if (activeTab === 'companies') {
+      // For companies tab: show only company types
+      filteredTypes = availableContactTypes.filter(type => 
+        type === 'Unternehmen'
+      );
+    }
+    
+    const options = filteredTypes.map(type => ({
       value: type,
       label: type.charAt(0).toUpperCase() + type.slice(1)
     }));
     return [{ value: 'all', label: 'Alle Kontaktarten' }, ...options];
-  }, [availableContactTypes]);
+  }, [availableContactTypes, activeTab]);
 
   // Sync selectedFilters with contactTypeFilter prop
   useEffect(() => {
@@ -130,8 +145,7 @@ export function ContactsFilters({
                 )}
                 
                 {/* Filter Icon in Search Field - Mobile/Tablet only */}
-                {(activeTab === 'all' || activeTab === 'companies') && (
-                  <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 lg:hidden">
                     <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                       <PopoverTrigger asChild>
                         <button className="text-primary hover:text-primary/80 transition-colors relative bg-primary/10 hover:bg-primary/20 rounded-md p-1.5">
@@ -177,12 +191,10 @@ export function ContactsFilters({
                     </PopoverContent>
                   </Popover>
                 </div>
-                )}
               </div>
 
               {/* Desktop Filter Button - next to search */}
-              {(activeTab === 'all' || activeTab === 'companies') && (
-                <div className="hidden lg:block">
+              <div className="hidden lg:block">
                   <Popover open={isDesktopFilterOpen} onOpenChange={setIsDesktopFilterOpen}>
                     <PopoverTrigger asChild>
                       <Button
@@ -235,7 +247,6 @@ export function ContactsFilters({
                   </PopoverContent>
                 </Popover>
               </div>
-              )}
             </div>
 
             {/* Filter Badges - Mobile/Tablet only, directly after search */}
