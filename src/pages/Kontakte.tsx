@@ -6,6 +6,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFoo
 import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
 import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
+import { useAllContacts } from '@/hooks/useAllContacts';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
@@ -16,7 +17,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons' | 'employees'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons' | 'employees' | 'contact-persons'>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
@@ -32,6 +33,7 @@ const Kontakte = () => {
   const isMobile = useIsMobile();
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
+  const { data: allContacts } = useAllContacts();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
   const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
@@ -56,83 +58,63 @@ const Kontakte = () => {
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
-  // Extract unique contact types - always show Geschäftskunde for companies
+  // Available contact types for filters - unified system
   const availableContactTypes = useMemo(() => {
-    return ['Geschäftskunde'];
+    return ['Geschäftskunde', 'Privatkunde', 'Mitarbeiter'];
   }, []);
 
-  // Optimized filtering with useMemo for performance
-  const filteredCompanies = useMemo(() => {
-    if (!companies) return [];
+  // Optimized filtering with useMemo for performance - unified contacts
+  const filteredAllContacts = useMemo(() => {
+    if (!allContacts) return [];
     
-    let filtered = companies;
+    let filtered = allContacts;
     
-    // Filter by contact type (supports multiple types comma-separated)
+    // Filter by contact type
     if (contactTypeFilter !== 'all') {
       const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(company => 
-        selectedTypes.includes(company.contact_type || '')
+      filtered = filtered.filter(contact => 
+        selectedTypes.includes(contact.contact_type)
       );
     }
     
     // Filter by search term
     if (searchTerm.trim()) {
       const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(company =>
-        company.name.toLowerCase().includes(term) ||
-        company.email?.toLowerCase().includes(term) ||
-        company.city?.toLowerCase().includes(term) ||
-        company.address?.toLowerCase().includes(term) ||
-        company.phone?.toLowerCase().includes(term)
+      filtered = filtered.filter(contact =>
+        contact.name.toLowerCase().includes(term) ||
+        contact.email?.toLowerCase().includes(term) ||
+        contact.phone?.toLowerCase().includes(term) ||
+        contact.mobile?.toLowerCase().includes(term) ||
+        contact.address?.toLowerCase().includes(term) ||
+        contact.city?.toLowerCase().includes(term)
       );
     }
     
     return filtered;
-  }, [companies, searchTerm, contactTypeFilter]);
+  }, [allContacts, searchTerm, contactTypeFilter]);
 
-  const filteredPersons = useMemo(() => {
-    if (!contactPersons) return [];
-    
-    // Only show persons that are private customers (not employees)
-    let filtered = contactPersons.filter(person => person.is_private_customer === true);
-    
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(person =>
-        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
-        person.email?.toLowerCase().includes(term) ||
-        person.phone?.toLowerCase().includes(term) ||
-        person.mobile?.toLowerCase().includes(term) ||
-        person.position?.toLowerCase().includes(term) ||
-        person.customer_companies?.name?.toLowerCase().includes(term)
-      );
-    }
-    
-    return filtered;
-  }, [contactPersons, searchTerm]);
+  // Separate by type for display
+  const filteredCompanies = useMemo(() => {
+    return filteredAllContacts.filter(c => c.type === 'company');
+  }, [filteredAllContacts]);
+
+  const filteredBusinessCustomers = useMemo(() => {
+    return filteredAllContacts.filter(c => c.contact_type === 'Geschäftskunde');
+  }, [filteredAllContacts]);
+
+  const filteredPrivateCustomers = useMemo(() => {
+    return filteredAllContacts.filter(c => c.contact_type === 'Privatkunde');
+  }, [filteredAllContacts]);
 
   const filteredEmployees = useMemo(() => {
-    if (!contactPersons) return [];
-    
-    let filtered = contactPersons.filter(person => person.is_employee === true);
-    
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(person =>
-        `${person.first_name} ${person.last_name}`.toLowerCase().includes(term) ||
-        person.email?.toLowerCase().includes(term) ||
-        person.phone?.toLowerCase().includes(term) ||
-        person.mobile?.toLowerCase().includes(term) ||
-        person.position?.toLowerCase().includes(term)
-      );
-    }
-    
-    return filtered;
-  }, [contactPersons, searchTerm]);
+    return filteredAllContacts.filter(c => c.contact_type === 'Mitarbeiter');
+  }, [filteredAllContacts]);
 
-  const totalCount = filteredCompanies.length + filteredPersons.length + filteredEmployees.length;
+  const filteredPersons = useMemo(() => {
+    return filteredAllContacts.filter(c => c.type === 'person');
+  }, [filteredAllContacts]);
+
+  const totalCount = filteredAllContacts.length;
   const isSearching = searchTerm.trim().length > 0;
   const hasNoResults = isSearching && totalCount === 0;
 
@@ -413,11 +395,13 @@ const Kontakte = () => {
         contactTypeFilter={contactTypeFilter}
         onContactTypeChange={setContactTypeFilter}
         activeTab={activeTab}
-        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees')}
+        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons' | 'employees' | 'contact-persons')}
         totalCount={totalCount}
         companiesCount={filteredCompanies.length}
         personsCount={filteredPersons.length}
         employeesCount={filteredEmployees.length}
+        businessCustomersCount={filteredBusinessCustomers.length}
+        privateCustomersCount={filteredPrivateCustomers.length}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={handleAddClick}
@@ -443,7 +427,7 @@ const Kontakte = () => {
             )}
             {activeTab === 'companies' && (
               <ContactsCardsView
-                companies={filteredCompanies}
+                companies={filteredBusinessCustomers.filter(c => c.type === 'company')}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
@@ -455,7 +439,7 @@ const Kontakte = () => {
             {activeTab === 'persons' && (
               <ContactsCardsView
                 companies={[]}
-                persons={filteredPersons}
+                persons={filteredPrivateCustomers.filter(c => c.type === 'person')}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -467,7 +451,18 @@ const Kontakte = () => {
               <ContactsCardsView
                 companies={[]}
                 persons={[]}
-                employees={filteredEmployees}
+                employees={filteredEmployees.filter(c => c.type === 'person')}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+              />
+            )}
+            {activeTab === 'contact-persons' && (
+              <ContactsCardsView
+                companies={[]}
+                persons={filteredPersons}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -493,7 +488,7 @@ const Kontakte = () => {
             )}
             {activeTab === 'companies' && (
               <ContactsTableView
-                companies={filteredCompanies}
+                companies={filteredBusinessCustomers.filter(c => c.type === 'company')}
                 persons={[]}
                 showSections={true}
                 isSearching={isSearching}
@@ -506,7 +501,7 @@ const Kontakte = () => {
             {activeTab === 'persons' && (
               <ContactsTableView
                 companies={[]}
-                persons={filteredPersons}
+                persons={filteredPrivateCustomers.filter(c => c.type === 'person')}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}
@@ -519,7 +514,19 @@ const Kontakte = () => {
               <ContactsTableView
                 companies={[]}
                 persons={[]}
-                employees={filteredEmployees}
+                employees={filteredEmployees.filter(c => c.type === 'person')}
+                showSections={true}
+                isSearching={isSearching}
+                hasNoResults={hasNoResults}
+                onClearSearch={clearSearch}
+                onCardClick={handleCardClick}
+                getStatusBadge={getStatusBadge}
+              />
+            )}
+            {activeTab === 'contact-persons' && (
+              <ContactsTableView
+                companies={[]}
+                persons={filteredPersons}
                 showSections={true}
                 isSearching={isSearching}
                 hasNoResults={hasNoResults}

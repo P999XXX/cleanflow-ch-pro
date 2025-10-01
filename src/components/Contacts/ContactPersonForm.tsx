@@ -111,7 +111,14 @@ export const ContactPersonForm = ({
       return;
     }
     
-    onSubmit(formData, isEmployee ? employeeData : undefined, isEmployee ? children : undefined);
+    const submitData = {
+      ...formData,
+      is_employee: isEmployee,
+      is_private_customer: !isEmployee,
+      contact_type: isEmployee ? 'Mitarbeiter' : 'Privatkunde'
+    };
+    
+    onSubmit(submitData, isEmployee ? employeeData : undefined, isEmployee ? children : undefined);
   };
 
   const handlePersonTypeChange = (value: string) => {

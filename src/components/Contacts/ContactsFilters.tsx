@@ -19,6 +19,8 @@ interface ContactsFiltersProps {
   companiesCount: number;
   personsCount: number;
   employeesCount: number;
+  businessCustomersCount?: number;
+  privateCustomersCount?: number;
   viewMode: 'table' | 'cards';
   onViewModeToggle: () => void;
   onAddClick: () => void;
@@ -38,6 +40,8 @@ export function ContactsFilters({
   companiesCount,
   personsCount,
   employeesCount,
+  businessCustomersCount = 0,
+  privateCustomersCount = 0,
   viewMode,
   onViewModeToggle,
   onAddClick,

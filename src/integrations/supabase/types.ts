@@ -68,6 +68,7 @@ export type Database = {
       contact_persons: {
         Row: {
           company_id: string
+          contact_type: string | null
           created_at: string
           customer_company_id: string | null
           email: string | null
@@ -75,6 +76,7 @@ export type Database = {
           id: string
           is_employee: boolean | null
           is_primary_contact: boolean | null
+          is_private_customer: boolean | null
           last_name: string
           mobile: string | null
           notes: string | null
@@ -84,6 +86,7 @@ export type Database = {
         }
         Insert: {
           company_id: string
+          contact_type?: string | null
           created_at?: string
           customer_company_id?: string | null
           email?: string | null
@@ -91,6 +94,7 @@ export type Database = {
           id?: string
           is_employee?: boolean | null
           is_primary_contact?: boolean | null
+          is_private_customer?: boolean | null
           last_name: string
           mobile?: string | null
           notes?: string | null
@@ -100,6 +104,7 @@ export type Database = {
         }
         Update: {
           company_id?: string
+          contact_type?: string | null
           created_at?: string
           customer_company_id?: string | null
           email?: string | null
@@ -107,6 +112,7 @@ export type Database = {
           id?: string
           is_employee?: boolean | null
           is_primary_contact?: boolean | null
+          is_private_customer?: boolean | null
           last_name?: string
           mobile?: string | null
           notes?: string | null
@@ -143,6 +149,7 @@ export type Database = {
           email: string | null
           id: string
           industry_category: string | null
+          is_customer: boolean | null
           name: string
           notes: string | null
           phone: string | null
@@ -163,6 +170,7 @@ export type Database = {
           email?: string | null
           id?: string
           industry_category?: string | null
+          is_customer?: boolean | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -183,6 +191,7 @@ export type Database = {
           email?: string | null
           id?: string
           industry_category?: string | null
+          is_customer?: boolean | null
           name?: string
           notes?: string | null
           phone?: string | null

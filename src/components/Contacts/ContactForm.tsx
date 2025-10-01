@@ -193,7 +193,7 @@ export const ContactForm = ({
     if (isValid) {
       const dataToSubmit = {
         ...companyData,
-        contact_type: isBusinessCustomer ? 'Geschäftskunde' : companyData.contact_type
+        contact_type: 'Geschäftskunde' // Always set to Geschäftskunde for companies
       };
       onSubmitCompany(dataToSubmit);
     } else {
