@@ -186,7 +186,7 @@ export function ContactsFilters({
             {/* Tabs and Actions - Desktop: on same line */}
             <div className="hidden lg:flex lg:items-start gap-6 flex-1">
               <Tabs value={activeTab} onValueChange={onTabChange} className="w-auto">
-                <TabsList className="grid grid-cols-4 w-auto">
+                <TabsList className="inline-flex w-auto h-auto">
                   <TabsTrigger value="all" className="flex items-center gap-1 px-2">
                     <Contact className="h-4 w-4" />
                     <span className="text-xs sm:text-sm">Alle</span>
