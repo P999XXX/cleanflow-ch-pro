@@ -91,7 +91,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
-            <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
+            <Label className="text-base font-semibold mb-3 block">Typ</Label>
             <RadioGroup 
               value={formData.contact_type || 'Unternehmen'} 
               onValueChange={(value) => setFormData({ ...formData, contact_type: value })}
