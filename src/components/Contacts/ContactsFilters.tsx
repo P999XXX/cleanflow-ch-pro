@@ -85,7 +85,12 @@ export function ContactsFilters({
 
   const handleFilterToggle = (value: string) => {
     if (value === 'all') {
-      clearFilters();
+      // Select all available filter options (excluding 'all' itself)
+      const allFilterValues = filterOptions
+        .filter(option => option.value !== 'all')
+        .map(option => option.value);
+      setSelectedFilters(allFilterValues);
+      onContactTypeChange(allFilterValues.join(","));
       return;
     }
     
