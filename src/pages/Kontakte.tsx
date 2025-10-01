@@ -56,17 +56,10 @@ const Kontakte = () => {
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
 
-  // Extract unique contact types from companies
+  // Extract unique contact types - always show Geschäftskunde for companies
   const availableContactTypes = useMemo(() => {
-    if (!companies) return [];
-    const types = new Set<string>();
-    companies.forEach(company => {
-      if (company.contact_type) {
-        types.add(company.contact_type);
-      }
-    });
-    return Array.from(types).sort();
-  }, [companies]);
+    return ['Geschäftskunde'];
+  }, []);
 
   // Optimized filtering with useMemo for performance
   const filteredCompanies = useMemo(() => {
@@ -100,16 +93,8 @@ const Kontakte = () => {
   const filteredPersons = useMemo(() => {
     if (!contactPersons) return [];
     
-    let filtered = contactPersons.filter(person => !person.is_employee);
-    
-    // Filter by contact type (supports multiple types comma-separated)
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(person => {
-        const fullCompany = companies?.find(company => company.id === person.customer_company_id);
-        return selectedTypes.includes(fullCompany?.contact_type || '');
-      });
-    }
+    // Only show persons that are private customers (not employees)
+    let filtered = contactPersons.filter(person => person.is_private_customer === true);
     
     // Filter by search term
     if (searchTerm.trim()) {
@@ -125,7 +110,7 @@ const Kontakte = () => {
     }
     
     return filtered;
-  }, [contactPersons, searchTerm, contactTypeFilter, companies]);
+  }, [contactPersons, searchTerm]);
 
   const filteredEmployees = useMemo(() => {
     if (!contactPersons) return [];

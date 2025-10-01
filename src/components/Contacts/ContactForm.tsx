@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
@@ -58,6 +58,8 @@ export const ContactForm = ({
     contact_type: 'Geschäftskunde',
   });
 
+  const [isBusinessCustomer, setIsBusinessCustomer] = useState(true);
+
   // Reset stage when dialog opens/closes
   useEffect(() => {
     if (isOpen && !company && !contactPerson) {
@@ -87,6 +89,7 @@ export const ContactForm = ({
         industry_category: company.industry_category || '',
         contact_type: company.contact_type || 'Geschäftskunde',
       });
+      setIsBusinessCustomer(company.contact_type === 'Geschäftskunde' || !company.contact_type);
     } else {
       setCompanyData({
         name: '',
@@ -104,6 +107,7 @@ export const ContactForm = ({
         industry_category: '',
         contact_type: 'Geschäftskunde',
       });
+      setIsBusinessCustomer(true);
     }
   }, [company]);
 
@@ -187,7 +191,11 @@ export const ContactForm = ({
     
     const isValid = validateCompanyForm();
     if (isValid) {
-      onSubmitCompany(companyData);
+      const dataToSubmit = {
+        ...companyData,
+        contact_type: isBusinessCustomer ? 'Geschäftskunde' : companyData.contact_type
+      };
+      onSubmitCompany(dataToSubmit);
     } else {
       toast({
         title: 'Validierungsfehler',
@@ -280,6 +288,21 @@ export const ContactForm = ({
 
         {stage === 'form' && selectedType === 'company' && (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Kundentyp Checkbox */}
+            <div className="flex items-center space-x-2 p-4 bg-muted/30 rounded-lg border border-border/50">
+              <Checkbox
+                id="business-customer"
+                checked={isBusinessCustomer}
+                onCheckedChange={(checked) => setIsBusinessCustomer(checked as boolean)}
+              />
+              <label
+                htmlFor="business-customer"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+              >
+                Geschäftskunde
+              </label>
+            </div>
+
           <div className="grid grid-cols-1 gap-4">
               <div>
                 <Label htmlFor="name">
