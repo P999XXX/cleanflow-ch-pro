@@ -185,16 +185,16 @@ export const ContactPersonForm = ({
                   <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
                   <RadioGroup value={personType} onValueChange={handlePersonTypeChange} className="flex gap-6">
                     <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="person" id="person" />
+                      <Label htmlFor="person" className="font-normal cursor-pointer">Person</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
                       <RadioGroupItem value="private" id="privatkunde" />
                       <Label htmlFor="privatkunde" className="font-normal cursor-pointer">Privatkunde</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="employee" id="mitarbeiter" />
                       <Label htmlFor="mitarbeiter" className="font-normal cursor-pointer">Mitarbeiter</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="person" id="person" />
-                      <Label htmlFor="person" className="font-normal cursor-pointer">Person</Label>
                     </div>
                   </RadioGroup>
                 </div>
