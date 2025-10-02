@@ -3,8 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { useCompanies, useCompanyMutations, CustomerCompany } from '@/hooks/useCompanies';
-import { useContactPersons, useContactPersonMutations, ContactPerson } from '@/hooks/useContactPersons';
+import { useCompanies, useCompanyMutations, CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
+import { useContactPersons, useContactPersonMutations, ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { useAllContacts } from '@/hooks/useAllContacts';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -288,7 +288,7 @@ const Kontakte = () => {
     }
   };
 
-  const handleCompanySubmit = (companyData: Parameters<typeof createCompany.mutate>[0] | Parameters<typeof updateCompany.mutate>[0]) => {
+  const handleCompanySubmit = (companyData: CustomerCompanyInput) => {
     if (selectedCompany) {
       updateCompany.mutate(
         { id: selectedCompany.id, company: companyData },
@@ -324,7 +324,7 @@ const Kontakte = () => {
     }
   };
 
-  const handlePersonSubmit = async (personData: Parameters<typeof createContactPerson.mutate>[0] | Parameters<typeof updateContactPerson.mutate>[0], employeeDetails?: any, children?: any[]) => {
+  const handlePersonSubmit = async (personData: ContactPersonInput, employeeDetails?: any, children?: any[]) => {
     if (selectedPerson) {
       updateContactPerson.mutate(
         { id: selectedPerson.id, contactPerson: personData },
