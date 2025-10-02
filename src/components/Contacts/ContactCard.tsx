@@ -52,7 +52,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               {item.contact_type && (
                 <Badge 
                   variant="secondary" 
-                  className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5"
+                  className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5"
                 >
                   {item.contact_type}
                 </Badge>
