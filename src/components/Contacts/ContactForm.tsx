@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Switch } from '@/components/ui/switch';
 import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
@@ -236,13 +237,27 @@ export const ContactForm = ({
   return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
-          <div className="flex items-center gap-2">
-            {stage === 'form' && !company && !contactPerson && (
-              <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              {stage === 'form' && !company && !contactPerson && (
+                <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+              )}
+              <DialogTitle>{getTitle()}</DialogTitle>
+            </div>
+            {stage === 'form' && selectedType === 'company' && (
+              <div className="flex items-center gap-3">
+                <Label htmlFor="status-toggle" className="text-sm font-medium cursor-pointer">
+                  {companyData.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                </Label>
+                <Switch
+                  id="status-toggle"
+                  checked={companyData.status === 'aktiv'}
+                  onCheckedChange={(checked) => handleSelectChange('status', checked ? 'aktiv' : 'inaktiv')}
+                />
+              </div>
             )}
-            <DialogTitle>{getTitle()}</DialogTitle>
           </div>
         </DialogHeader>
 
@@ -355,23 +370,6 @@ export const ContactForm = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="status">
-                    Status <span className="text-foreground">*</span>
-                  </Label>
-                  <Select value={companyData.status} onValueChange={value => handleSelectChange('status', value)}>
-                    <SelectTrigger className={errors.status ? 'border-destructive' : ''}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="aktiv">Aktiv</SelectItem>
-                      <SelectItem value="inaktiv">Inaktiv</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {errors.status && <p className="text-sm text-destructive mt-1">{errors.status}</p>}
-                </div>
-              </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

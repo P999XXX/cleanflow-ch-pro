@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { ContactPersonInput } from "@/hooks/useContactPersons";
 import { useCompanies } from "@/hooks/useCompanies";
 import { EmployeeFormStep2 } from "./EmployeeFormStep2";
@@ -154,25 +155,37 @@ export const ContactPersonForm = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center gap-2">
-            {onBack && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onBack}
-                className="h-8 w-8"
-                type="button"
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-            )}
-            <DialogTitle>
-              {contactPerson ? (
-                contactPerson.is_employee ? 'Mitarbeiter bearbeiten' : 'Kontaktperson bearbeiten'
-              ) : (
-                'Neue Kontaktperson'
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              {onBack && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={onBack}
+                  className="h-8 w-8"
+                  type="button"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
               )}
-            </DialogTitle>
+              <DialogTitle>
+                {contactPerson ? (
+                  contactPerson.is_employee ? 'Mitarbeiter bearbeiten' : 'Kontaktperson bearbeiten'
+                ) : (
+                  'Neue Kontaktperson'
+                )}
+              </DialogTitle>
+            </div>
+            <div className="flex items-center gap-3">
+              <Label htmlFor="person-status-toggle" className="text-sm font-medium cursor-pointer">
+                {formData.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+              </Label>
+              <Switch
+                id="person-status-toggle"
+                checked={formData.status === 'aktiv'}
+                onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? 'aktiv' : 'inaktiv' })}
+              />
+            </div>
           </div>
         </DialogHeader>
 
@@ -239,21 +252,6 @@ export const ContactPersonForm = ({
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="status">Status *</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="aktiv">Aktiv</SelectItem>
-                    <SelectItem value="inaktiv">Inaktiv</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               {!isEmployee && personType !== 'private' && (
                 <div className="space-y-2">
