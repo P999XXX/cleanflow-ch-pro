@@ -105,6 +105,12 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
               {item.position && (
                 <p className="text-sm text-muted-foreground truncate">{item.position}</p>
               )}
+              {item.customer_companies?.name && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Building2 className="h-3 w-3 flex-shrink-0" />
+                  <span className="truncate">{item.customer_companies.name}</span>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -271,14 +277,6 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
           </TooltipProvider>
         ) : (
           <div className="flex flex-col gap-2 text-sm">
-            {type === 'person' && item.customer_companies?.name && (
-              <div className="flex items-center gap-2 min-w-0">
-                <Building2 className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                <span className="text-foreground/70 truncate" title={item.customer_companies.name}>
-                  {item.customer_companies.name}
-                </span>
-              </div>
-            )}
             {item.email && (
               <div className="flex items-center gap-2 min-w-0">
                 <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
