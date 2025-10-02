@@ -94,17 +94,9 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
             {type === 'company' ? item.name : `${item.first_name} ${item.last_name}`}
           </h3>
           {type === 'company' ? (
-            <div className="space-y-1 mt-1">
+          <div className="space-y-1 mt-1">
               {item.company_type && (
                 <p className="text-sm font-normal text-muted-foreground">{item.company_type}</p>
-              )}
-              {(item.city || item.postal_code) && (
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="h-3 w-3 flex-shrink-0" />
-                  <span className="truncate">
-                    {item.city && item.postal_code ? `${item.postal_code} ${item.city}` : item.city || item.postal_code}
-                  </span>
-                </div>
               )}
             </div>
           ) : (
@@ -125,14 +117,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
       <CardContent className="pt-0 flex-1 flex flex-col justify-end">
         {isMobile ? (
           <TooltipProvider>
-            <div className="flex gap-2 justify-center pt-2">
+            <div className="flex gap-2 justify-start pt-2">
               {(type === 'company' ? (item.street || item.city || item.postal_code) : item.customer_companies?.name) && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (type === 'company' && (item.street || item.city)) {
@@ -141,7 +133,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                         }
                       }}
                     >
-                      <MapPin className="h-5 w-5" />
+                      <MapPin className="h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -155,14 +147,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`mailto:${item.email}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Mail className="h-5 w-5" />
+                        <Mail className="h-4 w-4" />
                       </a>
                     </Button>
                   </TooltipTrigger>
@@ -177,14 +169,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`tel:${item.phone}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Phone className="h-5 w-5" />
+                        <Phone className="h-4 w-4" />
                       </a>
                     </Button>
                   </TooltipTrigger>
@@ -199,14 +191,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`tel:${item.mobile}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Smartphone className="h-5 w-5" />
+                        <Smartphone className="h-4 w-4" />
                       </a>
                     </Button>
                   </TooltipTrigger>
