@@ -125,12 +125,6 @@ export const ContactForm = ({
     if (!companyData.country.trim()) {
       newErrors.country = 'Land ist erforderlich';
     }
-    if (!companyData.company_type.trim()) {
-      newErrors.company_type = 'Gesellschaftsart ist erforderlich';
-    }
-    if (!companyData.industry_category.trim()) {
-      newErrors.industry_category = 'Branche ist erforderlich';
-    }
     if (!companyData.contact_type.trim()) {
       newErrors.contact_type = 'Kontaktart ist erforderlich';
     }
@@ -326,7 +320,7 @@ export const ContactForm = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="company_type">
-                    Gesellschaftsart <span className="text-foreground">*</span>
+                    Gesellschaftsart
                   </Label>
                   <Select value={companyData.company_type} onValueChange={value => handleSelectChange('company_type', value)}>
                     <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
@@ -349,7 +343,7 @@ export const ContactForm = ({
                 </div>
                 <div>
                   <Label htmlFor="industry_category">
-                    Branche <span className="text-foreground">*</span>
+                    Branche
                   </Label>
                   <Select value={companyData.industry_category} onValueChange={value => handleSelectChange('industry_category', value)}>
                     <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
