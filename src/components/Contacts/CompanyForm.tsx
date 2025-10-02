@@ -84,12 +84,9 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl">
+          <DialogTitle>
             {company ? 'Unternehmen bearbeiten' : 'Neues Unternehmen'}
           </DialogTitle>
-          <DialogDescription>
-            {company ? 'Bearbeiten Sie die Unternehmensdaten' : 'Fügen Sie ein neues Unternehmen hinzu'}
-          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
