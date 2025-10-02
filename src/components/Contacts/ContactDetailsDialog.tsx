@@ -15,12 +15,14 @@ import { Switch } from "@/components/ui/switch";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 
+import { NavigationStackItem } from '@/types/contacts';
+
 interface ContactDetailsDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedItem: any;
+  selectedItem: any; // TODO: Use ContactItem with type guards
   itemType: 'company' | 'person';
-  navigationStack: Array<{item: any, type: 'company' | 'person'}>;
+  navigationStack: NavigationStackItem[];
   onEdit: () => void;
   onDelete: () => void;
   onGoBack: () => void;

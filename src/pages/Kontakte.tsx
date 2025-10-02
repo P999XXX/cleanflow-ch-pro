@@ -3,8 +3,8 @@ import { useSearchParams } from 'react-router-dom';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { useCompanies, useCompanyMutations } from '@/hooks/useCompanies';
-import { useContactPersons, useContactPersonMutations } from '@/hooks/useContactPersons';
+import { useCompanies, useCompanyMutations, CustomerCompany } from '@/hooks/useCompanies';
+import { useContactPersons, useContactPersonMutations, ContactPerson } from '@/hooks/useContactPersons';
 import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { useAllContacts } from '@/hooks/useAllContacts';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -16,22 +16,23 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
+import { ContactItem, NavigationStackItem, DeleteItem, ViewMode, ActiveTab } from '@/types/contacts';
 
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'all' | 'companies' | 'persons'>('all');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState(null);
-  const [selectedPerson, setSelectedPerson] = useState(null);
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('cards');
+  const [selectedCompany, setSelectedCompany] = useState<CustomerCompany | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<ContactPerson | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<any>(null); // TODO: Use ContactItem with type guards
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
-  const [navigationStack, setNavigationStack] = useState<Array<{item: any, type: 'company' | 'person'}>>([]);
+  const [navigationStack, setNavigationStack] = useState<NavigationStackItem[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
+  const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
 
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
@@ -201,7 +202,7 @@ const Kontakte = () => {
     }
   }, [companies, selectedItem, itemType]);
 
-  const handleNavigateToPerson = useCallback((person: any) => {
+  const handleNavigateToPerson = useCallback((person: ContactPerson) => {
     const fullPersonData = contactPersons?.find(p => p.id === person.id);
     setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
     setSelectedItem(fullPersonData || person);
@@ -287,7 +288,7 @@ const Kontakte = () => {
     }
   };
 
-  const handleCompanySubmit = (companyData) => {
+  const handleCompanySubmit = (companyData: Parameters<typeof createCompany.mutate>[0] | Parameters<typeof updateCompany.mutate>[0]) => {
     if (selectedCompany) {
       updateCompany.mutate(
         { id: selectedCompany.id, company: companyData },
@@ -323,7 +324,7 @@ const Kontakte = () => {
     }
   };
 
-  const handlePersonSubmit = async (personData, employeeDetails, children) => {
+  const handlePersonSubmit = async (personData: Parameters<typeof createContactPerson.mutate>[0] | Parameters<typeof updateContactPerson.mutate>[0], employeeDetails?: any, children?: any[]) => {
     if (selectedPerson) {
       updateContactPerson.mutate(
         { id: selectedPerson.id, contactPerson: personData },

@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
+import { companySchema, CompanyFormData } from '@/schemas/contactSchemas';
 
 interface CompanyFormProps {
   isOpen: boolean;
@@ -17,26 +20,40 @@ interface CompanyFormProps {
 }
 
 export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: CompanyFormProps) => {
-  const [formData, setFormData] = useState<CustomerCompanyInput>({
-    name: '',
-    address: '',
-    city: '',
-    postal_code: '',
-    country: 'Schweiz',
-    phone: '',
-    email: '',
-    website: '',
-    vat_number: '',
-    notes: '',
-    status: 'aktiv',
-    company_type: '',
-    industry_category: '',
-    contact_type: 'Unternehmen',
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset
+  } = useForm<CompanyFormData>({
+    resolver: zodResolver(companySchema),
+    defaultValues: {
+      name: '',
+      address: '',
+      city: '',
+      postal_code: '',
+      country: 'Schweiz',
+      phone: '',
+      email: '',
+      website: '',
+      vat_number: '',
+      notes: '',
+      status: 'aktiv',
+      company_type: '',
+      industry_category: '',
+      contact_type: 'Unternehmen',
+    }
   });
+
+  const contactType = watch('contact_type');
+  const companyType = watch('company_type');
+  const industryCategory = watch('industry_category');
 
   useEffect(() => {
     if (company) {
-      setFormData({
+      reset({
         name: company.name,
         address: company.address || '',
         city: company.city || '',
@@ -47,13 +64,13 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         website: company.website || '',
         vat_number: company.vat_number || '',
         notes: company.notes || '',
-        status: company.status || 'aktiv',
+        status: (company.status || 'aktiv') as 'aktiv' | 'inaktiv' | 'potentiell',
         company_type: company.company_type || '',
         industry_category: company.industry_category || '',
-        contact_type: company.contact_type || 'Unternehmen',
+        contact_type: (company.contact_type || 'Unternehmen') as 'Unternehmen' | 'Geschäftskunde',
       });
     } else {
-      setFormData({
+      reset({
         name: '',
         address: '',
         city: '',
@@ -70,14 +87,10 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         contact_type: 'Unternehmen',
       });
     }
-  }, [company]);
+  }, [company, reset]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.contact_type) {
-      return;
-    }
-    onSubmit(formData);
+  const handleSubmitForm = (data: CompanyFormData) => {
+    onSubmit(data as CustomerCompanyInput);
   };
 
   return (
@@ -89,16 +102,15 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleFormSubmit(handleSubmitForm)} className="space-y-4">
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
             <Label className="text-base font-semibold mb-3 block">
               Kontakttyp wählen <span className="text-destructive">*</span>
             </Label>
             <RadioGroup 
-              value={formData.contact_type || 'Unternehmen'} 
-              onValueChange={(value) => setFormData({ ...formData, contact_type: value })}
+              value={contactType || 'Unternehmen'} 
+              onValueChange={(value) => setValue('contact_type', value as 'Unternehmen' | 'Geschäftskunde')}
               className="flex gap-6"
-              required
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Unternehmen" id="unternehmen" />
@@ -116,55 +128,62 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
               <Label htmlFor="name">Firmenname *</Label>
               <Input
                 id="name"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
+                {...register('name')}
               />
+              {errors.name && (
+                <p className="text-sm text-destructive mt-1">{errors.name.message}</p>
+              )}
             </div>
 
             <div className="md:col-span-2">
               <Label htmlFor="address">Adresse *</Label>
               <Input
                 id="address"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                required
+                {...register('address')}
               />
+              {errors.address && (
+                <p className="text-sm text-destructive mt-1">{errors.address.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="postal_code">PLZ *</Label>
               <Input
                 id="postal_code"
-                value={formData.postal_code}
-                onChange={(e) => setFormData({ ...formData, postal_code: e.target.value })}
-                required
+                {...register('postal_code')}
+                maxLength={4}
               />
+              {errors.postal_code && (
+                <p className="text-sm text-destructive mt-1">{errors.postal_code.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="city">Ortschaft *</Label>
               <Input
                 id="city"
-                value={formData.city}
-                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                required
+                {...register('city')}
               />
+              {errors.city && (
+                <p className="text-sm text-destructive mt-1">{errors.city.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="country">Land</Label>
               <Input
                 id="country"
-                value={formData.country}
-                onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                {...register('country')}
               />
+              {errors.country && (
+                <p className="text-sm text-destructive mt-1">{errors.country.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="company_type">Unternehmensart</Label>
-              <Select value={formData.company_type} onValueChange={(value) => setFormData({ ...formData, company_type: value })}>
-                <SelectTrigger>
+              <Select value={companyType} onValueChange={(value) => setValue('company_type', value)}>
+                <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
                   <SelectValue placeholder="Wählen Sie eine Unternehmensart" />
                 </SelectTrigger>
                 <SelectContent>
@@ -174,12 +193,15 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
                   <SelectItem value="ag">AG</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.company_type && (
+                <p className="text-sm text-destructive mt-1">{errors.company_type.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="industry_category">Branchenkategorie</Label>
-              <Select value={formData.industry_category} onValueChange={(value) => setFormData({ ...formData, industry_category: value })}>
-                <SelectTrigger>
+              <Select value={industryCategory} onValueChange={(value) => setValue('industry_category', value)}>
+                <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
                   <SelectValue placeholder="Wählen Sie eine Branche" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60 overflow-y-auto">
@@ -209,16 +231,20 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
                   <SelectItem value="catering">Catering und Eventgastronomie</SelectItem>
                 </SelectContent>
               </Select>
+              {errors.industry_category && (
+                <p className="text-sm text-destructive mt-1">{errors.industry_category.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="phone">Telefon *</Label>
               <Input
                 id="phone"
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                required
+                {...register('phone')}
               />
+              {errors.phone && (
+                <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>
+              )}
             </div>
 
             <div>
@@ -226,39 +252,46 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
               <Input
                 id="email"
                 type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
+                {...register('email')}
               />
+              {errors.email && (
+                <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="website">Website</Label>
               <Input
                 id="website"
-                value={formData.website}
-                onChange={(e) => setFormData({ ...formData, website: e.target.value })}
+                {...register('website')}
+                placeholder="https://example.ch"
               />
+              {errors.website && (
+                <p className="text-sm text-destructive mt-1">{errors.website.message}</p>
+              )}
             </div>
 
             <div>
               <Label htmlFor="vat_number">MwSt-Nummer *</Label>
               <Input
                 id="vat_number"
-                value={formData.vat_number}
-                onChange={(e) => setFormData({ ...formData, vat_number: e.target.value })}
-                required
+                {...register('vat_number')}
               />
+              {errors.vat_number && (
+                <p className="text-sm text-destructive mt-1">{errors.vat_number.message}</p>
+              )}
             </div>
 
             <div className="md:col-span-2">
               <Label htmlFor="notes">Notizen</Label>
               <Textarea
                 id="notes"
-                value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                {...register('notes')}
                 rows={3}
               />
+              {errors.notes && (
+                <p className="text-sm text-destructive mt-1">{errors.notes.message}</p>
+              )}
             </div>
           </div>
 

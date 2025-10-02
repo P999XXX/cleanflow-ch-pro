@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,19 +10,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { ContactPersonInput } from "@/hooks/useContactPersons";
+import { ContactPersonInput, ContactPerson } from "@/hooks/useContactPersons";
 import { useCompanies } from "@/hooks/useCompanies";
 import { EmployeeFormStep2 } from "./EmployeeFormStep2";
 import { EmployeeFormStep3 } from "./EmployeeFormStep3";
 import { FormProgressIndicator } from "./FormProgressIndicator";
-import { EmployeeDetailsInput } from "@/hooks/useEmployeeDetails";
+import { EmployeeDetailsInput, EmployeeChild } from "@/hooks/useEmployeeDetails";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { contactPersonSchema, ContactPersonFormData } from '@/schemas/contactSchemas';
+
+interface Child {
+  first_name: string;
+  last_name: string;
+  birth_date: string;
+}
 
 interface ContactPersonFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (contactPerson: ContactPersonInput, employeeDetails?: EmployeeDetailsInput, children?: any[]) => void;
-  contactPerson?: any;
+  onSubmit: (contactPerson: ContactPersonInput, employeeDetails?: EmployeeDetailsInput, children?: Child[]) => void;
+  contactPerson?: ContactPerson;
   isLoading?: boolean;
   initialIsEmployee?: boolean;
   onBack?: () => void;
@@ -37,32 +46,45 @@ export const ContactPersonForm = ({
 }: ContactPersonFormProps) => {
   const [currentStep, setCurrentStep] = useState(1);
   const [personType, setPersonType] = useState<'private' | 'employee' | 'person'>(initialIsEmployee ? 'employee' : 'private');
-  const [formData, setFormData] = useState<ContactPersonInput>({
-    first_name: '',
-    last_name: '',
-    position: '',
-    email: '',
-    phone: '',
-    mobile: '',
-    is_primary_contact: false,
-    is_employee: initialIsEmployee,
-    is_private_customer: !initialIsEmployee,
-    notes: '',
-    customer_company_id: undefined,
-    status: 'aktiv',
-  });
-  
   const [employeeData, setEmployeeData] = useState<Partial<EmployeeDetailsInput>>({});
-  const [children, setChildren] = useState<any[]>([]);
+  const [children, setChildren] = useState<Child[]>([]);
   const [companyId, setCompanyId] = useState('');
 
   const { data: companies } = useCompanies();
+
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    setValue,
+    watch,
+    formState: { errors },
+    reset
+  } = useForm<ContactPersonFormData>({
+    resolver: zodResolver(contactPersonSchema),
+    defaultValues: {
+      first_name: '',
+      last_name: '',
+      position: '',
+      email: '',
+      phone: '',
+      mobile: '',
+      is_primary_contact: false,
+      is_employee: initialIsEmployee,
+      is_private_customer: !initialIsEmployee,
+      notes: '',
+      customer_company_id: undefined,
+      status: 'aktiv',
+    }
+  });
+
+  const formData = watch();
+  const status = watch('status');
 
   useEffect(() => {
     if (contactPerson) {
       const isEmp = contactPerson.is_employee || false;
       setPersonType(isEmp ? 'employee' : 'private');
-      setFormData({
+      reset({
         first_name: contactPerson.first_name || '',
         last_name: contactPerson.last_name || '',
         position: contactPerson.position || '',
@@ -74,13 +96,13 @@ export const ContactPersonForm = ({
         is_private_customer: contactPerson.is_private_customer || false,
         notes: contactPerson.notes || '',
         customer_company_id: contactPerson.customer_company_id,
-        status: contactPerson.status || 'aktiv',
+        status: (contactPerson.status || 'aktiv') as 'aktiv' | 'inaktiv',
       });
-      setCompanyId(contactPerson.company_id || '');
+      setCompanyId((contactPerson as ContactPerson & { company_id?: string }).company_id || '');
     } else {
       const isEmp = initialIsEmployee;
       setPersonType(isEmp ? 'employee' : 'private');
-      setFormData({
+      reset({
         first_name: '',
         last_name: '',
         position: '',
@@ -103,28 +125,29 @@ export const ContactPersonForm = ({
         setCompanyId(companies[0].id);
       }
     }
-  }, [contactPerson, companies, isOpen, initialIsEmployee]);
+  }, [contactPerson, companies, isOpen, initialIsEmployee, reset]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!personType && !contactPerson) {
-      return;
-    }
-    
+  const handleSubmitForm = (data: ContactPersonFormData) => {
     const isEmployee = personType === 'employee';
     if (isEmployee && currentStep < 3) {
-      // Move to next step if employee
       setCurrentStep(currentStep + 1);
       return;
     }
     
     const submitData = {
-      ...formData,
+      first_name: data.first_name || '',
+      last_name: data.last_name || '',
+      position: data.position,
+      email: data.email,
+      phone: data.phone,
+      mobile: data.mobile,
+      is_primary_contact: data.is_primary_contact,
       is_employee: isEmployee,
       is_private_customer: personType === 'private',
-      contact_type: isEmployee ? 'Mitarbeiter' : personType === 'private' ? 'Privatkunde' : 'Person'
-    };
+      notes: data.notes,
+      customer_company_id: data.customer_company_id,
+      status: data.status,
+    } as ContactPersonInput;
     
     onSubmit(submitData, isEmployee ? employeeData : undefined, isEmployee ? children : undefined);
   };
@@ -132,11 +155,8 @@ export const ContactPersonForm = ({
   const handlePersonTypeChange = (value: string) => {
     const newType = value as 'private' | 'employee' | 'person';
     setPersonType(newType);
-    setFormData({
-      ...formData,
-      is_employee: newType === 'employee',
-      is_private_customer: newType === 'private',
-    });
+    setValue('is_employee', newType === 'employee');
+    setValue('is_private_customer', newType === 'private');
   };
 
   const handlePrevious = () => {
@@ -178,12 +198,12 @@ export const ContactPersonForm = ({
             </div>
             <div className="flex items-center gap-3">
               <Label htmlFor="person-status-toggle" className="text-sm font-medium cursor-pointer">
-                {formData.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                {status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
               </Label>
               <Switch
                 id="person-status-toggle"
-                checked={formData.status === 'aktiv'}
-                onCheckedChange={(checked) => setFormData({ ...formData, status: checked ? 'aktiv' : 'inaktiv' })}
+                checked={status === 'aktiv'}
+                onCheckedChange={(checked) => setValue('status', checked ? 'aktiv' : 'inaktiv')}
               />
             </div>
           </div>
@@ -197,7 +217,7 @@ export const ContactPersonForm = ({
           />
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleFormSubmit(handleSubmitForm)} className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-4">
               {!contactPerson && (
@@ -226,20 +246,22 @@ export const ContactPersonForm = ({
                   <Label htmlFor="first_name">Vorname *</Label>
                   <Input
                     id="first_name"
-                    value={formData.first_name}
-                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-                    required
+                    {...register('first_name')}
                   />
+                  {errors.first_name && (
+                    <p className="text-sm text-destructive mt-1">{errors.first_name.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="last_name">Nachname *</Label>
                   <Input
                     id="last_name"
-                    value={formData.last_name}
-                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-                    required
+                    {...register('last_name')}
                   />
+                  {errors.last_name && (
+                    <p className="text-sm text-destructive mt-1">{errors.last_name.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -247,9 +269,11 @@ export const ContactPersonForm = ({
                 <Label htmlFor="position">Position</Label>
                 <Input
                   id="position"
-                  value={formData.position}
-                  onChange={(e) => setFormData({ ...formData, position: e.target.value })}
+                  {...register('position')}
                 />
+                {errors.position && (
+                  <p className="text-sm text-destructive mt-1">{errors.position.message}</p>
+                )}
               </div>
 
 
@@ -258,7 +282,7 @@ export const ContactPersonForm = ({
                   <Label htmlFor="customer_company_id">Unternehmen</Label>
                   <Select
                     value={formData.customer_company_id}
-                    onValueChange={(value) => setFormData({ ...formData, customer_company_id: value })}
+                    onValueChange={(value) => setValue('customer_company_id', value)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Unternehmen wählen" />
@@ -280,9 +304,11 @@ export const ContactPersonForm = ({
                   <Input
                     id="email"
                     type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    {...register('email')}
                   />
+                  {errors.email && (
+                    <p className="text-sm text-destructive mt-1">{errors.email.message}</p>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -290,9 +316,11 @@ export const ContactPersonForm = ({
                   <Input
                     id="phone"
                     type="tel"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    {...register('phone')}
                   />
+                  {errors.phone && (
+                    <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -301,9 +329,11 @@ export const ContactPersonForm = ({
                 <Input
                   id="mobile"
                   type="tel"
-                  value={formData.mobile}
-                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                  {...register('mobile')}
                 />
+                {errors.mobile && (
+                  <p className="text-sm text-destructive mt-1">{errors.mobile.message}</p>
+                )}
               </div>
 
               {!isEmployee && (
@@ -311,7 +341,7 @@ export const ContactPersonForm = ({
                   <Checkbox
                     id="is_primary_contact"
                     checked={formData.is_primary_contact}
-                    onCheckedChange={(checked) => setFormData({ ...formData, is_primary_contact: checked as boolean })}
+                    onCheckedChange={(checked) => setValue('is_primary_contact', checked as boolean)}
                   />
                   <Label htmlFor="is_primary_contact" className="cursor-pointer">
                     Hauptansprechperson
@@ -323,10 +353,12 @@ export const ContactPersonForm = ({
                 <Label htmlFor="notes">Notizen</Label>
                 <Textarea
                   id="notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  {...register('notes')}
                   rows={3}
                 />
+                {errors.notes && (
+                  <p className="text-sm text-destructive mt-1">{errors.notes.message}</p>
+                )}
               </div>
             </div>
           )}

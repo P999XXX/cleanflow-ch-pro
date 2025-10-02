@@ -8,7 +8,7 @@ import { StatusBadge } from "@/components/ui/status-badges";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ContactCardProps {
-  item: any;
+  item: any; // TODO: Use ContactItem with type guards
   type: 'company' | 'person';
   onCardClick: (item: any, type: 'company' | 'person') => void;
 }
