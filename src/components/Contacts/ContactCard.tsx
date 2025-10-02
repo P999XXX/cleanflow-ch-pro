@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Mail, Phone, Smartphone, MapPin, Building2, MessageSquare } from "lucide-react";
+import { Mail, Phone, Smartphone, MapPin, Building2, MessageSquare, ChevronRight } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { StatusBadge } from "@/components/ui/status-badges";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -47,7 +47,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
 
   return (
     <Card 
-      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col"
+      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col relative"
       onClick={() => onCardClick(item, type)}
     >
       <CardHeader className="pb-3 relative">
@@ -304,6 +304,19 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
           </div>
         )}
       </CardContent>
+      
+      {/* Arrow button at bottom right */}
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-muted/50 hover:bg-muted"
+        onClick={(e) => {
+          e.stopPropagation();
+          onCardClick(item, type);
+        }}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
     </Card>
   );
 }

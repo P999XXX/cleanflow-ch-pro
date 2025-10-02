@@ -2,7 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, Smartphone, Search, Building2, Users } from "lucide-react";
+import { Mail, Phone, Smartphone, Search, Building2, Users, ChevronRight } from "lucide-react";
 
 interface ContactsTableViewProps {
   companies: any[];
@@ -71,6 +71,7 @@ export function ContactsTableView({
                   <TableHead className="lg:w-1/4">E-Mail</TableHead>
                   <TableHead className="lg:w-1/4">Telefon</TableHead>
                   <TableHead className="text-right lg:w-1/4"></TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -132,6 +133,19 @@ export function ContactsTableView({
                         )}
                       </div>
                     </TableCell>
+                    <TableCell className="w-12">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onCardClick(company, 'company');
+                        }}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -160,6 +174,7 @@ export function ContactsTableView({
                   <TableHead className="lg:w-1/4">E-Mail</TableHead>
                   <TableHead className="lg:w-1/4">Telefon</TableHead>
                   <TableHead className="text-right lg:w-1/4"></TableHead>
+                  <TableHead className="w-12"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -239,6 +254,19 @@ export function ContactsTableView({
                           </Badge>
                         )}
                       </div>
+                    </TableCell>
+                    <TableCell className="w-12">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onCardClick(person, 'person');
+                        }}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
