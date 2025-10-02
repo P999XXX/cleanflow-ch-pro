@@ -118,7 +118,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
       <CardContent className="pt-0 flex-1 flex flex-col justify-end">
         {isMobile ? (
           <TooltipProvider>
-            <div className="flex gap-2 justify-start pt-2 relative pr-10">
+            <div className="flex gap-2 justify-start pt-2">
               {(type === 'company' ? (item.street || item.city || item.postal_code) : item.customer_companies?.name) && (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -260,7 +260,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80 absolute right-0 top-2"
+                    className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80 ml-auto"
                     onClick={(e) => {
                       e.stopPropagation();
                       onCardClick(item, type);
