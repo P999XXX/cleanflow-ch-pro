@@ -261,7 +261,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-2 right-3 h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                  className="absolute top-2 right-3 h-8 w-8"
                   onClick={(e) => {
                     e.stopPropagation();
                     onCardClick(item, type);
