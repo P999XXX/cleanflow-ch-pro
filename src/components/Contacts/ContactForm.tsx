@@ -319,6 +319,23 @@ export const ContactForm = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
+                  <Label htmlFor="phone">
+                    Telefon <span className="text-foreground">*</span>
+                  </Label>
+                  <Input id="phone" value={companyData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={errors.phone ? 'border-destructive' : ''} />
+                  {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
+                </div>
+                <div>
+                  <Label htmlFor="email">
+                    E-Mail <span className="text-foreground">*</span>
+                  </Label>
+                  <Input id="email" type="email" value={companyData.email} onChange={e => handleInputChange('email', e.target.value)} required className={errors.email ? 'border-destructive' : ''} />
+                  {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
                   <Label htmlFor="company_type">
                     Gesellschaftsart
                   </Label>
@@ -363,24 +380,6 @@ export const ContactForm = ({
                     </SelectContent>
                   </Select>
                   {errors.industry_category && <p className="text-sm text-destructive mt-1">{errors.industry_category}</p>}
-                </div>
-              </div>
-
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="phone">
-                    Telefon <span className="text-foreground">*</span>
-                  </Label>
-                  <Input id="phone" value={companyData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={errors.phone ? 'border-destructive' : ''} />
-                  {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
-                </div>
-                <div>
-                  <Label htmlFor="email">
-                    E-Mail <span className="text-foreground">*</span>
-                  </Label>
-                  <Input id="email" type="email" value={companyData.email} onChange={e => handleInputChange('email', e.target.value)} required className={errors.email ? 'border-destructive' : ''} />
-                  {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
                 </div>
               </div>
 
