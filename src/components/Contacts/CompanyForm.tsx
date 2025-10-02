@@ -189,62 +189,6 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
 
             <div>
-              <Label htmlFor="company_type">Unternehmensart</Label>
-              <Select value={companyType} onValueChange={(value) => setValue('company_type', value)}>
-                <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
-                  <SelectValue placeholder="Wählen Sie eine Unternehmensart" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="einzelfirma">Einzelfirma</SelectItem>
-                  <SelectItem value="kollektivgesellschaft">Kollektivgesellschaft</SelectItem>
-                  <SelectItem value="gmbh">GmbH</SelectItem>
-                  <SelectItem value="ag">AG</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.company_type && (
-                <p className="text-sm text-destructive mt-1">{errors.company_type.message}</p>
-              )}
-            </div>
-
-            <div>
-              <Label htmlFor="industry_category">Branchenkategorie</Label>
-              <Select value={industryCategory} onValueChange={(value) => setValue('industry_category', value)}>
-                <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
-                  <SelectValue placeholder="Wählen Sie eine Branche" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60 overflow-y-auto">
-                  <SelectItem value="landwirtschaft">Land- und Forstwirtschaft</SelectItem>
-                  <SelectItem value="bergbau">Bergbau und Gewinnung von Steinen und Erden</SelectItem>
-                  <SelectItem value="verarbeitendes-gewerbe">Verarbeitendes Gewerbe</SelectItem>
-                  <SelectItem value="energie">Energieversorgung</SelectItem>
-                  <SelectItem value="wasser">Wasserversorgung; Abwasser- und Abfallentsorgung</SelectItem>
-                  <SelectItem value="bau">Baugewerbe</SelectItem>
-                  <SelectItem value="handel">Handel; Instandhaltung und Reparatur von Kraftfahrzeugen</SelectItem>
-                  <SelectItem value="verkehr">Verkehr und Lagerei</SelectItem>
-                  <SelectItem value="gastgewerbe">Gastgewerbe</SelectItem>
-                  <SelectItem value="information">Information und Kommunikation</SelectItem>
-                  <SelectItem value="finanz">Erbringung von Finanz- und Versicherungsdienstleistungen</SelectItem>
-                  <SelectItem value="immobilien">Grundstücks- und Wohnungswesen</SelectItem>
-                  <SelectItem value="freiberuflich">Erbringung von freiberuflichen, wissenschaftlichen und technischen Dienstleistungen</SelectItem>
-                  <SelectItem value="verwaltung">Erbringung von sonstigen wirtschaftlichen Dienstleistungen</SelectItem>
-                  <SelectItem value="oeffentlich">Öffentliche Verwaltung, Verteidigung; Sozialversicherung</SelectItem>
-                  <SelectItem value="erziehung">Erziehung und Unterricht</SelectItem>
-                  <SelectItem value="gesundheit">Gesundheits- und Sozialwesen</SelectItem>
-                  <SelectItem value="kunst">Kunst, Unterhaltung und Erholung</SelectItem>
-                  <SelectItem value="sonstige">Erbringung von sonstigen Dienstleistungen</SelectItem>
-                  <SelectItem value="haushalt">Private Haushalte mit Hauspersonal</SelectItem>
-                  <SelectItem value="reinigung">Gebäudereinigung</SelectItem>
-                  <SelectItem value="sicherheit">Wach- und Sicherheitsdienste</SelectItem>
-                  <SelectItem value="gartenbau">Garten- und Landschaftsbau</SelectItem>
-                  <SelectItem value="catering">Catering und Eventgastronomie</SelectItem>
-                </SelectContent>
-              </Select>
-              {errors.industry_category && (
-                <p className="text-sm text-destructive mt-1">{errors.industry_category.message}</p>
-              )}
-            </div>
-
-            <div>
               <Label htmlFor="phone">Telefon *</Label>
               <Input
                 id="phone"
@@ -287,6 +231,62 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
               />
               {errors.vat_number && (
                 <p className="text-sm text-destructive mt-1">{errors.vat_number.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="company_type">Gesellschaftsart</Label>
+              <Select value={companyType} onValueChange={(value) => setValue('company_type', value)}>
+                <SelectTrigger className={errors.company_type ? 'border-destructive' : ''}>
+                  <SelectValue placeholder="Wählen Sie eine Gesellschaftsart" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="einzelfirma">Einzelfirma</SelectItem>
+                  <SelectItem value="kollektivgesellschaft">Kollektivgesellschaft</SelectItem>
+                  <SelectItem value="gmbh">GmbH</SelectItem>
+                  <SelectItem value="ag">AG</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.company_type && (
+                <p className="text-sm text-destructive mt-1">{errors.company_type.message}</p>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="industry_category">Branche</Label>
+              <Select value={industryCategory} onValueChange={(value) => setValue('industry_category', value)}>
+                <SelectTrigger className={errors.industry_category ? 'border-destructive' : ''}>
+                  <SelectValue placeholder="Wählen Sie eine Branche" />
+                </SelectTrigger>
+                <SelectContent className="max-h-60 overflow-y-auto">
+                  <SelectItem value="landwirtschaft">Land- und Forstwirtschaft</SelectItem>
+                  <SelectItem value="bergbau">Bergbau und Gewinnung von Steinen und Erden</SelectItem>
+                  <SelectItem value="verarbeitendes-gewerbe">Verarbeitendes Gewerbe</SelectItem>
+                  <SelectItem value="energie">Energieversorgung</SelectItem>
+                  <SelectItem value="wasser">Wasserversorgung; Abwasser- und Abfallentsorgung</SelectItem>
+                  <SelectItem value="bau">Baugewerbe</SelectItem>
+                  <SelectItem value="handel">Handel; Instandhaltung und Reparatur von Kraftfahrzeugen</SelectItem>
+                  <SelectItem value="verkehr">Verkehr und Lagerei</SelectItem>
+                  <SelectItem value="gastgewerbe">Gastgewerbe</SelectItem>
+                  <SelectItem value="information">Information und Kommunikation</SelectItem>
+                  <SelectItem value="finanz">Erbringung von Finanz- und Versicherungsdienstleistungen</SelectItem>
+                  <SelectItem value="immobilien">Grundstücks- und Wohnungswesen</SelectItem>
+                  <SelectItem value="freiberuflich">Erbringung von freiberuflichen, wissenschaftlichen und technischen Dienstleistungen</SelectItem>
+                  <SelectItem value="verwaltung">Erbringung von sonstigen wirtschaftlichen Dienstleistungen</SelectItem>
+                  <SelectItem value="oeffentlich">Öffentliche Verwaltung, Verteidigung; Sozialversicherung</SelectItem>
+                  <SelectItem value="erziehung">Erziehung und Unterricht</SelectItem>
+                  <SelectItem value="gesundheit">Gesundheits- und Sozialwesen</SelectItem>
+                  <SelectItem value="kunst">Kunst, Unterhaltung und Erholung</SelectItem>
+                  <SelectItem value="sonstige">Erbringung von sonstigen Dienstleistungen</SelectItem>
+                  <SelectItem value="haushalt">Private Haushalte mit Hauspersonal</SelectItem>
+                  <SelectItem value="reinigung">Gebäudereinigung</SelectItem>
+                  <SelectItem value="sicherheit">Wach- und Sicherheitsdienste</SelectItem>
+                  <SelectItem value="gartenbau">Garten- und Landschaftsbau</SelectItem>
+                  <SelectItem value="catering">Catering und Eventgastronomie</SelectItem>
+                </SelectContent>
+              </Select>
+              {errors.industry_category && (
+                <p className="text-sm text-destructive mt-1">{errors.industry_category.message}</p>
               )}
             </div>
 

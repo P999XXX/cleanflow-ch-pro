@@ -91,14 +91,14 @@ export const companySchema = z.object({
   company_type: z
     .string()
     .trim()
-    .min(1, 'Gesellschaftsart ist erforderlich')
-    .max(100, 'Gesellschaftsart ist zu lang'),
+    .max(100, 'Gesellschaftsart ist zu lang')
+    .optional(),
   
   industry_category: z
     .string()
     .trim()
-    .min(1, 'Branche ist erforderlich')
-    .max(100, 'Branche ist zu lang'),
+    .max(100, 'Branche ist zu lang')
+    .optional(),
   
   contact_type: z
     .enum(['Unternehmen', 'Geschäftskunde'], {

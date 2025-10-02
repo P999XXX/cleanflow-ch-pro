@@ -258,6 +258,20 @@ export const ContactPersonForm = ({
                   </RadioGroup>
                 </div>
               )}
+
+              {!isEmployee && (
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="is_primary_contact"
+                    checked={formData.is_primary_contact}
+                    onCheckedChange={(checked) => setValue('is_primary_contact', checked as boolean)}
+                  />
+                  <Label htmlFor="is_primary_contact" className="cursor-pointer">
+                    Primärkontakt
+                  </Label>
+                </div>
+              )}
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="first_name">Vorname *</Label>
@@ -412,19 +426,6 @@ export const ContactPersonForm = ({
                     )}
                   </div>
                 </>
-              )}
-
-              {!isEmployee && (
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="is_primary_contact"
-                    checked={formData.is_primary_contact}
-                    onCheckedChange={(checked) => setValue('is_primary_contact', checked as boolean)}
-                  />
-                  <Label htmlFor="is_primary_contact" className="cursor-pointer">
-                    Hauptansprechperson
-                  </Label>
-                </div>
               )}
 
               <div className="space-y-2">
