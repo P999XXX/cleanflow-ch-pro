@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,13 +7,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Switch } from '@/components/ui/switch';
-import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe } from 'lucide-react';
+import { ChevronLeft, Building2, MapPin, Phone, Mail, Globe, Loader2 } from 'lucide-react';
 import { CustomerCompany, CustomerCompanyInput, useCompanies } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useToast } from '@/hooks/use-toast';
 import { ContactPersonForm } from './ContactPersonForm';
 import { ContactTypeSelector, ContactType } from './ContactTypeSelector';
 import { EmployeeDetailsInput } from '@/hooks/useEmployeeDetails';
+import { useSwissGeocode } from '@/hooks/useSwissGeocode';
 type ContactFormStage = 'select' | 'form';
 interface ContactFormProps {
   isOpen: boolean;
@@ -39,9 +40,14 @@ export const ContactForm = ({
   const {
     toast
   } = useToast();
+  const { getCityFromPostalCode, getPostalCodeFromCity } = useSwissGeocode();
   const [stage, setStage] = useState<ContactFormStage>('select');
   const [selectedType, setSelectedType] = useState<ContactType | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoadingPostalCode, setIsLoadingPostalCode] = useState(false);
+  const [isLoadingCity, setIsLoadingCity] = useState(false);
+  const postalCodeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cityTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [companyData, setCompanyData] = useState<CustomerCompanyInput>({
     name: '',
     address: '',
@@ -157,6 +163,80 @@ export const ContactForm = ({
         [field]: ''
       });
     }
+  };
+
+  // Handle postal code change with geocoding
+  const handlePostalCodeChange = async (value: string) => {
+    handleInputChange('postal_code', value);
+
+    // Clear existing timeout
+    if (postalCodeTimeoutRef.current) {
+      clearTimeout(postalCodeTimeoutRef.current);
+    }
+
+    // Only proceed if we have a valid 4-digit Swiss postal code
+    if (!/^\d{4}$/.test(value)) {
+      return;
+    }
+
+    // Debounce the API call
+    postalCodeTimeoutRef.current = setTimeout(async () => {
+      setIsLoadingCity(true);
+      try {
+        const city = await getCityFromPostalCode(value);
+        if (city && !companyData.city) {
+          setCompanyData(prev => ({
+            ...prev,
+            city: city
+          }));
+          toast({
+            title: 'Ortschaft ergänzt',
+            description: `${city} wurde automatisch hinzugefügt`,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching city:', error);
+      } finally {
+        setIsLoadingCity(false);
+      }
+    }, 500);
+  };
+
+  // Handle city change with geocoding
+  const handleCityChange = async (value: string) => {
+    handleInputChange('city', value);
+
+    // Clear existing timeout
+    if (cityTimeoutRef.current) {
+      clearTimeout(cityTimeoutRef.current);
+    }
+
+    // Only proceed if we have at least 3 characters
+    if (value.trim().length < 3) {
+      return;
+    }
+
+    // Debounce the API call
+    cityTimeoutRef.current = setTimeout(async () => {
+      setIsLoadingPostalCode(true);
+      try {
+        const postalCode = await getPostalCodeFromCity(value);
+        if (postalCode && !companyData.postal_code) {
+          setCompanyData(prev => ({
+            ...prev,
+            postal_code: postalCode
+          }));
+          toast({
+            title: 'PLZ ergänzt',
+            description: `${postalCode} wurde automatisch hinzugefügt`,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching postal code:', error);
+      } finally {
+        setIsLoadingPostalCode(false);
+      }
+    }, 500);
   };
   const handleSelectChange = (field: string, value: string) => {
     setCompanyData({
@@ -297,14 +377,38 @@ export const ContactForm = ({
                   <Label htmlFor="postal_code">
                     PLZ <span className="text-foreground">*</span>
                   </Label>
-                  <Input id="postal_code" value={companyData.postal_code} onChange={e => handleInputChange('postal_code', e.target.value)} required className={errors.postal_code ? 'border-destructive' : ''} />
+                  <div className="relative">
+                    <Input 
+                      id="postal_code" 
+                      value={companyData.postal_code} 
+                      onChange={e => handlePostalCodeChange(e.target.value)} 
+                      required 
+                      className={errors.postal_code ? 'border-destructive' : ''} 
+                      placeholder="z.B. 8000"
+                    />
+                    {isLoadingCity && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
                   {errors.postal_code && <p className="text-sm text-destructive mt-1">{errors.postal_code}</p>}
                 </div>
                 <div>
                   <Label htmlFor="city">
                     Ort <span className="text-foreground">*</span>
                   </Label>
-                  <Input id="city" value={companyData.city} onChange={e => handleInputChange('city', e.target.value)} required className={errors.city ? 'border-destructive' : ''} />
+                  <div className="relative">
+                    <Input 
+                      id="city" 
+                      value={companyData.city} 
+                      onChange={e => handleCityChange(e.target.value)} 
+                      required 
+                      className={errors.city ? 'border-destructive' : ''} 
+                      placeholder="z.B. Zürich"
+                    />
+                    {isLoadingPostalCode && (
+                      <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
                   {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
                 </div>
               </div>
