@@ -82,9 +82,9 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
+          <DialogTitle className="text-xl">
             {company ? 'Unternehmen bearbeiten' : 'Neues Unternehmen'}
           </DialogTitle>
           <DialogDescription>
@@ -94,7 +94,9 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
-            <Label className="text-base font-semibold mb-3 block">Typ *</Label>
+            <Label className="text-base font-semibold mb-3 block">
+              Typ <span className="text-destructive">*</span>
+            </Label>
             <RadioGroup 
               value={formData.contact_type || 'Unternehmen'} 
               onValueChange={(value) => setFormData({ ...formData, contact_type: value })}

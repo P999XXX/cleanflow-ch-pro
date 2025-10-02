@@ -189,7 +189,9 @@ export const ContactPersonForm = ({
             <div className="space-y-4">
               {!contactPerson && (
                 <div className="p-4 bg-muted/50 rounded-lg">
-                  <Label className="text-base font-semibold mb-3 block">Kundentyp *</Label>
+                  <Label className="text-base font-semibold mb-3 block">
+                    Kundentyp <span className="text-destructive">*</span>
+                  </Label>
                   <RadioGroup value={personType} onValueChange={handlePersonTypeChange} className="flex gap-6" required>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="person" id="person" />
