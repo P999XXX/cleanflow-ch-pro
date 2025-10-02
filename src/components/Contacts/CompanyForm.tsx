@@ -74,6 +74,9 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.contact_type) {
+      return;
+    }
     onSubmit(formData);
   };
 
@@ -91,11 +94,12 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
-            <Label className="text-base font-semibold mb-3 block">Typ</Label>
+            <Label className="text-base font-semibold mb-3 block">Typ *</Label>
             <RadioGroup 
               value={formData.contact_type || 'Unternehmen'} 
               onValueChange={(value) => setFormData({ ...formData, contact_type: value })}
               className="flex gap-6"
+              required
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="Unternehmen" id="unternehmen" />

@@ -107,6 +107,10 @@ export const ContactPersonForm = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!personType && !contactPerson) {
+      return;
+    }
+    
     const isEmployee = personType === 'employee';
     if (isEmployee && currentStep < 3) {
       // Move to next step if employee
@@ -185,8 +189,8 @@ export const ContactPersonForm = ({
             <div className="space-y-4">
               {!contactPerson && (
                 <div className="p-4 bg-muted/50 rounded-lg">
-                  <Label className="text-base font-semibold mb-3 block">Kundentyp</Label>
-                  <RadioGroup value={personType} onValueChange={handlePersonTypeChange} className="flex gap-6">
+                  <Label className="text-base font-semibold mb-3 block">Kundentyp *</Label>
+                  <RadioGroup value={personType} onValueChange={handlePersonTypeChange} className="flex gap-6" required>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="person" id="person" />
                       <Label htmlFor="person" className="font-normal cursor-pointer">Person</Label>
