@@ -52,7 +52,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
     >
       <CardHeader className="pb-3 relative">
         {/* Badges positioned at top-right */}
-        <div className="absolute top-3 right-12 flex items-start gap-1 flex-wrap justify-end max-w-[50%]">
+        <div className="absolute top-3 right-3 flex items-start gap-1 flex-wrap justify-end max-w-[60%]">
           {type === 'company' ? (
             <>
               {item.contact_type && (
@@ -324,29 +324,8 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
         )}
       </CardContent>
       
-      {/* Arrow button - mobile: top right aligned with badges, desktop: bottom right */}
-      {isMobile ? (
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute top-3 right-3 h-8 w-8 rounded-full bg-muted/50 hover:bg-muted z-10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCardClick(item, type);
-                }}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Details öffnen</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ) : (
+      {/* Arrow button at bottom right (only desktop) */}
+      {!isMobile && (
         <Button
           variant="ghost"
           size="icon"
