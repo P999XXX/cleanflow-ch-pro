@@ -115,7 +115,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
           )}
         </div>
       </CardHeader>
-      <CardContent className="pt-0 flex-1 flex flex-col justify-end">
+      <CardContent className="pt-0 flex-1 flex flex-col justify-end relative">
         {isMobile ? (
           <TooltipProvider>
             <div className="flex gap-2 justify-start pt-2">
@@ -254,26 +254,26 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   </TooltipContent>
                 </Tooltip>
               )}
-              {/* Arrow button in mobile view aligned with icons */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80 ml-auto"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onCardClick(item, type);
-                    }}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Details öffnen</p>
-                </TooltipContent>
-              </Tooltip>
             </div>
+            {/* Arrow button in mobile view aligned with badges */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-3 h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onCardClick(item, type);
+                  }}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Details öffnen</p>
+              </TooltipContent>
+            </Tooltip>
           </TooltipProvider>
         ) : (
           <div className="flex flex-col gap-2 text-sm">
