@@ -122,9 +122,6 @@ export const ContactForm = ({
     if (!companyData.city.trim()) {
       newErrors.city = 'Ort ist erforderlich';
     }
-    if (!companyData.country.trim()) {
-      newErrors.country = 'Land ist erforderlich';
-    }
     if (!companyData.contact_type.trim()) {
       newErrors.contact_type = 'Kontaktart ist erforderlich';
     }
@@ -307,14 +304,6 @@ export const ContactForm = ({
                   <Input id="city" value={companyData.city} onChange={e => handleInputChange('city', e.target.value)} required className={errors.city ? 'border-destructive' : ''} />
                   {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="country">
-                  Land <span className="text-foreground">*</span>
-                </Label>
-                <Input id="country" value={companyData.country} onChange={e => handleInputChange('country', e.target.value)} required className={errors.country ? 'border-destructive' : ''} />
-                {errors.country && <p className="text-sm text-destructive mt-1">{errors.country}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
