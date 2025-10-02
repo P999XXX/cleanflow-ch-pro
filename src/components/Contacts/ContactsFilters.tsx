@@ -1,10 +1,9 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Search, X, Filter, Contact, Building, Users, Plus, Grid3X3, List, UserCheck } from "lucide-react";
+import { Search, X, Filter, Plus, Grid3X3, List } from "lucide-react";
 import { useState, useMemo, useEffect } from "react";
 
 interface ContactsFiltersProps {
@@ -13,13 +12,6 @@ interface ContactsFiltersProps {
   onClearSearch: () => void;
   contactTypeFilter: string;
   onContactTypeChange: (type: string) => void;
-  activeTab: string;
-  onTabChange: (tab: string) => void;
-  totalCount: number;
-  companiesCount: number;
-  personsCount: number;
-  businessCustomersCount?: number;
-  privateCustomersCount?: number;
   viewMode: 'table' | 'cards';
   onViewModeToggle: () => void;
   onAddClick: () => void;
@@ -33,13 +25,6 @@ export function ContactsFilters({
   onClearSearch,
   contactTypeFilter,
   onContactTypeChange,
-  activeTab,
-  onTabChange,
-  totalCount,
-  companiesCount,
-  personsCount,
-  businessCustomersCount = 0,
-  privateCustomersCount = 0,
   viewMode,
   onViewModeToggle,
   onAddClick,
@@ -50,29 +35,13 @@ export function ContactsFilters({
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isDesktopFilterOpen, setIsDesktopFilterOpen] = useState(false);
 
-  // Generate filter options based on active tab - tab-specific filtering
+  // Generate filter options - all contact types available
   const filterOptions = useMemo(() => {
-    let filteredTypes = availableContactTypes;
-    
-    // Filter options based on active tab
-    if (activeTab === 'persons') {
-      // For persons tab: show only person-related types (exclude company types)
-      filteredTypes = availableContactTypes.filter(type => 
-        type !== 'Unternehmen' && type !== 'Geschäftskunde'
-      );
-    } else if (activeTab === 'companies') {
-      // For companies tab: show only company types (Unternehmen and Geschäftskunde)
-      filteredTypes = availableContactTypes.filter(type => 
-        type === 'Unternehmen' || type === 'Geschäftskunde'
-      );
-    }
-    
-    // Return only specific contact types - no "Alle Kontaktarten" option
-    return filteredTypes.map(type => ({
+    return availableContactTypes.map(type => ({
       value: type,
       label: type.charAt(0).toUpperCase() + type.slice(1)
     }));
-  }, [availableContactTypes, activeTab]);
+  }, [availableContactTypes]);
 
   // Sync selectedFilters with contactTypeFilter prop
   useEffect(() => {
@@ -118,7 +87,7 @@ export function ContactsFilters({
 
         {/* Search and Controls */}
         <div className="flex flex-col gap-4">
-          {/* Top Row - Desktop: Search/Filter + Tabs + Buttons on same line */}
+          {/* Search, Filter and Buttons */}
           <div className="flex flex-col lg:flex-row lg:items-start gap-4">
             {/* Search and Filter - Mobile/Tablet/Desktop */}
             <div className="flex items-center gap-2 flex-1 lg:max-w-md">
@@ -278,123 +247,30 @@ export function ContactsFilters({
               </Button>
             </div>
 
-            {/* Tabs and Actions - Desktop: on same line */}
-            <div className="hidden lg:flex lg:items-start gap-6 flex-1">
-              <Tabs value={activeTab} onValueChange={onTabChange} className="w-auto">
-                <TabsList className="grid grid-cols-3 w-auto">
-                  <TabsTrigger value="all" className="flex items-center gap-1 px-2">
-                    <Contact className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm">Alle</span>
-                    <Badge 
-                      variant="secondary" 
-                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                        activeTab === 'all' ? 'font-bold' : 'font-medium'
-                      }`}
-                    >
-                      {totalCount}
-                    </Badge>
-                  </TabsTrigger>
-                <TabsTrigger value="companies" className="flex items-center gap-1 px-2">
-                  <Building className="h-4 w-4" />
-                  <span className="text-xs sm:text-sm">
-                    <span className="hidden sm:inline">Unternehmen</span>
-                    <span className="sm:hidden">Firmen</span>
-                  </span>
-                    <Badge 
-                      variant="secondary" 
-                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                        activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                      }`}
-                    >
-                      {companiesCount}
-                    </Badge>
-                  </TabsTrigger>
-                  <TabsTrigger value="persons" className="flex items-center gap-1 px-2">
-                    <Users className="h-4 w-4" />
-                    <span className="text-xs sm:text-sm">Personen</span>
-                    <Badge 
-                      variant="secondary" 
-                      className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                        activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                      }`}
-                    >
-                      {personsCount}
-                    </Badge>
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
-
-              {/* Desktop Controls */}
-              <div className="flex flex-row gap-3 ml-auto">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onViewModeToggle}
-                  className="flex items-center gap-2"
-                >
-                  {viewMode === 'table' ? (
-                    <>
-                      <Grid3X3 className="h-4 w-4" />
-                      Karten
-                    </>
-                  ) : (
-                    <>
-                      <List className="h-4 w-4" />
-                      Tabelle
-                    </>
-                  )}
-                </Button>
-                <Button onClick={onAddClick} size="sm" className="flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  Hinzufügen
-                </Button>
-              </div>
-            </div>
-
-            {/* Mobile/Tablet: Show tabs below search */}
-            <div className="lg:hidden -mx-4 px-4">
-              <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-                <div className="overflow-x-auto no-scrollbar">
-                  <TabsList className="inline-flex w-auto min-w-full">
-                    <TabsTrigger value="all" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Contact className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Alle</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'all' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {totalCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="companies" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Building className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Unternehmen</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'companies' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {companiesCount}
-                      </Badge>
-                    </TabsTrigger>
-                    <TabsTrigger value="persons" className="flex items-center gap-1.5 px-3 whitespace-nowrap">
-                      <Users className="h-4 w-4 flex-shrink-0" />
-                      <span className="text-sm">Personen</span>
-                      <Badge 
-                        variant="secondary" 
-                        className={`ml-0.5 rounded-full bg-primary/10 text-primary border-0 px-1.5 py-0.5 text-xs ${
-                          activeTab === 'persons' ? 'font-bold' : 'font-medium'
-                        }`}
-                      >
-                        {personsCount}
-                      </Badge>
-                    </TabsTrigger>
-                  </TabsList>
-                </div>
-              </Tabs>
+            {/* Desktop Controls */}
+            <div className="hidden lg:flex flex-row gap-3 ml-auto">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onViewModeToggle}
+                className="flex items-center gap-2"
+              >
+                {viewMode === 'table' ? (
+                  <>
+                    <Grid3X3 className="h-4 w-4" />
+                    Karten
+                  </>
+                ) : (
+                  <>
+                    <List className="h-4 w-4" />
+                    Tabelle
+                  </>
+                )}
+              </Button>
+              <Button onClick={onAddClick} size="sm" className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Hinzufügen
+              </Button>
             </div>
           </div>
 

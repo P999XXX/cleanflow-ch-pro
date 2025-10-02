@@ -1,14 +1,13 @@
 import { useState, useCallback } from 'react';
 import { CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
 import { ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
-import { ViewMode, ActiveTab } from '@/types/contacts';
+import { ViewMode } from '@/types/contacts';
 
 /**
  * Custom hook for managing contact-related state and UI interactions
  */
 export function useContactManagement() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<CustomerCompany | null>(null);
@@ -36,16 +35,9 @@ export function useContactManagement() {
     setViewMode(prev => prev === 'table' ? 'cards' : 'table');
   }, []);
 
-  // Handle tab change with filter reset
-  const handleTabChange = useCallback((tab: ActiveTab) => {
-    setActiveTab(tab);
-    setContactTypeFilter('all'); // Reset filters when tab changes for better UX
-  }, []);
-
   return {
     // State
     searchTerm,
-    activeTab,
     contactTypeFilter,
     isFormOpen,
     selectedCompany,
@@ -56,7 +48,6 @@ export function useContactManagement() {
 
     // Setters
     setSearchTerm,
-    setActiveTab: handleTabChange,
     setContactTypeFilter,
     setIsFormOpen,
     setSelectedCompany,

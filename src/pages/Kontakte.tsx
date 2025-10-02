@@ -16,12 +16,11 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import { toast } from '@/hooks/use-toast';
-import { NavigationStackItem, DeleteItem, ViewMode, ActiveTab } from '@/types/contacts';
+import { NavigationStackItem, DeleteItem, ViewMode } from '@/types/contacts';
 
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<ActiveTab>('all');
   const [contactTypeFilter, setContactTypeFilter] = useState('all');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<CustomerCompany | null>(null);
@@ -107,11 +106,6 @@ const Kontakte = () => {
       setViewMode('table');
     }
   }, [isMobile]);
-
-  // Reset filters when tab changes for better UX
-  useEffect(() => {
-    setContactTypeFilter('all');
-  }, [activeTab]);
 
   // Force cards view on mobile and tablet by default, desktop defaults to table
   const effectiveViewMode = isMobile ? 'cards' : viewMode;
@@ -470,13 +464,6 @@ const Kontakte = () => {
         onClearSearch={clearSearch}
         contactTypeFilter={contactTypeFilter}
         onContactTypeChange={setContactTypeFilter}
-        activeTab={activeTab}
-        onTabChange={(tab) => setActiveTab(tab as 'all' | 'companies' | 'persons')}
-        totalCount={totalCount}
-        companiesCount={filteredCompanies.length}
-        personsCount={filteredPersons.length}
-        businessCustomersCount={filteredBusinessCustomers.length}
-        privateCustomersCount={filteredPrivateCustomers.length}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={handleAddClick}
@@ -487,80 +474,26 @@ const Kontakte = () => {
       {/* Main Content */}
       <div className="mt-6">
         {effectiveViewMode === 'cards' ? (
-          <>
-            {activeTab === 'all' && (
-              <ContactsCardsView
-                companies={filteredCompanies}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
-            {activeTab === 'companies' && (
-              <ContactsCardsView
-                companies={filteredCompanies}
-                persons={[]}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
-            {activeTab === 'persons' && (
-              <ContactsCardsView
-                companies={[]}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-              />
-            )}
-          </>
+          <ContactsCardsView
+            companies={filteredCompanies}
+            persons={filteredPersons}
+            showSections={true}
+            isSearching={isSearching}
+            hasNoResults={hasNoResults}
+            onClearSearch={clearSearch}
+            onCardClick={handleCardClick}
+          />
         ) : (
-          <>
-            {activeTab === 'all' && (
-              <ContactsTableView
-                companies={filteredCompanies}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
-            {activeTab === 'companies' && (
-              <ContactsTableView
-                companies={filteredCompanies}
-                persons={[]}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
-            {activeTab === 'persons' && (
-              <ContactsTableView
-                companies={[]}
-                persons={filteredPersons}
-                showSections={true}
-                isSearching={isSearching}
-                hasNoResults={hasNoResults}
-                onClearSearch={clearSearch}
-                onCardClick={handleCardClick}
-                getStatusBadge={getStatusBadge}
-              />
-            )}
-          </>
+          <ContactsTableView
+            companies={filteredCompanies}
+            persons={filteredPersons}
+            showSections={true}
+            isSearching={isSearching}
+            hasNoResults={hasNoResults}
+            onClearSearch={clearSearch}
+            onCardClick={handleCardClick}
+            getStatusBadge={getStatusBadge}
+          />
         )}
       </div>
 

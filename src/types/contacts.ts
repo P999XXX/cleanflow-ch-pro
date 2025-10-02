@@ -45,8 +45,3 @@ export type ContactType = 'all' | 'Unternehmen' | 'Geschäftskunde' | 'Privatkun
  * View mode for contact display
  */
 export type ViewMode = 'table' | 'cards';
-
-/**
- * Active tab selection
- */
-export type ActiveTab = 'all' | 'companies' | 'persons';
