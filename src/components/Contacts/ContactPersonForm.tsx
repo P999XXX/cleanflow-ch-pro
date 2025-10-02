@@ -348,6 +348,7 @@ export const ContactPersonForm = ({
                     id="phone"
                     type="tel"
                     {...register('phone')}
+                    placeholder="+41 44 123 45 67"
                   />
                   {errors.phone && (
                     <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>
@@ -412,18 +413,6 @@ export const ContactPersonForm = ({
                         <p className="text-sm text-destructive mt-1">{errors.city.message}</p>
                       )}
                     </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="country">Land</Label>
-                    <Input
-                      id="country"
-                      {...register('country')}
-                      placeholder="Schweiz"
-                    />
-                    {errors.country && (
-                      <p className="text-sm text-destructive mt-1">{errors.country.message}</p>
-                    )}
                   </div>
                 </>
               )}
