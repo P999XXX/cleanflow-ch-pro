@@ -61,9 +61,9 @@ export const companySchema = z.object({
   country: z
     .string()
     .trim()
-    .min(1, 'Land ist erforderlich')
     .max(100, 'Ländername ist zu lang')
-    .default('Schweiz'),
+    .default('Schweiz')
+    .optional(),
   
   phone: swissPhoneSchema,
   

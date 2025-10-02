@@ -178,21 +178,11 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
             </div>
 
             <div>
-              <Label htmlFor="country">Land</Label>
-              <Input
-                id="country"
-                {...register('country')}
-              />
-              {errors.country && (
-                <p className="text-sm text-destructive mt-1">{errors.country.message}</p>
-              )}
-            </div>
-
-            <div>
               <Label htmlFor="phone">Telefon *</Label>
               <Input
                 id="phone"
                 {...register('phone')}
+                placeholder="+41 44 123 45 67"
               />
               {errors.phone && (
                 <p className="text-sm text-destructive mt-1">{errors.phone.message}</p>
