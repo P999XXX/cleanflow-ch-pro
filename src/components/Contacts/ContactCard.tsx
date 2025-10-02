@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Mail, Phone, Smartphone, MapPin, Building2 } from "lucide-react";
+import { Mail, Phone, Smartphone, MapPin, Building2, MessageCircle, MessageSquare } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badges";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -204,6 +204,52 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   </TooltipTrigger>
                   <TooltipContent>
                     <p>Handy anrufen</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {type === 'person' && item.mobile && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      asChild
+                    >
+                      <a
+                        href={`https://wa.me/${item.mobile.replace(/[^0-9]/g, '')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MessageCircle className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>WhatsApp senden</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {type === 'person' && item.mobile && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      asChild
+                    >
+                      <a
+                        href={`sms:${item.mobile}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MessageSquare className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>SMS senden</p>
                   </TooltipContent>
                 </Tooltip>
               )}
