@@ -1,9 +1,10 @@
-import React, { useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { useCompanies, useCompanyMutations, CustomerCompanyInput } from '@/hooks/useCompanies';
-import { useContactPersons, useContactPersonMutations, ContactPersonInput } from '@/hooks/useContactPersons';
+import { useCompanies, useCompanyMutations, CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
+import { useContactPersons, useContactPersonMutations, ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
 import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { useAllContacts } from '@/hooks/useAllContacts';
 import { ContactForm } from '@/components/Contacts/ContactForm';
@@ -12,17 +13,29 @@ import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
 import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { DeleteItem } from '@/types/contacts';
-import { useContactManagement } from '@/hooks/useContactManagement';
-import { useContactNavigation } from '@/hooks/useContactNavigation';
-import { useContactStatusUpdate } from '@/hooks/useContactStatusUpdate';
-import { getCompanyTypeAbbreviation, getStatusBadge, AVAILABLE_CONTACT_TYPES } from '@/utils/contactHelpers';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
+import { NavigationStackItem, DeleteItem, ViewMode, ActiveTab } from '@/types/contacts';
 
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('all');
+  const [contactTypeFilter, setContactTypeFilter] = useState('all');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<CustomerCompany | null>(null);
+  const [selectedPerson, setSelectedPerson] = useState<ContactPerson | null>(null);
+  const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [itemType, setItemType] = useState<'company' | 'person'>('company');
+  const [navigationStack, setNavigationStack] = useState<NavigationStackItem[]>([]);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<DeleteItem | null>(null);
 
   const isMobile = useIsMobile();
+  const queryClient = useQueryClient();
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { data: allContacts } = useAllContacts();
@@ -30,29 +43,83 @@ const Kontakte = () => {
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
   const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
 
-  // Use custom hooks for state management
-  const contactManagement = useContactManagement();
-  const contactNavigation = useContactNavigation();
-  const { handleStatusUpdate } = useContactStatusUpdate();
+  // Status update mutations
+  const updateCompanyStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from('customer_companies')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['companies'] });
+      queryClient.invalidateQueries({ queryKey: ['allContacts'] });
+      toast({ title: "Status erfolgreich aktualisiert" });
+    },
+    onError: (error) => {
+      console.error('Error updating company status:', error);
+      toast({ 
+        title: "Fehler beim Aktualisieren", 
+        description: "Der Status konnte nicht aktualisiert werden.",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const updatePersonStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from('contact_persons')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contactPersons'] });
+      queryClient.invalidateQueries({ queryKey: ['allContacts'] });
+      toast({ title: "Status erfolgreich aktualisiert" });
+    },
+    onError: (error) => {
+      console.error('Error updating person status:', error);
+      toast({ 
+        title: "Fehler beim Aktualisieren", 
+        description: "Der Status konnte nicht aktualisiert werden.",
+        variant: "destructive" 
+      });
+    },
+  });
 
   // Handle URL parameters for filtering (e.g., ?type=kunde)
   useEffect(() => {
     const typeParam = searchParams.get('type');
     if (typeParam) {
       const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
-      contactManagement.setContactTypeFilter(formattedType);
+      setContactTypeFilter(formattedType);
     }
-  }, [searchParams, contactManagement]);
+  }, [searchParams]);
 
   // Set default view mode based on device type
   React.useEffect(() => {
-    if (!isMobile && contactManagement.viewMode === 'cards') {
-      contactManagement.setViewMode('table');
+    if (!isMobile && viewMode === 'cards') {
+      setViewMode('table');
     }
-  }, [isMobile, contactManagement]);
+  }, [isMobile]);
+
+  // Reset filters when tab changes for better UX
+  useEffect(() => {
+    setContactTypeFilter('all');
+  }, [activeTab]);
 
   // Force cards view on mobile and tablet by default, desktop defaults to table
-  const effectiveViewMode = isMobile ? 'cards' : contactManagement.viewMode;
+  const effectiveViewMode = isMobile ? 'cards' : viewMode;
+
+  // Available contact types for filters - unified system
+  const availableContactTypes = useMemo(() => {
+    return ['Unternehmen', 'Geschäftskunde', 'Privatkunde', 'Mitarbeiter', 'Person'];
+  }, []);
 
   // Optimized filtering with useMemo for performance - unified contacts
   const filteredAllContacts = useMemo(() => {
@@ -61,16 +128,16 @@ const Kontakte = () => {
     let filtered = allContacts;
     
     // Filter by contact type
-    if (contactManagement.contactTypeFilter !== 'all') {
-      const selectedTypes = contactManagement.contactTypeFilter.split(',');
+    if (contactTypeFilter !== 'all') {
+      const selectedTypes = contactTypeFilter.split(',');
       filtered = filtered.filter(contact => 
         selectedTypes.includes(contact.contact_type)
       );
     }
     
     // Filter by search term
-    if (contactManagement.searchTerm.trim()) {
-      const term = contactManagement.searchTerm.toLowerCase().trim();
+    if (searchTerm.trim()) {
+      const term = searchTerm.toLowerCase().trim();
       filtered = filtered.filter(contact =>
         contact.name.toLowerCase().includes(term) ||
         contact.email?.toLowerCase().includes(term) ||
@@ -82,7 +149,7 @@ const Kontakte = () => {
     }
     
     return filtered;
-  }, [allContacts, contactManagement.searchTerm, contactManagement.contactTypeFilter]);
+  }, [allContacts, searchTerm, contactTypeFilter]);
 
   // Separate by type for display
   const filteredCompanies = useMemo(() => {
@@ -106,8 +173,13 @@ const Kontakte = () => {
   }, [filteredAllContacts]);
 
   const totalCount = filteredAllContacts.length;
-  const isSearching = contactManagement.searchTerm.trim().length > 0;
+  const isSearching = searchTerm.trim().length > 0;
   const hasNoResults = isSearching && totalCount === 0;
+
+  // Clear search function
+  const clearSearch = useCallback(() => {
+    setSearchTerm('');
+  }, []);
 
   // Handle card clicks to open details
   const handleCardClick = useCallback((item: any, type: 'company' | 'person') => {
