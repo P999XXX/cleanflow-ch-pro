@@ -150,6 +150,31 @@ export const contactPersonSchema = z.object({
     .optional()
     .or(z.literal('')),
   
+  address: z
+    .string()
+    .trim()
+    .max(255, 'Adresse ist zu lang')
+    .optional(),
+  
+  postal_code: z
+    .string()
+    .regex(/^\d{4}$/, 'PLZ muss aus 4 Ziffern bestehen')
+    .optional()
+    .or(z.literal('')),
+  
+  city: z
+    .string()
+    .trim()
+    .max(100, 'Ortsname ist zu lang')
+    .optional(),
+  
+  country: z
+    .string()
+    .trim()
+    .max(100, 'Ländername ist zu lang')
+    .default('Schweiz')
+    .optional(),
+  
   is_primary_contact: z.boolean().default(false),
   
   is_employee: z.boolean().default(false),

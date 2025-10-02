@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,8 +6,15 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  console.log('get-maps-config: Request received', {
+    method: req.method,
+    hasAuthHeader: !!req.headers.get('Authorization'),
+    url: req.url
+  });
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('get-maps-config: Handling CORS preflight');
     return new Response('ok', { headers: corsHeaders });
   }
 
@@ -16,9 +22,12 @@ serve(async (req) => {
     // Verify user is authenticated
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      console.log('get-maps-config: Missing Authorization header');
+      console.error('get-maps-config: Missing Authorization header');
       return new Response(
-        JSON.stringify({ error: 'No authorization header' }),
+        JSON.stringify({ 
+          error: 'No authorization header',
+          message: 'Authentication required'
+        }),
         { 
           status: 401,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -26,15 +35,17 @@ serve(async (req) => {
       );
     }
 
-    // At this point, the platform has already verified the JWT (verify_jwt = true by default)
-    // We trust the request is authenticated and only return the configured API key
+    console.log('get-maps-config: Auth header present, checking API key');
 
     const mapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
     
     if (!mapsApiKey) {
-      console.log('get-maps-config: GOOGLE_MAPS_API_KEY not configured');
+      console.error('get-maps-config: GOOGLE_MAPS_API_KEY environment variable not configured');
       return new Response(
-        JSON.stringify({ error: 'Google Maps API key not configured' }),
+        JSON.stringify({ 
+          error: 'Google Maps API key not configured',
+          message: 'Please configure GOOGLE_MAPS_API_KEY in Lovable Cloud Secrets'
+        }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -42,12 +53,13 @@ serve(async (req) => {
       );
     }
 
-    console.log('get-maps-config: Returning API key');
+    console.log('get-maps-config: Successfully returning API key (length:', mapsApiKey.length, ')');
 
     return new Response(
       JSON.stringify({ 
         apiKey: mapsApiKey,
-        success: true
+        success: true,
+        timestamp: new Date().toISOString()
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -55,9 +67,12 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('Error in get-maps-config function:', error);
+    console.error('get-maps-config: Unexpected error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
+      JSON.stringify({ 
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error'
+      }),
       { 
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

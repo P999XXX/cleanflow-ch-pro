@@ -67,8 +67,11 @@ export type Database = {
       }
       contact_persons: {
         Row: {
+          address: string | null
+          city: string | null
           company_id: string
           contact_type: string | null
+          country: string | null
           created_at: string
           customer_company_id: string | null
           email: string | null
@@ -82,12 +85,16 @@ export type Database = {
           notes: string | null
           phone: string | null
           position: string | null
+          postal_code: string | null
           status: string | null
           updated_at: string
         }
         Insert: {
+          address?: string | null
+          city?: string | null
           company_id: string
           contact_type?: string | null
+          country?: string | null
           created_at?: string
           customer_company_id?: string | null
           email?: string | null
@@ -101,12 +108,16 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           position?: string | null
+          postal_code?: string | null
           status?: string | null
           updated_at?: string
         }
         Update: {
+          address?: string | null
+          city?: string | null
           company_id?: string
           contact_type?: string | null
+          country?: string | null
           created_at?: string
           customer_company_id?: string | null
           email?: string | null
@@ -120,6 +131,7 @@ export type Database = {
           notes?: string | null
           phone?: string | null
           position?: string | null
+          postal_code?: string | null
           status?: string | null
           updated_at?: string
         }

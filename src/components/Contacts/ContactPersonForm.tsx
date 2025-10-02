@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { ContactPersonInput, ContactPerson } from "@/hooks/useContactPersons";
 import { useCompanies } from "@/hooks/useCompanies";
 import { EmployeeFormStep2 } from "./EmployeeFormStep2";
@@ -68,6 +69,10 @@ export const ContactPersonForm = ({
       email: '',
       phone: '',
       mobile: '',
+      address: '',
+      postal_code: '',
+      city: '',
+      country: 'Schweiz',
       is_primary_contact: false,
       is_employee: initialIsEmployee,
       is_private_customer: !initialIsEmployee,
@@ -91,6 +96,10 @@ export const ContactPersonForm = ({
         email: contactPerson.email || '',
         phone: contactPerson.phone || '',
         mobile: contactPerson.mobile || '',
+        address: contactPerson.address || '',
+        postal_code: contactPerson.postal_code || '',
+        city: contactPerson.city || '',
+        country: contactPerson.country || 'Schweiz',
         is_primary_contact: contactPerson.is_primary_contact || false,
         is_employee: isEmp,
         is_private_customer: contactPerson.is_private_customer || false,
@@ -109,6 +118,10 @@ export const ContactPersonForm = ({
         email: '',
         phone: '',
         mobile: '',
+        address: '',
+        postal_code: '',
+        city: '',
+        country: 'Schweiz',
         is_primary_contact: false,
         is_employee: isEmp,
         is_private_customer: !isEmp,
@@ -141,6 +154,10 @@ export const ContactPersonForm = ({
       email: data.email,
       phone: data.phone,
       mobile: data.mobile,
+      address: data.address,
+      postal_code: data.postal_code,
+      city: data.city,
+      country: data.country || 'Schweiz',
       is_primary_contact: data.is_primary_contact,
       is_employee: isEmployee,
       is_private_customer: personType === 'private',
@@ -335,6 +352,67 @@ export const ContactPersonForm = ({
                   <p className="text-sm text-destructive mt-1">{errors.mobile.message}</p>
                 )}
               </div>
+
+              {/* Address fields for private customers */}
+              {personType === 'private' && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="address">Adresse</Label>
+                    <AddressAutocomplete
+                      value={formData.address || ''}
+                      onChange={(value) => setValue('address', value)}
+                      onAddressSelect={(address) => {
+                        setValue('address', address.street);
+                        setValue('postal_code', address.postalCode);
+                        setValue('city', address.city);
+                        setValue('country', address.country);
+                      }}
+                      placeholder="Strasse und Hausnummer"
+                    />
+                    {errors.address && (
+                      <p className="text-sm text-destructive mt-1">{errors.address.message}</p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="postal_code">PLZ</Label>
+                      <Input
+                        id="postal_code"
+                        {...register('postal_code')}
+                        placeholder="z.B. 8000"
+                      />
+                      {errors.postal_code && (
+                        <p className="text-sm text-destructive mt-1">{errors.postal_code.message}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2 col-span-2">
+                      <Label htmlFor="city">Ort</Label>
+                      <Input
+                        id="city"
+                        {...register('city')}
+                        placeholder="z.B. Zürich"
+                      />
+                      {errors.city && (
+                        <p className="text-sm text-destructive mt-1">{errors.city.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Land</Label>
+                    <Input
+                      id="country"
+                      {...register('country')}
+                      placeholder="Schweiz"
+                    />
+                    {errors.country && (
+                      <p className="text-sm text-destructive mt-1">{errors.country.message}</p>
+                    )}
+                  </div>
+                </>
+              )}
 
               {!isEmployee && (
                 <div className="flex items-center space-x-2">

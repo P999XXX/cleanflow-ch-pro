@@ -10,6 +10,10 @@ export interface ContactPerson {
   email?: string;
   phone?: string;
   mobile?: string;
+  address?: string;
+  postal_code?: string;
+  city?: string;
+  country?: string;
   is_primary_contact: boolean;
   is_employee: boolean;
   is_private_customer?: boolean;
@@ -31,6 +35,10 @@ export interface ContactPersonInput {
   email?: string;
   phone?: string;
   mobile?: string;
+  address?: string;
+  postal_code?: string;
+  city?: string;
+  country?: string;
   is_primary_contact?: boolean;
   is_employee?: boolean;
   is_private_customer?: boolean;
@@ -53,6 +61,10 @@ export const useContactPersons = () => {
           email,
           phone,
           mobile,
+          address,
+          postal_code,
+          city,
+          country,
           is_primary_contact,
           is_employee,
           is_private_customer,
