@@ -202,7 +202,7 @@ export const ContactForm = ({
   const getTitle = () => {
     if (company) return 'Unternehmen bearbeiten';
     if (contactPerson) return 'Kontaktperson bearbeiten';
-    if (stage === 'select') return 'Kontakt hinzufügen';
+    if (stage === 'select') return '';
     switch (selectedType) {
       case 'company':
         return 'Neues Unternehmen';
@@ -236,30 +236,32 @@ export const ContactForm = ({
   }
   return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <DialogHeader>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              {stage === 'form' && !company && !contactPerson && (
-                <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-              )}
-              <DialogTitle>{getTitle()}</DialogTitle>
-            </div>
-            {stage === 'form' && selectedType === 'company' && (
-              <div className="flex items-center gap-3">
-                <Label htmlFor="status-toggle" className="text-sm font-medium cursor-pointer">
-                  {companyData.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
-                </Label>
-                <Switch
-                  id="status-toggle"
-                  checked={companyData.status === 'aktiv'}
-                  onCheckedChange={(checked) => handleSelectChange('status', checked ? 'aktiv' : 'inaktiv')}
-                />
+        {stage === 'form' && (
+          <DialogHeader>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                {!company && !contactPerson && (
+                  <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                )}
+                <DialogTitle>{getTitle()}</DialogTitle>
               </div>
-            )}
-          </div>
-        </DialogHeader>
+              {selectedType === 'company' && (
+                <div className="flex items-center gap-3">
+                  <Label htmlFor="status-toggle" className="text-sm font-medium cursor-pointer">
+                    {companyData.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                  </Label>
+                  <Switch
+                    id="status-toggle"
+                    checked={companyData.status === 'aktiv'}
+                    onCheckedChange={(checked) => handleSelectChange('status', checked ? 'aktiv' : 'inaktiv')}
+                  />
+                </div>
+              )}
+            </div>
+          </DialogHeader>
+        )}
 
         {stage === 'select' && <ContactTypeSelector onSelect={handleTypeSelect} onClose={onClose} />}
 
