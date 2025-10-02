@@ -260,7 +260,7 @@ export const ContactPersonForm = ({
               )}
 
               {!isEmployee && personType !== 'private' && (
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2 ml-6">
                   <Checkbox
                     id="is_primary_contact"
                     checked={formData.is_primary_contact}
