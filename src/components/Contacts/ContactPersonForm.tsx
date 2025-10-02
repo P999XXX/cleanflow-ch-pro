@@ -226,14 +226,6 @@ export const ContactPersonForm = ({
           </div>
         </DialogHeader>
 
-        {isEmployee && (
-          <FormProgressIndicator 
-            currentStep={currentStep} 
-            totalSteps={totalSteps}
-            stepLabels={stepLabels}
-          />
-        )}
-
         <form onSubmit={handleFormSubmit(handleSubmitForm)} className="space-y-6">
           {currentStep === 1 && (
             <div className="space-y-4">
@@ -257,6 +249,14 @@ export const ContactPersonForm = ({
                     </div>
                   </RadioGroup>
                 </div>
+              )}
+
+              {isEmployee && (
+                <FormProgressIndicator 
+                  currentStep={currentStep} 
+                  totalSteps={totalSteps}
+                  stepLabels={stepLabels}
+                />
               )}
 
               {!isEmployee && personType !== 'private' && (
