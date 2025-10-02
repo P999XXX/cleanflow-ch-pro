@@ -14,7 +14,7 @@ export const FormProgressIndicator = ({
   stepLabels 
 }: FormProgressIndicatorProps) => {
   return (
-    <div className="w-full py-4 px-2">
+    <div className="w-full py-3">
       <div className="flex items-center w-full">
         {stepLabels.map((label, index) => {
           const stepNumber = index + 1;
@@ -24,25 +24,25 @@ export const FormProgressIndicator = ({
           return (
             <React.Fragment key={stepNumber}>
               {/* Step Circle and Label */}
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center gap-1.5">
                 <div
                   className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200",
+                    "w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium transition-colors",
                     isCompleted && "bg-primary text-primary-foreground",
                     isCurrent && "bg-primary text-primary-foreground",
-                    !isCompleted && !isCurrent && "bg-muted text-muted-foreground border-2 border-muted-foreground/20"
+                    !isCompleted && !isCurrent && "bg-muted/50 text-muted-foreground"
                   )}
                 >
                   {isCompleted ? (
-                    <Check className="h-4 w-4" />
+                    <Check className="h-3 w-3" />
                   ) : (
                     stepNumber
                   )}
                 </div>
                 <span
                   className={cn(
-                    "mt-2 text-xs font-medium text-center max-w-[80px]",
-                    isCurrent ? "text-foreground" : "text-muted-foreground"
+                    "text-[11px] font-normal text-center max-w-[70px]",
+                    isCurrent ? "text-foreground" : "text-muted-foreground/70"
                   )}
                 >
                   {label}
@@ -51,11 +51,11 @@ export const FormProgressIndicator = ({
 
               {/* Connector Line */}
               {stepNumber < totalSteps && (
-                <div className="flex-1 px-2 pb-6">
+                <div className="flex-1 px-1.5 pb-6">
                   <div
                     className={cn(
-                      "w-full h-0.5 transition-all duration-200",
-                      stepNumber < currentStep ? "bg-primary" : "bg-muted"
+                      "w-full h-px transition-colors",
+                      stepNumber < currentStep ? "bg-primary/60" : "bg-muted/40"
                     )}
                   />
                 </div>
