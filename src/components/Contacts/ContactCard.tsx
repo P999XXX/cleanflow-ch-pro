@@ -1,7 +1,10 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Mail, Phone, Smartphone, MapPin, Building2 } from "lucide-react";
 import { StatusBadge } from "@/components/ui/status-badges";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ContactCardProps {
   item: any;
@@ -10,6 +13,8 @@ interface ContactCardProps {
 }
 
 export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
+  const isMobile = useIsMobile();
+
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'outline'; className: string }> = {
       aktiv: { 
@@ -118,51 +123,147 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
         </div>
       </CardHeader>
       <CardContent className="pt-0 flex-1 flex flex-col justify-end">
-        <div className="flex flex-col gap-2 text-sm">
-          {item.email && (
-            <div className="flex items-center gap-2 min-w-0">
-              <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-              <a 
-                href={`mailto:${item.email}`} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground/70 hover:text-foreground transition-colors truncate"
-                onClick={(e) => e.stopPropagation()}
-                title={item.email}
-              >
-                {item.email}
-              </a>
+        {isMobile ? (
+          <TooltipProvider>
+            <div className="flex gap-2 justify-center pt-2">
+              {(type === 'company' ? (item.street || item.city || item.postal_code) : item.customer_companies?.name) && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (type === 'company' && (item.street || item.city)) {
+                          const address = [item.street, item.postal_code, item.city].filter(Boolean).join(' ');
+                          window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+                        }
+                      }}
+                    >
+                      <MapPin className="h-5 w-5" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{type === 'company' ? 'In Karten öffnen' : 'Unternehmen'}</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {item.email && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      asChild
+                    >
+                      <a
+                        href={`mailto:${item.email}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Mail className="h-5 w-5" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>E-Mail senden</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {item.phone && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      asChild
+                    >
+                      <a
+                        href={`tel:${item.phone}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Phone className="h-5 w-5" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Anrufen</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              {item.mobile && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10 rounded-full bg-muted hover:bg-muted/80"
+                      asChild
+                    >
+                      <a
+                        href={`tel:${item.mobile}`}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Smartphone className="h-5 w-5" />
+                      </a>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Handy anrufen</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
             </div>
-          )}
-          {item.phone && (
-            <div className="flex items-center gap-2">
-              <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-              <a 
-                href={`tel:${item.phone}`} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground/70 hover:text-foreground transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {item.phone}
-              </a>
-            </div>
-          )}
-          {item.mobile && (
-            <div className="flex items-center gap-2">
-              <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-              <a 
-                href={`tel:${item.mobile}`} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-foreground/70 hover:text-foreground transition-colors"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {item.mobile}
-              </a>
-            </div>
-          )}
-        </div>
+          </TooltipProvider>
+        ) : (
+          <div className="flex flex-col gap-2 text-sm">
+            {item.email && (
+              <div className="flex items-center gap-2 min-w-0">
+                <Mail className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                <a 
+                  href={`mailto:${item.email}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/70 hover:text-foreground transition-colors truncate"
+                  onClick={(e) => e.stopPropagation()}
+                  title={item.email}
+                >
+                  {item.email}
+                </a>
+              </div>
+            )}
+            {item.phone && (
+              <div className="flex items-center gap-2">
+                <Phone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                <a 
+                  href={`tel:${item.phone}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {item.phone}
+                </a>
+              </div>
+            )}
+            {item.mobile && (
+              <div className="flex items-center gap-2">
+                <Smartphone className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                <a 
+                  href={`tel:${item.mobile}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground/70 hover:text-foreground transition-colors"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {item.mobile}
+                </a>
+              </div>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
