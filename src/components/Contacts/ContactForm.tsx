@@ -114,14 +114,11 @@ export const ContactForm = ({
     if (!companyData.address.trim()) {
       newErrors.address = 'Adresse ist erforderlich';
     }
-    
-    // PLZ validation: 4 digits only for Switzerland
     if (!companyData.postal_code.trim()) {
       newErrors.postal_code = 'PLZ ist erforderlich';
-    } else if (companyData.country === 'Schweiz' && !/^\d{4}$/.test(companyData.postal_code)) {
+    } else if (!/^\d{4}$/.test(companyData.postal_code)) {
       newErrors.postal_code = 'PLZ muss 4 Ziffern enthalten';
     }
-    
     if (!companyData.city.trim()) {
       newErrors.city = 'Ort ist erforderlich';
     }
@@ -134,21 +131,13 @@ export const ContactForm = ({
     if (!companyData.status.trim()) {
       newErrors.status = 'Status ist erforderlich';
     }
-    
-    // Phone validation: must start with +41 for Swiss numbers
     if (!companyData.phone.trim()) {
       newErrors.phone = 'Telefon ist erforderlich';
-    } else if (companyData.country === 'Schweiz' && !companyData.phone.startsWith('+41')) {
-      newErrors.phone = 'Schweizer Telefonnummern müssen mit +41 beginnen';
     } else if (!/^[\+]?[\d\s\-\(\)\/]+$/.test(companyData.phone)) {
       newErrors.phone = 'Ungültiges Telefonformat';
     }
-    
-    // Email validation
     if (!companyData.email.trim()) {
       newErrors.email = 'E-Mail ist erforderlich';
-    } else if (!companyData.email.includes('@')) {
-      newErrors.email = 'E-Mail muss ein @ enthalten';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(companyData.email)) {
       newErrors.email = 'Ungültige E-Mail-Adresse';
     }
@@ -291,32 +280,16 @@ export const ContactForm = ({
                 <Label htmlFor="name">
                   Firmenname <span className="text-foreground">*</span>
                 </Label>
-                <Input 
-                  id="name" 
-                  value={companyData.name} 
-                  onChange={e => handleInputChange('name', e.target.value)} 
-                  placeholder="z.B. CleanFlow AG"
-                  required 
-                  className={errors.name ? 'border-destructive' : ''} 
-                />
+                <Input id="name" value={companyData.name} onChange={e => handleInputChange('name', e.target.value)} required className={errors.name ? 'border-destructive' : ''} />
                 {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
-                {!errors.name && <p className="text-sm text-muted-foreground mt-1">Beispiel: CleanFlow AG</p>}
               </div>
 
               <div>
                 <Label htmlFor="address">
                   Adresse <span className="text-foreground">*</span>
                 </Label>
-                <Input 
-                  id="address" 
-                  value={companyData.address} 
-                  onChange={e => handleInputChange('address', e.target.value)} 
-                  placeholder="z.B. Bahnhofstrasse 123"
-                  required 
-                  className={errors.address ? 'border-destructive' : ''} 
-                />
+                <Input id="address" value={companyData.address} onChange={e => handleInputChange('address', e.target.value)} required className={errors.address ? 'border-destructive' : ''} />
                 {errors.address && <p className="text-sm text-destructive mt-1">{errors.address}</p>}
-                {!errors.address && <p className="text-sm text-muted-foreground mt-1">Beispiel: Bahnhofstrasse 123</p>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -324,31 +297,15 @@ export const ContactForm = ({
                   <Label htmlFor="postal_code">
                     PLZ <span className="text-foreground">*</span>
                   </Label>
-                  <Input 
-                    id="postal_code" 
-                    value={companyData.postal_code} 
-                    onChange={e => handleInputChange('postal_code', e.target.value)} 
-                    placeholder="z.B. 8000"
-                    required 
-                    className={errors.postal_code ? 'border-destructive' : ''} 
-                  />
+                  <Input id="postal_code" value={companyData.postal_code} onChange={e => handleInputChange('postal_code', e.target.value)} required className={errors.postal_code ? 'border-destructive' : ''} />
                   {errors.postal_code && <p className="text-sm text-destructive mt-1">{errors.postal_code}</p>}
-                  {!errors.postal_code && companyData.country === 'Schweiz' && <p className="text-sm text-muted-foreground mt-1">4 Ziffern, z.B. 8000</p>}
                 </div>
                 <div>
                   <Label htmlFor="city">
                     Ort <span className="text-foreground">*</span>
                   </Label>
-                  <Input 
-                    id="city" 
-                    value={companyData.city} 
-                    onChange={e => handleInputChange('city', e.target.value)} 
-                    placeholder="z.B. Zürich"
-                    required 
-                    className={errors.city ? 'border-destructive' : ''} 
-                  />
+                  <Input id="city" value={companyData.city} onChange={e => handleInputChange('city', e.target.value)} required className={errors.city ? 'border-destructive' : ''} />
                   {errors.city && <p className="text-sm text-destructive mt-1">{errors.city}</p>}
-                  {!errors.city && <p className="text-sm text-muted-foreground mt-1">Beispiel: Zürich</p>}
                 </div>
               </div>
 
@@ -356,42 +313,7 @@ export const ContactForm = ({
                 <Label htmlFor="country">
                   Land <span className="text-foreground">*</span>
                 </Label>
-                <Select value={companyData.country} onValueChange={value => handleSelectChange('country', value)}>
-                  <SelectTrigger className={errors.country ? 'border-destructive' : ''}>
-                    <SelectValue placeholder="Land auswählen" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Schweiz">Schweiz</SelectItem>
-                    <SelectItem value="Deutschland">Deutschland</SelectItem>
-                    <SelectItem value="Österreich">Österreich</SelectItem>
-                    <SelectItem value="Frankreich">Frankreich</SelectItem>
-                    <SelectItem value="Italien">Italien</SelectItem>
-                    <SelectItem value="Liechtenstein">Liechtenstein</SelectItem>
-                    <SelectItem value="Belgien">Belgien</SelectItem>
-                    <SelectItem value="Niederlande">Niederlande</SelectItem>
-                    <SelectItem value="Luxemburg">Luxemburg</SelectItem>
-                    <SelectItem value="Spanien">Spanien</SelectItem>
-                    <SelectItem value="Portugal">Portugal</SelectItem>
-                    <SelectItem value="Vereinigtes Königreich">Vereinigtes Königreich</SelectItem>
-                    <SelectItem value="Polen">Polen</SelectItem>
-                    <SelectItem value="Tschechien">Tschechien</SelectItem>
-                    <SelectItem value="Slowakei">Slowakei</SelectItem>
-                    <SelectItem value="Ungarn">Ungarn</SelectItem>
-                    <SelectItem value="Rumänien">Rumänien</SelectItem>
-                    <SelectItem value="Bulgarien">Bulgarien</SelectItem>
-                    <SelectItem value="Kroatien">Kroatien</SelectItem>
-                    <SelectItem value="Slowenien">Slowenien</SelectItem>
-                    <SelectItem value="Serbien">Serbien</SelectItem>
-                    <SelectItem value="Bosnien und Herzegowina">Bosnien und Herzegowina</SelectItem>
-                    <SelectItem value="Nordmazedonien">Nordmazedonien</SelectItem>
-                    <SelectItem value="Albanien">Albanien</SelectItem>
-                    <SelectItem value="Kosovo">Kosovo</SelectItem>
-                    <SelectItem value="Montenegro">Montenegro</SelectItem>
-                    <SelectItem value="Griechenland">Griechenland</SelectItem>
-                    <SelectItem value="Türkei">Türkei</SelectItem>
-                    <SelectItem value="Andere">Andere</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input id="country" value={companyData.country} onChange={e => handleInputChange('country', e.target.value)} required className={errors.country ? 'border-destructive' : ''} />
                 {errors.country && <p className="text-sm text-destructive mt-1">{errors.country}</p>}
               </div>
 
@@ -400,44 +322,21 @@ export const ContactForm = ({
                   <Label htmlFor="phone">
                     Telefon <span className="text-foreground">*</span>
                   </Label>
-                  <Input 
-                    id="phone" 
-                    value={companyData.phone} 
-                    onChange={e => handleInputChange('phone', e.target.value)} 
-                    placeholder="+41 44 123 45 67"
-                    required 
-                    className={errors.phone ? 'border-destructive' : ''} 
-                  />
+                  <Input id="phone" value={companyData.phone} onChange={e => handleInputChange('phone', e.target.value)} required className={errors.phone ? 'border-destructive' : ''} />
                   {errors.phone && <p className="text-sm text-destructive mt-1">{errors.phone}</p>}
-                  {!errors.phone && companyData.country === 'Schweiz' && <p className="text-sm text-muted-foreground mt-1">Muss mit +41 beginnen, z.B. +41 44 123 45 67</p>}
                 </div>
                 <div>
                   <Label htmlFor="email">
                     E-Mail <span className="text-foreground">*</span>
                   </Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    value={companyData.email} 
-                    onChange={e => handleInputChange('email', e.target.value)} 
-                    placeholder="info@cleanflow.ch"
-                    required 
-                    className={errors.email ? 'border-destructive' : ''} 
-                  />
+                  <Input id="email" type="email" value={companyData.email} onChange={e => handleInputChange('email', e.target.value)} required className={errors.email ? 'border-destructive' : ''} />
                   {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
-                  {!errors.email && <p className="text-sm text-muted-foreground mt-1">Beispiel: info@cleanflow.ch</p>}
                 </div>
               </div>
 
               <div>
                 <Label htmlFor="website">Website</Label>
-                <Input 
-                  id="website" 
-                  value={companyData.website} 
-                  onChange={e => handleInputChange('website', e.target.value)} 
-                  placeholder="https://www.cleanflow.ch"
-                />
-                <p className="text-sm text-muted-foreground mt-1">Beispiel: https://www.cleanflow.ch</p>
+                <Input id="website" value={companyData.website} onChange={e => handleInputChange('website', e.target.value)} />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -491,13 +390,7 @@ export const ContactForm = ({
 
               <div>
                 <Label htmlFor="vat_number">MwSt-Nummer</Label>
-                <Input 
-                  id="vat_number" 
-                  value={companyData.vat_number} 
-                  onChange={e => handleInputChange('vat_number', e.target.value)} 
-                  placeholder="CHE-123.456.789 MWST"
-                />
-                <p className="text-sm text-muted-foreground mt-1">Beispiel: CHE-123.456.789 MWST</p>
+                <Input id="vat_number" value={companyData.vat_number} onChange={e => handleInputChange('vat_number', e.target.value)} />
               </div>
 
               <div>
