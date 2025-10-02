@@ -13,6 +13,9 @@ import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
 import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { supabase } from '@/integrations/supabase/client';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
+import { toast } from '@/hooks/use-toast';
 
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
@@ -31,12 +34,62 @@ const Kontakte = () => {
   const [itemToDelete, setItemToDelete] = useState<{item: any, type: 'company' | 'person'} | null>(null);
 
   const isMobile = useIsMobile();
+  const queryClient = useQueryClient();
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { data: allContacts } = useAllContacts();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
   const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
+
+  // Status update mutations
+  const updateCompanyStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from('customer_companies')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['companies'] });
+      queryClient.invalidateQueries({ queryKey: ['allContacts'] });
+      toast({ title: "Status erfolgreich aktualisiert" });
+    },
+    onError: (error) => {
+      console.error('Error updating company status:', error);
+      toast({ 
+        title: "Fehler beim Aktualisieren", 
+        description: "Der Status konnte nicht aktualisiert werden.",
+        variant: "destructive" 
+      });
+    },
+  });
+
+  const updatePersonStatusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: string }) => {
+      const { error } = await supabase
+        .from('contact_persons')
+        .update({ status })
+        .eq('id', id);
+      
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['contactPersons'] });
+      queryClient.invalidateQueries({ queryKey: ['allContacts'] });
+      toast({ title: "Status erfolgreich aktualisiert" });
+    },
+    onError: (error) => {
+      console.error('Error updating person status:', error);
+      toast({ 
+        title: "Fehler beim Aktualisieren", 
+        description: "Der Status konnte nicht aktualisiert werden.",
+        variant: "destructive" 
+      });
+    },
+  });
 
   // Handle URL parameters for filtering (e.g., ?type=kunde)
   useEffect(() => {
@@ -215,6 +268,24 @@ const Kontakte = () => {
       setItemToDelete(null);
     }
   }, [itemToDelete, deleteCompany, deleteContactPerson]);
+
+  const handleStatusUpdate = async (item: any, type: 'company' | 'person', newStatus: string) => {
+    if (type === 'company') {
+      await updateCompanyStatusMutation.mutateAsync({
+        id: item.id,
+        status: newStatus
+      });
+      // Update selected item to reflect new status
+      setSelectedItem({ ...item, status: newStatus });
+    } else {
+      await updatePersonStatusMutation.mutateAsync({
+        id: item.id,
+        status: newStatus
+      });
+      // Update selected item to reflect new status
+      setSelectedItem({ ...item, status: newStatus });
+    }
+  };
 
   const handleCompanySubmit = (companyData) => {
     if (selectedCompany) {
@@ -521,6 +592,7 @@ const Kontakte = () => {
         onNavigateToPerson={handleNavigateToPerson}
         getStatusBadge={getStatusBadge}
         getCompanyTypeAbbreviation={getCompanyTypeAbbreviation}
+        onStatusUpdate={handleStatusUpdate}
       />
 
       {/* Delete Confirmation Dialog */}

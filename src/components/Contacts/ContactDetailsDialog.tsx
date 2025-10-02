@@ -10,6 +10,9 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
 import { designTokens } from "@/lib/design-tokens";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { useState } from "react";
 
 interface ContactDetailsDialogProps {
   isOpen: boolean;
@@ -24,6 +27,7 @@ interface ContactDetailsDialogProps {
   onNavigateToPerson: (person: any) => void;
   getStatusBadge: (status: string) => JSX.Element;
   getCompanyTypeAbbreviation: (type: string) => string;
+  onStatusUpdate: (item: any, type: 'company' | 'person', newStatus: string) => Promise<void>;
 }
 
 export function ContactDetailsDialog({
@@ -39,13 +43,45 @@ export function ContactDetailsDialog({
   onNavigateToPerson,
   getStatusBadge,
   getCompanyTypeAbbreviation,
+  onStatusUpdate,
 }: ContactDetailsDialogProps) {
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+
   if (!selectedItem) return null;
+
+  const handleToggleChange = (checked: boolean) => {
+    const newStatus = checked ? 'aktiv' : 'inaktiv';
+    setPendingStatus(newStatus);
+    setShowConfirmDialog(true);
+  };
+
+  const handleConfirmStatusChange = async () => {
+    if (pendingStatus) {
+      setIsUpdating(true);
+      try {
+        await onStatusUpdate(selectedItem, itemType, pendingStatus);
+        setShowConfirmDialog(false);
+        setPendingStatus(null);
+      } catch (error) {
+        console.error('Status update failed:', error);
+      } finally {
+        setIsUpdating(false);
+      }
+    }
+  };
+
+  const handleCancelStatusChange = () => {
+    setShowConfirmDialog(false);
+    setPendingStatus(null);
+  };
 
   const isCustomer = itemType === 'company' && selectedItem.contact_type?.toLowerCase() === 'kunde';
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <>
+      <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent aria-describedby="contact-dialog-desc" className={cn(
         designTokens.containers.dialog.lg,
         designTokens.dialogs.content,
@@ -133,18 +169,30 @@ export function ContactDetailsDialog({
                 </div>
 
                 <div className="flex flex-col gap-2 pt-6">
-                  {/* Name */}
-                  <div className="flex items-center gap-3">
-                    <Users className="h-6 w-6 text-primary flex-shrink-0" />
-                    <div className="flex flex-col min-w-0">
-                      <h2 className="text-xl sm:text-2xl font-semibold">
-                        {`${selectedItem.first_name} ${selectedItem.last_name}`}
-                      </h2>
-                      {selectedItem.position && (
-                        <span className="text-sm font-normal text-muted-foreground mt-1">
-                          {selectedItem.position}
-                        </span>
-                      )}
+                  {/* Name with Toggle */}
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <Users className="h-6 w-6 text-primary flex-shrink-0" />
+                      <div className="flex flex-col min-w-0">
+                        <h2 className="text-xl sm:text-2xl font-semibold">
+                          {`${selectedItem.first_name} ${selectedItem.last_name}`}
+                        </h2>
+                        {selectedItem.position && (
+                          <span className="text-sm font-normal text-muted-foreground mt-1">
+                            {selectedItem.position}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-sm text-muted-foreground">
+                        {selectedItem.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                      </span>
+                      <Switch
+                        checked={selectedItem.status === 'aktiv'}
+                        onCheckedChange={handleToggleChange}
+                        disabled={isUpdating}
+                      />
                     </div>
                   </div>
 
@@ -159,19 +207,31 @@ export function ContactDetailsDialog({
                 </div>
               </>
             ) : (
-              /* Company Layout: Keep existing structure */
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                {/* Title */}
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
-                  <div className="flex flex-col min-w-0">
-                    <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem.name}</h2>
+              /* Company Layout: Name with Toggle, then Badges */
+              <>
+                <div className="flex items-center justify-between gap-4 mb-3">
+                  {/* Title */}
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <Building2 className="h-6 w-6 text-primary flex-shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <h2 className="text-xl sm:text-2xl font-semibold truncate">{selectedItem.name}</h2>
+                    </div>
+                  </div>
+                  {/* Status Toggle */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-sm text-muted-foreground">
+                      {selectedItem.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}
+                    </span>
+                    <Switch
+                      checked={selectedItem.status === 'aktiv'}
+                      onCheckedChange={handleToggleChange}
+                      disabled={isUpdating}
+                    />
                   </div>
                 </div>
 
                 {/* Badges */}
-                <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
-                  {getStatusBadge(selectedItem.status)}
+                <div className="flex items-center gap-2 flex-wrap">
                   {selectedItem.company_type && (
                     <Badge 
                       variant="outline" 
@@ -197,7 +257,7 @@ export function ContactDetailsDialog({
                     </Badge>
                   )}
                 </div>
-              </div>
+              </>
             )}
 
             {/* Quick Action Icons */}
@@ -374,14 +434,34 @@ export function ContactDetailsDialog({
             </div>
           )}
 
-        </div>
-      </DialogContent>
-    </Dialog>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Status ändern?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Möchten Sie den Status von "{selectedItem.status === 'aktiv' ? 'Aktiv' : 'Inaktiv'}" 
+              zu "{pendingStatus === 'aktiv' ? 'Aktiv' : 'Inaktiv'}" ändern?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleCancelStatusChange}>
+              Abbrechen
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmStatusChange} disabled={isUpdating}>
+              {isUpdating ? 'Wird geändert...' : 'Ja, ändern'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
-
 // Helper Components
-function ContactInformationSection({ 
+function ContactInformationSection({
   selectedItem, 
   itemType,
   onNavigateToPerson,
