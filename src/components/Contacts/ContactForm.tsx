@@ -14,7 +14,6 @@ import { useToast } from '@/hooks/use-toast';
 import { ContactPersonForm } from './ContactPersonForm';
 import { ContactTypeSelector, ContactType } from './ContactTypeSelector';
 import { EmployeeDetailsInput } from '@/hooks/useEmployeeDetails';
-import { AddressAutocomplete } from '@/components/ui/address-autocomplete';
 type ContactFormStage = 'select' | 'form';
 interface ContactFormProps {
   isOpen: boolean;
@@ -173,30 +172,6 @@ export const ContactForm = ({
       });
     }
   };
-
-  const handleAddressSelect = (address: {
-    street: string;
-    postalCode: string;
-    city: string;
-    country: string;
-  }) => {
-    setCompanyData({
-      ...companyData,
-      address: address.street,
-      postal_code: address.postalCode,
-      city: address.city,
-      country: address.country
-    });
-    
-    // Clear errors for all address fields
-    setErrors({
-      ...errors,
-      address: '',
-      postal_code: '',
-      city: '',
-      country: ''
-    });
-  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const isValid = validateCompanyForm();
@@ -313,13 +288,7 @@ export const ContactForm = ({
                 <Label htmlFor="address">
                   Adresse <span className="text-foreground">*</span>
                 </Label>
-                <AddressAutocomplete
-                  value={companyData.address}
-                  onChange={(value) => handleInputChange('address', value)}
-                  onAddressSelect={handleAddressSelect}
-                  placeholder="Adresse eingeben oder auswählen..."
-                  className={errors.address ? 'border-destructive' : ''}
-                />
+                <Input id="address" value={companyData.address} onChange={e => handleInputChange('address', e.target.value)} required className={errors.address ? 'border-destructive' : ''} />
                 {errors.address && <p className="text-sm text-destructive mt-1">{errors.address}</p>}
               </div>
 
