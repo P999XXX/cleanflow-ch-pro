@@ -121,7 +121,11 @@ export function ContactsTableView({
                         {company.contact_type && (
                           <Badge 
                             variant="secondary" 
-                            className="bg-primary/10 text-primary border-primary/20 font-medium"
+                            className={`${
+                              company.contact_type.toLowerCase().includes('kunde') 
+                                ? 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400' 
+                                : 'bg-primary/10 text-primary border-primary/20'
+                            } font-medium`}
                           >
                             {company.contact_type}
                           </Badge>
