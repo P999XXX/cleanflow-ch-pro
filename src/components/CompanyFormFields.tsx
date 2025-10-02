@@ -26,7 +26,6 @@ interface CompanyFormFieldsProps {
     city?: string;
     phone?: string;
     email?: string;
-    country?: string;
   };
   required?: {
     name?: boolean;
@@ -35,7 +34,6 @@ interface CompanyFormFieldsProps {
     city?: boolean;
     phone?: boolean;
     email?: boolean;
-    country?: boolean;
   };
 }
 
@@ -49,9 +47,8 @@ export function CompanyFormFields({
     postalCode: true, 
     city: true, 
     phone: true, 
-    email: true,
-    country: true
-  } 
+    email: true
+  }
 }: CompanyFormFieldsProps) {
   const [localAddress, setLocalAddress] = useState(formData.address);
   
@@ -157,25 +154,6 @@ export function CompanyFormFields({
         />
         {errors.city && (
           <p className="text-sm text-destructive">{errors.city}</p>
-        )}
-      </div>
-
-      {/* Land */}
-      <div className="space-y-2">
-        <Label htmlFor="country">
-          Land {required.country && <span className="text-muted-foreground">*</span>}
-        </Label>
-        <Input
-          id="country"
-          name="country"
-          placeholder="Schweiz"
-          value={formData.country || 'Schweiz'}
-          onChange={onChange}
-          required={required.country}
-          className={errors.country ? "border-destructive" : ""}
-        />
-        {errors.country && (
-          <p className="text-sm text-destructive">{errors.country}</p>
         )}
       </div>
 

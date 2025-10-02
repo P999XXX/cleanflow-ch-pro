@@ -88,9 +88,6 @@ export default function CompanyForm({
     if (!formData.city.trim()) {
       newErrors.city = 'Ort ist erforderlich';
     }
-    if (!formData.country.trim()) {
-      newErrors.country = 'Land ist erforderlich';
-    }
     if (!formData.phone.trim()) {
       newErrors.phone = 'Telefon ist erforderlich';
     } else if (!/^\+?[1-9]\d{1,14}$/.test(formData.phone.replace(/[\s-]/g, ''))) {
@@ -177,7 +174,6 @@ export default function CompanyForm({
               address: true, 
               postalCode: true, 
               city: true, 
-              country: true, 
               phone: true, 
               email: true 
             }}
