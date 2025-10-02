@@ -199,7 +199,7 @@ export function ContactsFilters({
                         className="flex items-center gap-2 relative"
                       >
                         <Filter className="h-4 w-4" />
-                        Kontaktart
+                        Filter
                         {selectedFilters.length > 0 && (
                           <Badge variant="secondary" className="ml-1 px-1.5 py-0 h-5 min-w-5 flex items-center justify-center bg-primary text-primary-foreground">
                             {selectedFilters.length}
