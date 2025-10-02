@@ -254,6 +254,25 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   </TooltipContent>
                 </Tooltip>
               )}
+              {/* Arrow button in mobile view aligned with icons */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80 ml-auto"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onCardClick(item, type);
+                    }}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Details öffnen</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </TooltipProvider>
         ) : (
@@ -305,18 +324,20 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
         )}
       </CardContent>
       
-      {/* Arrow button at bottom right */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-muted/50 hover:bg-muted"
-        onClick={(e) => {
-          e.stopPropagation();
-          onCardClick(item, type);
-        }}
-      >
-        <ChevronRight className="h-4 w-4" />
-      </Button>
+      {/* Arrow button at bottom right (only desktop) */}
+      {!isMobile && (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute bottom-2 right-2 h-8 w-8 rounded-full bg-muted/50 hover:bg-muted"
+          onClick={(e) => {
+            e.stopPropagation();
+            onCardClick(item, type);
+          }}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      )}
     </Card>
   );
 }
