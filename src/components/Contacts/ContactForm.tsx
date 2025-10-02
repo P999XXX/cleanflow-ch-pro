@@ -334,6 +334,11 @@ export const ContactForm = ({
                 </div>
               </div>
 
+              <div>
+                <Label htmlFor="website">Website</Label>
+                <Input id="website" value={companyData.website} onChange={e => handleInputChange('website', e.target.value)} />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="company_type">
@@ -383,15 +388,9 @@ export const ContactForm = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="website">Website</Label>
-                    <Input id="website" value={companyData.website} onChange={e => handleInputChange('website', e.target.value)} />
-                  </div>
-                  <div>
-                    <Label htmlFor="vat_number">MwSt-Nummer</Label>
-                    <Input id="vat_number" value={companyData.vat_number} onChange={e => handleInputChange('vat_number', e.target.value)} />
-                  </div>
+              <div>
+                <Label htmlFor="vat_number">MwSt-Nummer</Label>
+                <Input id="vat_number" value={companyData.vat_number} onChange={e => handleInputChange('vat_number', e.target.value)} />
               </div>
 
               <div>
