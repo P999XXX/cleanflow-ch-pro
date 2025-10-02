@@ -235,15 +235,14 @@ export const ContactForm = ({
   }
   return <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl" onOpenAutoFocus={(e) => e.preventDefault()}>
-        <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
+        <DialogHeader>
           <div className="flex items-center gap-2">
-            {stage === 'form' && !company && !contactPerson && <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
+            {stage === 'form' && !company && !contactPerson && (
+              <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
                 <ChevronLeft className="h-4 w-4" />
-              </Button>}
-            <div className="flex-1">
-              <DialogTitle>{getTitle()}</DialogTitle>
-              <DialogDescription>{getDescription()}</DialogDescription>
-            </div>
+              </Button>
+            )}
+            <DialogTitle>{getTitle()}</DialogTitle>
           </div>
         </DialogHeader>
 
