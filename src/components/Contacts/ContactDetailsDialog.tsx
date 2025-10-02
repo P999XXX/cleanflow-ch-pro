@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Building2, Users, Mail, Phone, Globe, MapPin, Edit, Trash2, X,
-  Contact, Building, AlertTriangle, FileText, MessageCircle, MessageSquare, ChevronRight 
+  Contact, Building, AlertTriangle, FileText, MessageSquare, ChevronRight 
 } from "lucide-react";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import GoogleMap from "@/components/ui/google-map";
 import { designTokens } from "@/lib/design-tokens";
@@ -293,7 +294,7 @@ export function ContactDetailsDialog({
                       window.open(`https://wa.me/${phone}`, '_blank');
                     }}
                   >
-                    <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    <WhatsAppIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
                   </Button>
                   <Button
                     variant="outline"
@@ -315,7 +316,7 @@ export function ContactDetailsDialog({
                     window.open(`https://wa.me/${phone}`, '_blank');
                   }}
                 >
-                  <MessageCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <WhatsAppIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
                 </Button>
               )}
               {selectedItem.email && (

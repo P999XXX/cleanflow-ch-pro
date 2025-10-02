@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Mail, Phone, Smartphone, MapPin, Building2, MessageCircle, MessageSquare } from "lucide-react";
+import { Mail, Phone, Smartphone, MapPin, Building2, MessageSquare } from "lucide-react";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { StatusBadge } from "@/components/ui/status-badges";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -222,7 +223,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MessageCircle className="h-4 w-4" />
+                        <WhatsAppIcon className="h-4 w-4" />
                       </a>
                     </Button>
                   </TooltipTrigger>
