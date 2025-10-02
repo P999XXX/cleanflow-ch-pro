@@ -52,14 +52,18 @@ export const useSwissGeocode = () => {
 
   // Get city from postal code
   const getCityFromPostalCode = useCallback(async (postalCode: string): Promise<string | null> => {
+    console.log('[useSwissGeocode] getCityFromPostalCode called with:', postalCode);
+    
     // Validate Swiss postal code format (4 digits)
     if (!/^\d{4}$/.test(postalCode)) {
+      console.log('[useSwissGeocode] Invalid postal code format:', postalCode);
       return null;
     }
 
     // Check cache first
     const cacheKey = `PLZ:${postalCode}`;
     if (cache.current[cacheKey] !== undefined) {
+      console.log('[useSwissGeocode] Cache hit for:', postalCode, '→', cache.current[cacheKey]);
       return cache.current[cacheKey];
     }
 
@@ -71,12 +75,20 @@ export const useSwissGeocode = () => {
       abortControllerRef.current = new AbortController();
 
       // Load Google Maps API
+      console.log('[useSwissGeocode] Loading Google Maps API...');
       const isLoaded = await loadGoogleMapsApi();
       if (!isLoaded) {
+        console.error('[useSwissGeocode] Failed to load Google Maps API');
+        toast({
+          title: 'Fehler',
+          description: 'Google Maps konnte nicht geladen werden',
+          variant: 'destructive'
+        });
         return null;
       }
 
       // Use Geocoding API
+      console.log('[useSwissGeocode] Geocoding postal code:', postalCode);
       const geocoder = new google.maps.Geocoder();
       
       return new Promise((resolve) => {
@@ -86,9 +98,13 @@ export const useSwissGeocode = () => {
             componentRestrictions: { country: 'CH' }
           },
           (results, status) => {
+            console.log('[useSwissGeocode] Geocoding response:', { status, results });
+            
             if (status === 'OK' && results && results[0]) {
               // Extract city from address components
               const addressComponents = results[0].address_components;
+              console.log('[useSwissGeocode] Address components:', addressComponents);
+              
               const cityComponent = addressComponents.find(
                 (component) => 
                   component.types.includes('locality') || 
@@ -96,9 +112,12 @@ export const useSwissGeocode = () => {
               );
 
               const city = cityComponent?.long_name || null;
+              console.log('[useSwissGeocode] Extracted city:', city);
+              
               cache.current[cacheKey] = city;
               resolve(city);
             } else {
+              console.warn('[useSwissGeocode] Geocoding failed:', status);
               cache.current[cacheKey] = null;
               resolve(null);
             }
@@ -106,15 +125,18 @@ export const useSwissGeocode = () => {
         );
       });
     } catch (error) {
-      console.error('Error geocoding postal code:', error);
+      console.error('[useSwissGeocode] Error geocoding postal code:', error);
       return null;
     }
-  }, [loadGoogleMapsApi]);
+  }, [loadGoogleMapsApi, toast]);
 
   // Get postal code from city
   const getPostalCodeFromCity = useCallback(async (city: string): Promise<string | null> => {
+    console.log('[useSwissGeocode] getPostalCodeFromCity called with:', city);
+    
     // Validate minimum city name length
     if (!city || city.trim().length < 2) {
+      console.log('[useSwissGeocode] City name too short:', city);
       return null;
     }
 
@@ -123,6 +145,7 @@ export const useSwissGeocode = () => {
     // Check cache first
     const cacheKey = `CITY:${normalizedCity.toLowerCase()}`;
     if (cache.current[cacheKey] !== undefined) {
+      console.log('[useSwissGeocode] Cache hit for:', city, '→', cache.current[cacheKey]);
       return cache.current[cacheKey];
     }
 
@@ -134,12 +157,20 @@ export const useSwissGeocode = () => {
       abortControllerRef.current = new AbortController();
 
       // Load Google Maps API
+      console.log('[useSwissGeocode] Loading Google Maps API...');
       const isLoaded = await loadGoogleMapsApi();
       if (!isLoaded) {
+        console.error('[useSwissGeocode] Failed to load Google Maps API');
+        toast({
+          title: 'Fehler',
+          description: 'Google Maps konnte nicht geladen werden',
+          variant: 'destructive'
+        });
         return null;
       }
 
       // Use Geocoding API
+      console.log('[useSwissGeocode] Geocoding city:', normalizedCity);
       const geocoder = new google.maps.Geocoder();
       
       return new Promise((resolve) => {
@@ -149,17 +180,24 @@ export const useSwissGeocode = () => {
             componentRestrictions: { country: 'CH' }
           },
           (results, status) => {
+            console.log('[useSwissGeocode] Geocoding response:', { status, results });
+            
             if (status === 'OK' && results && results[0]) {
               // Extract postal code from address components
               const addressComponents = results[0].address_components;
+              console.log('[useSwissGeocode] Address components:', addressComponents);
+              
               const postalCodeComponent = addressComponents.find(
                 (component) => component.types.includes('postal_code')
               );
 
               const postalCode = postalCodeComponent?.long_name || null;
+              console.log('[useSwissGeocode] Extracted postal code:', postalCode);
+              
               cache.current[cacheKey] = postalCode;
               resolve(postalCode);
             } else {
+              console.warn('[useSwissGeocode] Geocoding failed:', status);
               cache.current[cacheKey] = null;
               resolve(null);
             }
@@ -167,10 +205,10 @@ export const useSwissGeocode = () => {
         );
       });
     } catch (error) {
-      console.error('Error geocoding city:', error);
+      console.error('[useSwissGeocode] Error geocoding city:', error);
       return null;
     }
-  }, [loadGoogleMapsApi]);
+  }, [loadGoogleMapsApi, toast]);
 
   return {
     getCityFromPostalCode,

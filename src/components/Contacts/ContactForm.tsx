@@ -167,6 +167,7 @@ export const ContactForm = ({
 
   // Handle postal code change with geocoding
   const handlePostalCodeChange = async (value: string) => {
+    console.log('[ContactForm] handlePostalCodeChange:', value);
     handleInputChange('postal_code', value);
 
     // Clear existing timeout
@@ -176,26 +177,38 @@ export const ContactForm = ({
 
     // Only proceed if we have a valid 4-digit Swiss postal code
     if (!/^\d{4}$/.test(value)) {
+      console.log('[ContactForm] Invalid PLZ format, skipping geocoding');
       return;
     }
 
     // Debounce the API call
+    console.log('[ContactForm] Starting debounce for PLZ:', value);
     postalCodeTimeoutRef.current = setTimeout(async () => {
+      console.log('[ContactForm] Debounce triggered, fetching city for PLZ:', value);
       setIsLoadingCity(true);
       try {
         const city = await getCityFromPostalCode(value);
-        if (city && !companyData.city) {
+        console.log('[ContactForm] Got city from PLZ:', { value, city, currentCity: companyData.city });
+        
+        if (city) {
+          // Always update if we got a city, but only show toast if field was empty
+          const wasEmpty = !companyData.city;
           setCompanyData(prev => ({
             ...prev,
             city: city
           }));
-          toast({
-            title: 'Ortschaft ergänzt',
-            description: `${city} wurde automatisch hinzugefügt`,
-          });
+          
+          if (wasEmpty) {
+            toast({
+              title: 'Ortschaft ergänzt',
+              description: `${city} wurde automatisch hinzugefügt`,
+            });
+          }
+        } else {
+          console.log('[ContactForm] No city found for PLZ:', value);
         }
       } catch (error) {
-        console.error('Error fetching city:', error);
+        console.error('[ContactForm] Error fetching city:', error);
       } finally {
         setIsLoadingCity(false);
       }
@@ -204,6 +217,7 @@ export const ContactForm = ({
 
   // Handle city change with geocoding
   const handleCityChange = async (value: string) => {
+    console.log('[ContactForm] handleCityChange:', value);
     handleInputChange('city', value);
 
     // Clear existing timeout
@@ -213,26 +227,38 @@ export const ContactForm = ({
 
     // Only proceed if we have at least 3 characters
     if (value.trim().length < 3) {
+      console.log('[ContactForm] City name too short, skipping geocoding');
       return;
     }
 
     // Debounce the API call
+    console.log('[ContactForm] Starting debounce for city:', value);
     cityTimeoutRef.current = setTimeout(async () => {
+      console.log('[ContactForm] Debounce triggered, fetching PLZ for city:', value);
       setIsLoadingPostalCode(true);
       try {
         const postalCode = await getPostalCodeFromCity(value);
-        if (postalCode && !companyData.postal_code) {
+        console.log('[ContactForm] Got PLZ from city:', { value, postalCode, currentPLZ: companyData.postal_code });
+        
+        if (postalCode) {
+          // Always update if we got a PLZ, but only show toast if field was empty
+          const wasEmpty = !companyData.postal_code;
           setCompanyData(prev => ({
             ...prev,
             postal_code: postalCode
           }));
-          toast({
-            title: 'PLZ ergänzt',
-            description: `${postalCode} wurde automatisch hinzugefügt`,
-          });
+          
+          if (wasEmpty) {
+            toast({
+              title: 'PLZ ergänzt',
+              description: `${postalCode} wurde automatisch hinzugefügt`,
+            });
+          }
+        } else {
+          console.log('[ContactForm] No PLZ found for city:', value);
         }
       } catch (error) {
-        console.error('Error fetching postal code:', error);
+        console.error('[ContactForm] Error fetching postal code:', error);
       } finally {
         setIsLoadingPostalCode(false);
       }
