@@ -92,7 +92,7 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="mb-6 p-4 bg-muted/50 rounded-lg">
             <Label className="text-base font-semibold mb-3 block">
-              Typ <span className="text-destructive">*</span>
+              Kontakttyp wählen <span className="text-destructive">*</span>
             </Label>
             <RadioGroup 
               value={formData.contact_type || 'Unternehmen'} 

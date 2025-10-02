@@ -234,13 +234,16 @@ export const ContactForm = ({
     return <ContactPersonForm isOpen={isOpen} onClose={onClose} onSubmit={onSubmitPerson} contactPerson={contactPerson} isLoading={isLoading} initialIsEmployee={selectedType === 'employee'} onBack={!company && !contactPerson ? handleBack : undefined} />;
   }
   return <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl">
-        <DialogHeader>
+      <DialogContent className="max-w-4xl" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <DialogHeader className="sticky top-0 bg-background z-10 pb-4">
           <div className="flex items-center gap-2">
             {stage === 'form' && !company && !contactPerson && <Button variant="ghost" size="icon" onClick={handleBack} className="h-8 w-8">
                 <ChevronLeft className="h-4 w-4" />
               </Button>}
-            
+            <div className="flex-1">
+              <DialogTitle>{getTitle()}</DialogTitle>
+              <DialogDescription>{getDescription()}</DialogDescription>
+            </div>
           </div>
         </DialogHeader>
 
@@ -249,7 +252,7 @@ export const ContactForm = ({
         {stage === 'form' && selectedType === 'company' && <form onSubmit={handleSubmit} className="space-y-4">
             {/* Typ Radio Buttons */}
             <div className="p-4 bg-muted/50 rounded-lg">
-              <Label className="text-base font-semibold mb-3 block">Typ</Label>
+              <Label className="text-base font-semibold mb-3 block">Kontakttyp wählen <span className="text-foreground">*</span></Label>
               <RadioGroup value={companyData.contact_type} onValueChange={value => handleInputChange('contact_type', value)} className="flex gap-6">
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="Unternehmen" id="unternehmen" />
