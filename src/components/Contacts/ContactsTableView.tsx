@@ -121,7 +121,7 @@ export function ContactsTableView({
                         {company.contact_type && (
                           <Badge 
                             variant="secondary" 
-                            className="bg-primary/10 text-primary border-primary/20 font-medium"
+                            className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium"
                           >
                             {company.contact_type}
                           </Badge>
@@ -225,7 +225,7 @@ export function ContactsTableView({
                           </Badge>
                         )}
                         {person.is_private_customer && (
-                          <Badge variant="secondary" className="bg-green-500/10 text-green-700 border-green-500/20 dark:text-green-400 font-medium">
+                          <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium">
                             Privatkunde
                           </Badge>
                         )}
