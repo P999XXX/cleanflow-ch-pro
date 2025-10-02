@@ -1,6 +1,8 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Building, MapPin, Phone, Mail, Globe, Hash } from 'lucide-react';
+import { AddressAutocomplete } from '@/components/ui/address-autocomplete';
+import { useState } from 'react';
 
 interface CompanyData {
   name: string;
@@ -51,6 +53,34 @@ export function CompanyFormFields({
     country: true
   } 
 }: CompanyFormFieldsProps) {
+  const [localAddress, setLocalAddress] = useState(formData.address);
+  
+  const handleAddressChange = (value: string) => {
+    setLocalAddress(value);
+    const syntheticEvent = {
+      target: { name: 'address', value }
+    } as React.ChangeEvent<HTMLInputElement>;
+    onChange(syntheticEvent);
+  };
+
+  const handleAddressSelect = (address: {
+    street: string;
+    postalCode: string;
+    city: string;
+    country: string;
+  }) => {
+    setLocalAddress(address.street);
+    
+    const events = [
+      { target: { name: 'address', value: address.street } } as React.ChangeEvent<HTMLInputElement>,
+      { target: { name: 'postalCode', value: address.postalCode } } as React.ChangeEvent<HTMLInputElement>,
+      { target: { name: 'city', value: address.city } } as React.ChangeEvent<HTMLInputElement>,
+      { target: { name: 'country', value: address.country } } as React.ChangeEvent<HTMLInputElement>,
+    ];
+    
+    events.forEach(event => onChange(event));
+  };
+
   return (
     <div className="space-y-6">
       {/* Firmenname */}
@@ -79,15 +109,13 @@ export function CompanyFormFields({
             Adresse {required.address && <span className="text-muted-foreground">*</span>}
           </Label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              id="address"
-              name="address"
+            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10 pointer-events-none" />
+            <AddressAutocomplete
+              value={localAddress}
+              onChange={handleAddressChange}
+              onAddressSelect={handleAddressSelect}
               placeholder="Musterstrasse 123"
-              value={formData.address}
-              onChange={onChange}
               className={`pl-9 ${errors.address ? "border-destructive" : ""}`}
-              required={required.address}
             />
           </div>
           {errors.address && (
