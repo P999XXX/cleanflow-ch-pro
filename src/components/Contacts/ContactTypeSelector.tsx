@@ -11,7 +11,8 @@ export const ContactTypeSelector = ({
   onClose
 }: ContactTypeSelectorProps) => {
   return <div className="space-y-4 p-4 md:p-6">
-      <div className="text-center">
+      <div className="text-center space-y-2">
+        <h2 className="text-2xl font-semibold">Kontakt hinzufügen</h2>
         <p className="text-sm text-muted-foreground">Wählen Sie die Art des Kontakts aus</p>
       </div>
       
