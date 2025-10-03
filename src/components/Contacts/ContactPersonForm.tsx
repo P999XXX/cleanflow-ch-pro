@@ -10,7 +10,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 import { ContactPersonInput, ContactPerson } from "@/hooks/useContactPersons";
 import { useCompanies } from "@/hooks/useCompanies";
 import { EmployeeFormStep2 } from "./EmployeeFormStep2";
@@ -373,15 +372,9 @@ export const ContactPersonForm = ({
                 <>
                   <div className="space-y-2">
                     <Label htmlFor="address">Adresse</Label>
-                    <AddressAutocomplete
-                      value={formData.address || ''}
-                      onChange={(value) => setValue('address', value)}
-                      onAddressSelect={(address) => {
-                        setValue('address', address.street);
-                        setValue('postal_code', address.postalCode);
-                        setValue('city', address.city);
-                        setValue('country', address.country);
-                      }}
+                    <Input
+                      id="address"
+                      {...register('address')}
                       placeholder="Strasse und Hausnummer"
                     />
                     {errors.address && (

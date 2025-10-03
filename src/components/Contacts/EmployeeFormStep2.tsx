@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
 
 interface EmployeeFormStep2Props {
   employeeData: Partial<EmployeeDetailsInput>;
@@ -129,16 +128,11 @@ export const EmployeeFormStep2 = ({ employeeData, onChange, companyId }: Employe
         {/* Aktueller Wohnort */}
         <div className="space-y-2">
           <Label htmlFor="current_address">Aktueller Wohnort</Label>
-          <AddressAutocomplete
+          <Input
+            id="current_address"
             value={employeeData.current_address || ''}
-            onChange={(value) => onChange({ ...employeeData, current_address: value })}
-            onAddressSelect={(address) => {
-              onChange({ 
-                ...employeeData, 
-                current_address: `${address.street}, ${address.postalCode} ${address.city}, ${address.country}`
-              });
-            }}
-            placeholder="Strasse, PLZ, Ort eingeben..."
+            onChange={(e) => onChange({ ...employeeData, current_address: e.target.value })}
+            placeholder="Strasse, PLZ, Ort"
           />
         </div>
 

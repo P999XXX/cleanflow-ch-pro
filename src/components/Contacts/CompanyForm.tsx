@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
 import { companySchema, CompanyFormData } from '@/schemas/contactSchemas';
-import { AddressAutocomplete } from '@/components/ui/address-autocomplete';
 
 interface CompanyFormProps {
   isOpen: boolean;
@@ -138,16 +137,10 @@ export const CompanyForm = ({ isOpen, onClose, onSubmit, company, isLoading }: C
 
             <div className="md:col-span-2">
               <Label htmlFor="address">Adresse *</Label>
-              <AddressAutocomplete
-                value={watch("address") || ""}
-                onChange={(value) => setValue("address", value)}
-                onAddressSelect={(address) => {
-                  setValue("address", address.street);
-                  setValue("postal_code", address.postalCode);
-                  setValue("city", address.city);
-                  setValue("country", address.country);
-                }}
-                placeholder="Strasse und Hausnummer eingeben..."
+              <Input
+                id="address"
+                {...register('address')}
+                placeholder="Strasse und Hausnummer"
               />
               {errors.address && (
                 <p className="text-sm text-destructive mt-1">{errors.address.message}</p>
