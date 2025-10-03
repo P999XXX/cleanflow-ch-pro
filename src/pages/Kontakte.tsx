@@ -14,6 +14,7 @@ import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
 import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
+import { ContactCardsLoader, PageLoader } from '@/components/ui/loading-states';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
@@ -39,11 +40,18 @@ const Kontakte = () => {
   const queryClient = useQueryClient();
   const { data: companies, isLoading: companiesLoading } = useCompanies();
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
-  const { data: allContacts } = useAllContacts();
+  const { data: allContacts, isLoading: allContactsLoading } = useAllContacts();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
   const { deleteContactPerson } = useContactPersonMutations();
   const saveContactMutation = useEdgeFunctionContactSave();
-  const { canManageContacts } = useUserRole();
+  const { canManageContacts, isLoading: rolesLoading } = useUserRole();
+
+  // Show loading state while initial data is being fetched
+  const isInitialLoading = companiesLoading || personsLoading || allContactsLoading || rolesLoading;
+
+  if (isInitialLoading) {
+    return <ContactCardsLoader count={9} />;
+  }
 
   // Status update mutations
   const updateCompanyStatusMutation = useMutation({
