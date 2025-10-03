@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { useCompanies, useCompanyMutations, CustomerCompany, CustomerCompanyInput } from '@/hooks/useCompanies';
 import { useContactPersons, useContactPersonMutations, ContactPerson, ContactPersonInput } from '@/hooks/useContactPersons';
-import { useEmployeeDetailsMutations } from '@/hooks/useEmployeeDetails';
 import { useAllContacts } from '@/hooks/useAllContacts';
+import { useEdgeFunctionContactSave } from '@/hooks/useContactSave';
+import { useUserRole } from '@/hooks/useUserRole';
+import { RoleGuard } from '@/components/Auth/RoleGuard';
 import { ContactForm } from '@/components/Contacts/ContactForm';
 import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
@@ -39,8 +41,9 @@ const Kontakte = () => {
   const { data: contactPersons, isLoading: personsLoading } = useContactPersons();
   const { data: allContacts } = useAllContacts();
   const { createCompany, updateCompany, deleteCompany } = useCompanyMutations();
-  const { createContactPerson, updateContactPerson, deleteContactPerson } = useContactPersonMutations();
-  const { createOrUpdateEmployeeDetails, createEmployeeChild } = useEmployeeDetailsMutations();
+  const { deleteContactPerson } = useContactPersonMutations();
+  const saveContactMutation = useEdgeFunctionContactSave();
+  const { canManageContacts } = useUserRole();
 
   // Status update mutations
   const updateCompanyStatusMutation = useMutation({
@@ -308,72 +311,30 @@ const Kontakte = () => {
   };
 
   const handlePersonSubmit = async (personData: ContactPersonInput, employeeDetails?: any, children?: any[]) => {
-    if (selectedPerson) {
-      updateContactPerson.mutate(
-        { id: selectedPerson.id, contactPerson: personData },
-        { 
-          onSuccess: async (updatedPerson) => {
-            // If employee data is provided, save it
-            if (personData.is_employee && employeeDetails) {
-              await createOrUpdateEmployeeDetails.mutateAsync({
-                contactPersonId: updatedPerson.id,
-                details: employeeDetails
-              });
+    // CRITICAL FIX: Use Edge Function for atomic transaction
+    const payload = {
+      contact: {
+        ...personData,
+        id: selectedPerson?.id,
+      },
+      employee_details: personData.is_employee ? employeeDetails : undefined,
+      children: personData.is_employee && children ? children : undefined,
+    };
 
-              // Save children if any
-              if (children && children.length > 0) {
-                // TODO: Handle children updates
-              }
-            }
+    await saveContactMutation.mutateAsync(payload, {
+      onSuccess: () => {
+        setIsFormOpen(false);
+        setSelectedPerson(null);
 
-            // Vibration für mobile Geräte
-            if (navigator.vibrate) {
-              navigator.vibrate(50);
-            }
-            
-            setIsFormOpen(false); 
-            setSelectedPerson(null);
-            
-            if (navigationStack.length > 0) {
-              const previousItem = navigationStack[navigationStack.length - 1];
-              setNavigationStack(prev => prev.slice(0, -1));
-              setSelectedItem(previousItem.item);
-              setItemType(previousItem.type);
-              setDetailsOpen(true);
-            }
-          } 
+        if (navigationStack.length > 0) {
+          const previousItem = navigationStack[navigationStack.length - 1];
+          setNavigationStack(prev => prev.slice(0, -1));
+          setSelectedItem(previousItem.item);
+          setItemType(previousItem.type);
+          setDetailsOpen(true);
         }
-      );
-    } else {
-      createContactPerson.mutate(personData, {
-        onSuccess: async (createdPerson) => {
-          // If employee data is provided, save it
-          if (personData.is_employee && employeeDetails) {
-            const employeeDetailsResult = await createOrUpdateEmployeeDetails.mutateAsync({
-              contactPersonId: createdPerson.id,
-              details: employeeDetails
-            });
-
-            // Save children if any
-            if (children && children.length > 0 && employeeDetailsResult) {
-              for (const child of children) {
-                await createEmployeeChild.mutateAsync({
-                  employeeDetailsId: employeeDetailsResult.id,
-                  child
-                });
-              }
-            }
-          }
-
-          // Vibration für mobile Geräte
-          if (navigator.vibrate) {
-            navigator.vibrate(50);
-          }
-
-          setIsFormOpen(false);
-        }
-      });
-    }
+      },
+    });
   };
 
   // Helper function to get company type abbreviation
@@ -456,7 +417,7 @@ const Kontakte = () => {
         onContactTypeChange={setContactTypeFilter}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
-        onAddClick={handleAddClick}
+        onAddClick={canManageContacts() ? handleAddClick : undefined}
         isMobile={isMobile}
         availableContactTypes={availableContactTypes}
       />
@@ -508,14 +469,14 @@ const Kontakte = () => {
         selectedItem={selectedItem}
         itemType={itemType}
         navigationStack={navigationStack}
-        onEdit={handleEditItem}
-        onDelete={handleDeleteItem}
+        onEdit={canManageContacts() ? handleEditItem : undefined}
+        onDelete={canManageContacts() ? handleDeleteItem : undefined}
         onGoBack={handleGoBack}
         onNavigateToCompany={handleNavigateToCompany}
         onNavigateToPerson={handleNavigateToPerson}
         getStatusBadge={getStatusBadge}
         getCompanyTypeAbbreviation={getCompanyTypeAbbreviation}
-        onStatusUpdate={handleStatusUpdate}
+        onStatusUpdate={canManageContacts() ? handleStatusUpdate : undefined}
       />
 
       {/* Delete Confirmation Dialog */}

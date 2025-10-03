@@ -50,6 +50,7 @@ export const ContactPersonForm = ({
   const [employeeData, setEmployeeData] = useState<Partial<EmployeeDetailsInput>>({});
   const [children, setChildren] = useState<Child[]>([]);
   const [companyId, setCompanyId] = useState('');
+  const [systemAccess, setSystemAccess] = useState(false);
 
   const { data: companies } = useCompanies();
 
@@ -456,6 +457,8 @@ export const ContactPersonForm = ({
               children={children}
               onChange={(field, value) => setEmployeeData({ ...employeeData, [field]: value })}
               onChildrenChange={setChildren}
+              systemAccess={systemAccess}
+              onSystemAccessChange={setSystemAccess}
             />
           )}
 
