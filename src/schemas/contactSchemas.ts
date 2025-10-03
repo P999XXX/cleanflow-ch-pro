@@ -11,11 +11,17 @@ const swissPostalCodeSchema = z
 
 /**
  * Swiss phone number validation
- * Accepts formats like: +41791234567, 0791234567, 079 123 45 67
+ * Strict validation for Swiss phone numbers:
+ * - Mobile: +41 7X XXX XX XX or 07X XXX XX XX
+ * - Landline: +41 XX XXX XX XX or 0XX XXX XX XX
+ * Total: 9 digits after +41 or 10 digits with leading 0
  */
 const swissPhoneSchema = z
   .string()
-  .regex(/^(\+41|0)[0-9\s\-\/()]{8,}$/, 'Bitte geben Sie eine gültige Schweizer Telefonnummer ein (z.B. +41 79 123 45 67 oder 079 123 45 67)');
+  .regex(
+    /^(\+41\s?[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2}|0[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2})$/,
+    'Bitte geben Sie eine gültige Schweizer Telefonnummer ein (z.B. +41 79 123 45 67 oder 079 123 45 67)'
+  );
 
 /**
  * Email validation
@@ -138,14 +144,20 @@ export const contactPersonSchema = z.object({
   
   phone: z
     .string()
-    .regex(/^(\+41|0)?[0-9\s\-\/()]*$/, 'Ungültiges Telefonformat')
+    .regex(
+      /^(\+41\s?[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2}|0[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2})?$/,
+      'Ungültiges Telefonformat (z.B. +41 44 123 45 67)'
+    )
     .max(50, 'Telefonnummer ist zu lang')
     .optional()
     .or(z.literal('')),
   
   mobile: z
     .string()
-    .regex(/^(\+41|0)?[0-9\s\-\/()]*$/, 'Ungültiges Mobilformat')
+    .regex(
+      /^(\+41\s?7[0-9]\s?\d{3}\s?\d{2}\s?\d{2}|07[0-9]\s?\d{3}\s?\d{2}\s?\d{2})?$/,
+      'Ungültiges Mobilformat (z.B. +41 79 123 45 67)'
+    )
     .max(50, 'Mobilnummer ist zu lang')
     .optional()
     .or(z.literal('')),
@@ -253,7 +265,10 @@ export const employeeDetailsSchema = z.object({
   
   emergency_contact_phone: z
     .string()
-    .regex(/^(\+41|0)?[0-9\s\-\/()]*$/, 'Ungültiges Telefonformat')
+    .regex(
+      /^(\+41\s?[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2}|0[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2})?$/,
+      'Ungültiges Telefonformat (z.B. +41 79 123 45 67)'
+    )
     .max(50, 'Telefonnummer ist zu lang')
     .optional(),
   
