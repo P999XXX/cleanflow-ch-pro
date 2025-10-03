@@ -46,14 +46,7 @@ const Kontakte = () => {
   const saveContactMutation = useEdgeFunctionContactSave();
   const { canManageContacts, isLoading: rolesLoading } = useUserRole();
 
-  // Show loading state while initial data is being fetched
-  const isInitialLoading = companiesLoading || personsLoading || allContactsLoading || rolesLoading;
-
-  if (isInitialLoading) {
-    return <ContactCardsLoader count={9} />;
-  }
-
-  // Status update mutations
+  // Status update mutations - MUST be before early returns
   const updateCompanyStatusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
       const { error } = await supabase
@@ -101,6 +94,13 @@ const Kontakte = () => {
       });
     },
   });
+
+  // Show loading state while initial data is being fetched
+  const isInitialLoading = companiesLoading || personsLoading || allContactsLoading || rolesLoading;
+
+  if (isInitialLoading) {
+    return <ContactCardsLoader count={9} />;
+  }
 
   // Handle URL parameters for filtering (e.g., ?type=kunde)
   useEffect(() => {
