@@ -130,7 +130,8 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                         e.stopPropagation();
                         if (type === 'company' && (item.street || item.city)) {
                           const address = [item.street, item.postal_code, item.city].filter(Boolean).join(' ');
-                          window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`, '_blank');
+                          const encodedAddress = encodeURIComponent(address);
+                          window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
                         }
                       }}
                     >
