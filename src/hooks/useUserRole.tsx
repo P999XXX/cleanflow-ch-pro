@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
-import { queryConfig, queryKeys } from '@/lib/queryConfig';
 
 export type AppRole = 'masteradministrator' | 'administrator' | 'objektleiter' | 'reinigungsmitarbeiter';
 
@@ -22,7 +21,7 @@ export const useUserRole = () => {
     isLoading,
     error,
   } = useQuery({
-    queryKey: queryKeys.userRoles(user?.id),
+    queryKey: ['userRoles', user?.id],
     queryFn: async () => {
       if (!user?.id) {
         return [];
@@ -41,8 +40,6 @@ export const useUserRole = () => {
       return data as UserRole[];
     },
     enabled: !!user?.id,
-    staleTime: queryConfig.userRoles.staleTime,
-    gcTime: queryConfig.userRoles.cacheTime,
   });
 
   // Helper functions

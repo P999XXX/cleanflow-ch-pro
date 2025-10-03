@@ -14,50 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      audit_logs: {
-        Row: {
-          action: string
-          changed_at: string
-          changed_by: string
-          company_id: string
-          id: string
-          new_data: Json | null
-          old_data: Json | null
-          record_id: string
-          table_name: string
-        }
-        Insert: {
-          action: string
-          changed_at?: string
-          changed_by: string
-          company_id: string
-          id?: string
-          new_data?: Json | null
-          old_data?: Json | null
-          record_id: string
-          table_name: string
-        }
-        Update: {
-          action?: string
-          changed_at?: string
-          changed_by?: string
-          company_id?: string
-          id?: string
-          new_data?: Json | null
-          old_data?: Json | null
-          record_id?: string
-          table_name?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "audit_logs_company_id_fkey"
-            columns: ["company_id"]
-            isOneToOne: false
-            referencedRelation: "companies"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       companies: {
         Row: {
           address: string | null
@@ -467,20 +423,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_audit_logs: {
-        Args: { p_company_id: string; p_limit?: number; p_table_name?: string }
-        Returns: {
-          action: string
-          changed_at: string
-          changed_by: string
-          id: string
-          new_data: Json
-          old_data: Json
-          record_id: string
-          table_name: string
-          user_email: string
-        }[]
-      }
       get_user_roles: {
         Args: { _user_id: string }
         Returns: {

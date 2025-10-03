@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
 import { ContactPersonInput } from './useContactPersons';
 import { EmployeeDetailsInput } from './useEmployeeDetails';
-import { showSuccessToast, showErrorToast } from '@/utils/errorHandling';
-import { queryKeys } from '@/lib/queryConfig';
 
 interface Child {
   first_name: string;
@@ -51,17 +50,29 @@ export const useEdgeFunctionContactSave = () => {
     onSuccess: (data) => {
       console.log('Contact saved successfully:', data);
       
-      // Invalidate all related queries using centralized keys
-      queryClient.invalidateQueries({ queryKey: queryKeys.contactPersons });
-      queryClient.invalidateQueries({ queryKey: queryKeys.allContacts });
-      queryClient.invalidateQueries({ queryKey: queryKeys.employeeDetails() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.employeeChildren() });
+      // Invalidate all related queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['contactPersons'] });
+      queryClient.invalidateQueries({ queryKey: ['allContacts'] });
+      queryClient.invalidateQueries({ queryKey: ['employeeDetails'] });
+      queryClient.invalidateQueries({ queryKey: ['employeeChildren'] });
 
-      showSuccessToast('Die Kontaktdaten wurden erfolgreich gespeichert.');
+      toast({
+        title: 'Kontakt gespeichert',
+        description: 'Die Kontaktdaten wurden erfolgreich gespeichert.',
+      });
+
+      // Vibration for mobile devices
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
     },
     onError: (error: any) => {
       console.error('Error saving contact:', error);
-      showErrorToast(error, 'Der Kontakt konnte nicht gespeichert werden.');
+      toast({
+        title: 'Fehler beim Speichern',
+        description: error.message || 'Der Kontakt konnte nicht gespeichert werden.',
+        variant: 'destructive',
+      });
     },
   });
 };

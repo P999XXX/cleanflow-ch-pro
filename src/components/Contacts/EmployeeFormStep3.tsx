@@ -10,7 +10,6 @@ import { de } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { ValidatedInput } from './ValidationHelpers';
 
 interface Child {
   first_name: string;
@@ -100,16 +99,23 @@ export const EmployeeFormStep3 = ({
           </p>
         </div>
 
-        {/* IBAN with validation */}
-        <ValidatedInput
-          id="iban"
-          label="IBAN"
-          value={employeeData.iban || ''}
-          onChange={(value) => onChange('iban', value)}
-          type="iban"
-          placeholder="CH93 0076 2011 6238 5295 7"
-          required
-        />
+        {/* IBAN */}
+        <div className="space-y-2">
+          <Label htmlFor="iban">
+            IBAN <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="iban"
+            type="text"
+            placeholder="CH93 0076 2011 6238 5295 7"
+            value={employeeData.iban || ''}
+            onChange={(e) => onChange('iban', e.target.value)}
+            maxLength={26}
+          />
+          <p className="text-xs text-muted-foreground">
+            Schweizer IBAN für Lohnzahlungen (Format: CH93 0076 2011 6238 5295 7)
+          </p>
+        </div>
       </div>
 
       {/* Kinder-Details */}
