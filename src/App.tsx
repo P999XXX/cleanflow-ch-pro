@@ -22,7 +22,6 @@ import AGB from "./pages/Auth/AGB";
 import Datenschutz from "./pages/Auth/Datenschutz";
 import Terminkalender from "./pages/Terminkalender";
 import Kontakte from "./pages/Kontakte";
-import Kunden from "./pages/Kunden";
 import Offerten from "./pages/Offerten";
 import Auftraege from "./pages/Auftraege";
 import Reklamationen from "./pages/Reklamationen";
@@ -96,7 +95,6 @@ function AuthLayout() {
                         <Route path="/" element={<Index />} />
                         <Route path="/terminkalender" element={<Terminkalender />} />
                         <Route path="/kontakte" element={<Kontakte />} />
-                        <Route path="/kunden" element={<Kunden />} />
                         <Route path="/objekte" element={<Objekte />} />
                         <Route path="/offerten" element={<Offerten />} />
                         <Route path="/auftraege" element={<Auftraege />} />

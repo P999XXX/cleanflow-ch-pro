@@ -145,26 +145,16 @@ const Kontakte = () => {
     return filtered;
   }, [allContacts, searchTerm, contactTypeFilter]);
 
-  // Separate by type for display
-  const filteredCompanies = useMemo(() => {
-    return filteredAllContacts.filter(c => c.type === 'company');
-  }, [filteredAllContacts]);
+  // Separate contacts by type for display
+  const filteredCompanies = useMemo(() => 
+    filteredAllContacts.filter(c => c.type === 'company'), 
+    [filteredAllContacts]
+  );
 
-  const filteredBusinessCustomers = useMemo(() => {
-    return filteredAllContacts.filter(c => c.contact_type === 'Geschäftskunde');
-  }, [filteredAllContacts]);
-
-  const filteredPrivateCustomers = useMemo(() => {
-    return filteredAllContacts.filter(c => c.contact_type === 'Privatkunde');
-  }, [filteredAllContacts]);
-
-  const filteredEmployees = useMemo(() => {
-    return filteredAllContacts.filter(c => c.contact_type === 'Mitarbeiter');
-  }, [filteredAllContacts]);
-
-  const filteredPersons = useMemo(() => {
-    return filteredAllContacts.filter(c => c.type === 'person');
-  }, [filteredAllContacts]);
+  const filteredPersons = useMemo(() => 
+    filteredAllContacts.filter(c => c.type === 'person'), 
+    [filteredAllContacts]
+  );
 
   const totalCount = filteredAllContacts.length;
   const isSearching = searchTerm.trim().length > 0;

@@ -338,7 +338,8 @@ export function ContactDetailsDialog({
                   className="rounded-full h-10 w-10"
                   onClick={() => {
                     const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
-                    window.open(`https://maps.google.com/maps?q=${encodeURIComponent(address)}`, '_blank');
+                    const encodedAddress = encodeURIComponent(address);
+                    window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
                   }}
                 >
                   <MapPin className="h-4 w-4" />
