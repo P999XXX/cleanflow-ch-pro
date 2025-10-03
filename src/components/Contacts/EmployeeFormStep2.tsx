@@ -13,6 +13,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { AddressAutocomplete } from "@/components/ui/address-autocomplete";
+import { ValidatedInput } from './ValidationHelpers';
 
 interface EmployeeFormStep2Props {
   employeeData: Partial<EmployeeDetailsInput>;
@@ -222,16 +223,15 @@ export const EmployeeFormStep2 = ({ employeeData, onChange, companyId }: Employe
           )}
         </div>
 
-        {/* AHV Nummer */}
-        <div className="space-y-2">
-          <Label htmlFor="ahv_number">AHV-Nummer</Label>
-          <Input
-            id="ahv_number"
-            value={employeeData.ahv_number || ''}
-            onChange={(e) => onChange({ ...employeeData, ahv_number: e.target.value })}
-            placeholder="756.XXXX.XXXX.XX"
-          />
-        </div>
+        {/* AHV Nummer with validation */}
+        <ValidatedInput
+          id="ahv_number"
+          label="AHV-Nummer"
+          value={employeeData.ahv_number || ''}
+          onChange={(value) => onChange({ ...employeeData, ahv_number: value })}
+          type="ahv"
+          placeholder="756.XXXX.XXXX.XX"
+        />
 
         {/* Zivilstand */}
         <div className="space-y-2">
