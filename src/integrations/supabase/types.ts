@@ -276,9 +276,13 @@ export type Database = {
           current_address: string | null
           emergency_contact_name: string | null
           emergency_contact_phone: string | null
+          employment_rate: number | null
           employment_start_date: string | null
+          hourly_wage: number | null
+          iban: string | null
           id: string
           marital_status: string | null
+          nationality: string | null
           origin_country: string | null
           permit_document_url: string | null
           permit_type: string | null
@@ -296,9 +300,13 @@ export type Database = {
           current_address?: string | null
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
+          employment_rate?: number | null
           employment_start_date?: string | null
+          hourly_wage?: number | null
+          iban?: string | null
           id?: string
           marital_status?: string | null
+          nationality?: string | null
           origin_country?: string | null
           permit_document_url?: string | null
           permit_type?: string | null
@@ -316,9 +324,13 @@ export type Database = {
           current_address?: string | null
           emergency_contact_name?: string | null
           emergency_contact_phone?: string | null
+          employment_rate?: number | null
           employment_start_date?: string | null
+          hourly_wage?: number | null
+          iban?: string | null
           id?: string
           marital_status?: string | null
+          nationality?: string | null
           origin_country?: string | null
           permit_document_url?: string | null
           permit_type?: string | null

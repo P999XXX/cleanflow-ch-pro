@@ -10,6 +10,7 @@ export interface EmployeeDetails {
   current_address?: string;
   address_since?: string;
   origin_country?: string;
+  nationality?: string;
   permit_type?: 'CH' | 'B' | 'C' | 'F' | 'L';
   permit_document_url?: string;
   ahv_number?: string;
@@ -18,6 +19,9 @@ export interface EmployeeDetails {
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
   employment_start_date?: string;
+  hourly_wage?: number;
+  iban?: string;
+  employment_rate?: number;
   company_id: string;
 }
 
@@ -36,6 +40,7 @@ export interface EmployeeDetailsInput {
   current_address?: string;
   address_since?: string;
   origin_country?: string;
+  nationality?: string;
   permit_type?: 'CH' | 'B' | 'C' | 'F' | 'L';
   permit_document_url?: string;
   ahv_number?: string;
@@ -44,6 +49,9 @@ export interface EmployeeDetailsInput {
   emergency_contact_name?: string;
   emergency_contact_phone?: string;
   employment_start_date?: string;
+  hourly_wage?: number;
+  iban?: string;
+  employment_rate?: number;
 }
 
 export const useEmployeeDetails = (contactPersonId?: string) => {

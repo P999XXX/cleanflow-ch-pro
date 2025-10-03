@@ -452,8 +452,10 @@ export const ContactPersonForm = ({
 
           {currentStep === 3 && isEmployee && (
             <EmployeeFormStep3 
+              employeeData={employeeData}
               children={children}
-              onChange={setChildren}
+              onChange={(field, value) => setEmployeeData({ ...employeeData, [field]: value })}
+              onChildrenChange={setChildren}
             />
           )}
 

@@ -234,6 +234,12 @@ export const employeeDetailsSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum muss im Format YYYY-MM-DD sein')
     .optional(),
   
+  birth_place: z
+    .string()
+    .trim()
+    .max(100, 'Geburtsort ist zu lang')
+    .optional(),
+  
   hire_date: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum muss im Format YYYY-MM-DD sein')
@@ -257,6 +263,12 @@ export const employeeDetailsSchema = z.object({
     .max(1000, 'Stundenlohn ist unrealistisch hoch')
     .optional(),
   
+  employment_rate: z
+    .number()
+    .min(1, 'Beschäftigungsgrad muss mindestens 1% sein')
+    .max(100, 'Beschäftigungsgrad kann nicht über 100% sein')
+    .optional(),
+  
   emergency_contact_name: z
     .string()
     .trim()
@@ -278,6 +290,17 @@ export const employeeDetailsSchema = z.object({
     .max(255, 'Adresse ist zu lang')
     .optional(),
   
+  current_address: z
+    .string()
+    .trim()
+    .max(255, 'Aktuelle Adresse ist zu lang')
+    .optional(),
+  
+  address_since: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Datum muss im Format YYYY-MM-DD sein')
+    .optional(),
+  
   city: z
     .string()
     .trim()
@@ -296,6 +319,30 @@ export const employeeDetailsSchema = z.object({
     .max(100, 'Ländername ist zu lang')
     .optional(),
   
+  origin_country: z
+    .string()
+    .trim()
+    .max(100, 'Herkunftsland ist zu lang')
+    .default('Schweiz'),
+  
+  nationality: z
+    .string()
+    .trim()
+    .max(100, 'Nationalität ist zu lang')
+    .default('Schweiz'),
+  
+  permit_type: z
+    .enum(['CH', 'B', 'C', 'F', 'L'], {
+      errorMap: () => ({ message: 'Ungültiger Bewilligungstyp' })
+    })
+    .optional(),
+  
+  permit_document_url: z
+    .string()
+    .url('Ungültige URL')
+    .optional()
+    .or(z.literal('')),
+  
   ahv_number: z
     .string()
     .regex(/^756\.\d{4}\.\d{4}\.\d{2}$/, 'AHV-Nummer muss im Format 756.XXXX.XXXX.XX sein')
@@ -306,6 +353,10 @@ export const employeeDetailsSchema = z.object({
     .enum(['ledig', 'verheiratet', 'geschieden', 'verwitwet', 'eingetragene_partnerschaft'], {
       errorMap: () => ({ message: 'Ungültiger Zivilstand' })
     })
+    .optional(),
+  
+  tax_residence: z
+    .boolean()
     .optional(),
   
   number_of_children: z
