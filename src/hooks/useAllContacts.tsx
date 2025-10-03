@@ -96,7 +96,7 @@ export const useAllContacts = () => {
         type: 'person' as const
       }));
 
-      // Combine and sort by created_at
+      // Combine and sort by created_at (no status filtering here)
       const allContacts = [...unifiedCompanies, ...unifiedPersons].sort(
         (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
       );

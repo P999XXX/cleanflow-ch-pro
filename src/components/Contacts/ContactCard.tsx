@@ -128,9 +128,15 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                       className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (type === 'company' && (item.street || item.city)) {
-                          const address = [item.street, item.postal_code, item.city].filter(Boolean).join(' ');
-                          const encodedAddress = encodeURIComponent(address);
+                        if (type === 'company' && (item.address || item.city)) {
+                          const addressParts = [
+                            item.address,
+                            item.postal_code,
+                            item.city,
+                            item.country || 'Schweiz'
+                          ].filter(Boolean);
+                          const fullAddress = addressParts.join(', ');
+                          const encodedAddress = encodeURIComponent(fullAddress);
                           window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
                         }
                       }}

@@ -78,109 +78,135 @@ serve(async (req) => {
       throw new Error('Unauthorized');
     }
 
-    // Get user's company
-    const { data: company, error: companyError } = await supabaseClient
-      .from('companies')
-      .select('id')
-      .eq('owner_id', user.id)
-      .single();
+    // CRITICAL FIX: Get company via user_roles (not owner_id)
+    // Only masteradministrator and administrator can save contacts
+    const { data: userRole, error: roleError } = await supabaseClient
+      .from('user_roles')
+      .select('company_id, role')
+      .eq('user_id', user.id)
+      .in('role', ['masteradministrator', 'administrator'])
+      .maybeSingle();
 
-    if (companyError || !company) {
-      throw new Error('Company not found');
+    if (roleError || !userRole) {
+      throw new Error('User does not have admin rights in any company');
     }
+
+    const companyId = userRole.company_id;
 
     // Parse request body
     const payload: ContactPayload = await req.json();
     console.log('Received payload:', JSON.stringify(payload, null, 2));
 
-    // Start atomic transaction by using a single database connection
     const { contact, employee_details, children, role } = payload;
-
-    // Step 1: Upsert contact_persons
-    const contactData = {
-      ...contact,
-      company_id: company.id,
-    };
-
-    let contactId: string;
     
-    if (contact.id) {
-      // Update existing contact
-      const { data: updatedContact, error: contactError } = await supabaseClient
-        .from('contact_persons')
-        .update(contactData)
-        .eq('id', contact.id)
-        .select('id')
-        .single();
+    // Variables to track created/updated records for rollback
+    let contactId: string | null = null;
+    let isNewContact = false;
+    let employeeDetailsId: string | null = null;
+    let isNewEmployeeDetails = false;
 
-      if (contactError) {
-        console.error('Contact update error:', contactError);
-        throw new Error(`Contact update failed: ${contactError.message}`);
-      }
-      contactId = updatedContact.id;
-      console.log('Contact updated:', contactId);
-    } else {
-      // Create new contact
-      const { data: newContact, error: contactError } = await supabaseClient
-        .from('contact_persons')
-        .insert(contactData)
-        .select('id')
-        .single();
-
-      if (contactError) {
-        console.error('Contact insert error:', contactError);
-        throw new Error(`Contact creation failed: ${contactError.message}`);
-      }
-      contactId = newContact.id;
-      console.log('Contact created:', contactId);
-    }
-
-    // Step 2: If employee, handle employee_details
-    if (contact.is_employee && employee_details) {
-      // Check if employee_details already exist
-      const { data: existingDetails } = await supabaseClient
-        .from('employee_details')
-        .select('id')
-        .eq('contact_person_id', contactId)
-        .maybeSingle();
-
-      const employeeDetailsData = {
-        ...employee_details,
-        contact_person_id: contactId,
-        company_id: company.id,
+    try {
+      // Step 1: Upsert contact_persons
+      const contactData = {
+        ...contact,
+        company_id: companyId,
       };
-
-      if (existingDetails) {
-        // Update existing employee details
-        const { error: detailsError } = await supabaseClient
-          .from('employee_details')
-          .update(employeeDetailsData)
-          .eq('id', existingDetails.id);
-
-        if (detailsError) {
-          console.error('Employee details update error:', detailsError);
-          throw new Error(`Employee details update failed: ${detailsError.message}`);
-        }
-        console.log('Employee details updated');
-      } else {
-        // Create new employee details
-        const { data: newDetails, error: detailsError } = await supabaseClient
-          .from('employee_details')
-          .insert(employeeDetailsData)
+      
+      if (contact.id) {
+        // Update existing contact
+        const { data: updatedContact, error: contactError } = await supabaseClient
+          .from('contact_persons')
+          .update(contactData)
+          .eq('id', contact.id)
           .select('id')
           .single();
 
-        if (detailsError) {
-          console.error('Employee details insert error:', detailsError);
-          throw new Error(`Employee details creation failed: ${detailsError.message}`);
+        if (contactError) {
+          console.error('Contact update error:', contactError);
+          throw new Error(`Contact update failed: ${contactError.message}`);
         }
-        console.log('Employee details created:', newDetails.id);
+        contactId = updatedContact.id;
+        console.log('Contact updated:', contactId);
+      } else {
+        // Create new contact
+        const { data: newContact, error: contactError } = await supabaseClient
+          .from('contact_persons')
+          .insert(contactData)
+          .select('id')
+          .single();
 
-        // Step 3: Handle children if provided
-        if (children && children.length > 0) {
+        if (contactError) {
+          console.error('Contact insert error:', contactError);
+          throw new Error(`Contact creation failed: ${contactError.message}`);
+        }
+        contactId = newContact.id;
+        isNewContact = true;
+        console.log('Contact created:', contactId);
+      }
+
+      // Step 2: If employee, handle employee_details
+      if (contact.is_employee && employee_details) {
+        // Check if employee_details already exist
+        const { data: existingDetails } = await supabaseClient
+          .from('employee_details')
+          .select('id')
+          .eq('contact_person_id', contactId)
+          .maybeSingle();
+
+        const employeeDetailsData = {
+          ...employee_details,
+          contact_person_id: contactId,
+          company_id: companyId,
+        };
+
+        if (existingDetails) {
+          // Update existing employee details
+          const { error: detailsError } = await supabaseClient
+            .from('employee_details')
+            .update(employeeDetailsData)
+            .eq('id', existingDetails.id);
+
+          if (detailsError) {
+            console.error('Employee details update error:', detailsError);
+            throw new Error(`Employee details update failed: ${detailsError.message}`);
+          }
+          employeeDetailsId = existingDetails.id;
+          console.log('Employee details updated');
+        } else {
+          // Create new employee details
+          const { data: newDetails, error: detailsError } = await supabaseClient
+            .from('employee_details')
+            .insert(employeeDetailsData)
+            .select('id')
+            .single();
+
+          if (detailsError) {
+            console.error('Employee details insert error:', detailsError);
+            throw new Error(`Employee details creation failed: ${detailsError.message}`);
+          }
+          employeeDetailsId = newDetails.id;
+          isNewEmployeeDetails = true;
+          console.log('Employee details created:', employeeDetailsId);
+        }
+
+        // Step 3: Handle children (CRITICAL FIX: DELETE old records first)
+        if (children && children.length > 0 && employeeDetailsId) {
+          // DELETE existing children to prevent corruption
+          const { error: deleteError } = await supabaseClient
+            .from('employee_children')
+            .delete()
+            .eq('employee_details_id', employeeDetailsId);
+
+          if (deleteError) {
+            console.error('Children delete error:', deleteError);
+            throw new Error(`Children deletion failed: ${deleteError.message}`);
+          }
+          console.log('Deleted existing children records');
+
+          // INSERT new children
           const childrenData = children.map(child => ({
             ...child,
-            employee_details_id: newDetails.id,
+            employee_details_id: employeeDetailsId,
           }));
 
           const { error: childrenError } = await supabaseClient
@@ -193,57 +219,88 @@ serve(async (req) => {
           }
           console.log(`Created ${children.length} children records`);
         }
-      }
 
-      // Step 4: Handle role assignment if provided
-      if (role) {
-        const { data: existingRole } = await supabaseClient
-          .from('user_roles')
-          .select('id')
-          .eq('company_id', company.id)
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (existingRole) {
-          const { error: roleError } = await supabaseClient
+        // Step 4: Handle role assignment if provided
+        if (role) {
+          const { data: existingRole } = await supabaseClient
             .from('user_roles')
-            .update({ role })
-            .eq('id', existingRole.id);
+            .select('id')
+            .eq('company_id', companyId)
+            .eq('user_id', user.id)
+            .maybeSingle();
 
-          if (roleError) {
-            console.error('Role update error:', roleError);
-            throw new Error(`Role update failed: ${roleError.message}`);
-          }
-          console.log('Role updated:', role);
-        } else {
-          const { error: roleError } = await supabaseClient
-            .from('user_roles')
-            .insert({
-              user_id: user.id,
-              company_id: company.id,
-              role,
-            });
+          if (existingRole) {
+            const { error: roleError } = await supabaseClient
+              .from('user_roles')
+              .update({ role })
+              .eq('id', existingRole.id);
 
-          if (roleError) {
-            console.error('Role insert error:', roleError);
-            throw new Error(`Role creation failed: ${roleError.message}`);
+            if (roleError) {
+              console.error('Role update error:', roleError);
+              throw new Error(`Role update failed: ${roleError.message}`);
+            }
+            console.log('Role updated:', role);
+          } else {
+            const { error: roleError } = await supabaseClient
+              .from('user_roles')
+              .insert({
+                user_id: user.id,
+                company_id: companyId,
+                role,
+              });
+
+            if (roleError) {
+              console.error('Role insert error:', roleError);
+              throw new Error(`Role creation failed: ${roleError.message}`);
+            }
+            console.log('Role created:', role);
           }
-          console.log('Role created:', role);
         }
       }
-    }
 
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        contactId,
-        message: 'Contact saved successfully' 
-      }),
-      { 
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        status: 200 
+      // Success - all operations completed
+      console.log('All operations completed successfully');
+
+      return new Response(
+        JSON.stringify({ 
+          success: true, 
+          contactId,
+          message: 'Contact saved successfully' 
+        }),
+        { 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 200 
+        }
+      );
+
+    } catch (innerError) {
+      // ROLLBACK: Attempt to clean up created records
+      console.error('Transaction failed, attempting rollback:', innerError);
+      
+      try {
+        // If we created new employee details, delete it
+        if (isNewEmployeeDetails && employeeDetailsId) {
+          await supabaseClient
+            .from('employee_details')
+            .delete()
+            .eq('id', employeeDetailsId);
+          console.log('Rolled back employee details');
+        }
+        
+        // If we created a new contact, delete it
+        if (isNewContact && contactId) {
+          await supabaseClient
+            .from('contact_persons')
+            .delete()
+            .eq('id', contactId);
+          console.log('Rolled back contact');
+        }
+      } catch (rollbackError) {
+        console.error('Rollback failed:', rollbackError);
       }
-    );
+      
+      throw innerError;
+    }
 
   } catch (error) {
     console.error('Error in save-contact function:', error);

@@ -337,8 +337,14 @@ export function ContactDetailsDialog({
                   size="icon"
                   className="rounded-full h-10 w-10"
                   onClick={() => {
-                    const address = `${selectedItem.address || ''} ${selectedItem.postal_code || ''} ${selectedItem.city || ''}`.trim();
-                    const encodedAddress = encodeURIComponent(address);
+                    const addressParts = [
+                      selectedItem.address,
+                      selectedItem.postal_code,
+                      selectedItem.city,
+                      selectedItem.country || 'Schweiz'
+                    ].filter(Boolean);
+                    const fullAddress = addressParts.join(', ');
+                    const encodedAddress = encodeURIComponent(fullAddress);
                     window.open(`https://www.google.com/maps/search/?api=1&query=${encodedAddress}`, '_blank');
                   }}
                 >

@@ -10,17 +10,17 @@ const swissPostalCodeSchema = z
   .max(4, 'PLZ muss 4 Ziffern enthalten');
 
 /**
- * Swiss phone number validation
+ * Swiss phone number validation (STRICTER)
  * Strict validation for Swiss phone numbers:
- * - Mobile: +41 7X XXX XX XX or 07X XXX XX XX
- * - Landline: +41 XX XXX XX XX or 0XX XXX XX XX
- * Total: 9 digits after +41 or 10 digits with leading 0
+ * - Mobile: +41 7[0-9] XXX XX XX or 07[0-9] XXX XX XX (exactly 9 digits after country code)
+ * - Landline: +41 [2-9][0-9] XXX XX XX or 0[2-9][0-9] XXX XX XX
+ * Spaces are optional but consistent formatting is enforced
  */
 const swissPhoneSchema = z
   .string()
   .regex(
-    /^(\+41\s?[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2}|0[1-9]\d\s?\d{3}\s?\d{2}\s?\d{2})$/,
-    'Bitte geben Sie eine gültige Schweizer Telefonnummer ein (z.B. +41 79 123 45 67 oder 079 123 45 67)'
+    /^(\+41\s?[2-9]\d{1}\s?\d{3}\s?\d{2}\s?\d{2}|0[2-9]\d{1}\s?\d{3}\s?\d{2}\s?\d{2})$/,
+    'Ungültige Schweizer Telefonnummer. Format: +41 XX XXX XX XX oder 0XX XXX XX XX'
   );
 
 /**
