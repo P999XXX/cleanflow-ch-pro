@@ -12,6 +12,8 @@ export const GoogleIcon = React.forwardRef<SVGSVGElement, GoogleIconProps>(
         width={size}
         height={size}
         viewBox="0 0 24 24"
+        aria-label="Google"
+        role="img"
         {...props}
       >
         <path

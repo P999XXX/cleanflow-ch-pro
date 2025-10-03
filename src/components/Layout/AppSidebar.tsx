@@ -1,33 +1,6 @@
 import { useState } from "react";
-import {
-  BarChart3,
-  Calendar,
-  Clock,
-  FileText,
-  ShoppingCart,
-  Receipt,
-  Package,
-  Users,
-  UserCheck,
-  Settings,
-  Building2,
-  DollarSign,
-  ChevronDown,
-  ChevronRight,
-  Sparkles,
-  Home,
-  CalendarDays,
-  FileCheck,
-  Car,
-  MessageSquare,
-  CheckSquare,
-  UserX,
-  GraduationCap,
-  Smartphone,
-  AlertTriangle,
-  Briefcase,
-} from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { Sparkles, ChevronDown, ChevronRight } from "lucide-react";
 
 import {
   Sidebar,
@@ -42,60 +15,21 @@ import {
 } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-
-const navigationItems = [
-  {
-    title: "CRM",
-    items: [
-      { title: "Kontakte", url: "/kontakte", icon: Users },
-      { title: "Terminkalender", url: "/terminkalender", icon: CalendarDays },
-    ]
-  },
-  {
-    title: "Objekte",
-    items: [
-      { title: "Objekte", url: "/objekte", icon: Building2 },
-      { title: "Offerten", url: "/offerten", icon: FileText },
-      { title: "Aufträge", url: "/auftraege", icon: ShoppingCart },
-      { title: "Reklamationen", url: "/reklamationen", icon: AlertTriangle },
-      { title: "Materialschrank", url: "/materialschrank", icon: Briefcase },
-      { title: "Rechnungen", url: "/rechnungen", icon: Receipt },
-    ]
-  },
-  {
-    title: "Controlling",
-    items: [
-      { title: "Einsatzplan", url: "/einsatzplan", icon: Calendar },
-      { title: "Fahrzeuge", url: "/fahrzeuge", icon: Car },
-      { title: "Materialschrank", url: "/materialschrank", icon: Briefcase },
-      { title: "QS Kontrollen", url: "/qs-kontrollen", icon: CheckSquare },
-    ]
-  },
-  {
-    title: "Personal",
-    items: [
-      { title: "Mitarbeiter", url: "/mitarbeiter", icon: UserCheck },
-      { title: "Zeiterfassung", url: "/zeiterfassung", icon: Clock },
-      { title: "Stundenkontrolle", url: "/stundenkontrolle", icon: BarChart3 },
-      { title: "Abwesenheiten", url: "/abwesenheiten", icon: UserX },
-      { title: "Schulungen", url: "/schulungen", icon: GraduationCap },
-      { title: "Mitarbeiter Chat", url: "/mitarbeiter-chat", icon: MessageSquare },
-      { title: "Mitarbeiter App", url: "/mitarbeiter-app", icon: Smartphone },
-    ]
-  }
-];
+import { NAVIGATION_GROUPS, DASHBOARD_ITEM } from "@/lib/navigationConfig";
 
 export function AppSidebar() {
   const { open, openMobile, isMobile } = useSidebar();
   const location = useLocation();
   const currentPath = location.pathname;
   const collapsed = isMobile ? !openMobile : !open;
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({
-    "CRM": true,
-    "Objekte": false,
-    "Controlling": false,
-    "Personal": false,
-  });
+  
+  // Initialize all groups as closed except CRM
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(
+    NAVIGATION_GROUPS.reduce((acc, group) => {
+      acc[group.title] = group.title === "CRM";
+      return acc;
+    }, {} as Record<string, boolean>)
+  );
 
   const toggleGroup = (groupTitle: string) => {
     setOpenGroups(prev => ({
@@ -142,16 +76,16 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <NavLink 
-                    to="/" 
-                    className={getNavClass(currentPath === "/")}
+                    to={DASHBOARD_ITEM.url} 
+                    className={getNavClass(currentPath === DASHBOARD_ITEM.url)}
                   >
-                    <Home className={cn(
+                    <DASHBOARD_ITEM.icon className={cn(
                       "transition-colors",
                       collapsed ? "w-5 h-5" : "w-4 h-4 mr-3"
                     )} />
                     {!collapsed && (
                       <span className="text-base font-medium">
-                        Dashboard
+                        {DASHBOARD_ITEM.title}
                       </span>
                     )}
                   </NavLink>
@@ -162,7 +96,7 @@ export function AppSidebar() {
         </SidebarGroup>
 
         {/* Navigation Groups */}
-        {navigationItems.map((group) => (
+        {NAVIGATION_GROUPS.map((group) => (
           <SidebarGroup key={group.title}>
             <Collapsible
               open={openGroups[group.title]}
