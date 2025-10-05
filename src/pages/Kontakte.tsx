@@ -8,11 +8,13 @@ import { useContactPersons, useContactPersonMutations, ContactPerson, ContactPer
 import { useAllContacts } from '@/hooks/useAllContacts';
 import { useEdgeFunctionContactSave } from '@/hooks/useContactSave';
 import { useUserRole } from '@/hooks/useUserRole';
+import { useFuzzySearch } from '@/hooks/useFuzzySearch';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { RoleGuard } from '@/components/Auth/RoleGuard';
 import { ContactForm } from '@/components/Contacts/ContactForm';
-import { ContactsFilters } from '@/components/Contacts/ContactsFilters';
+import { EnhancedContactsFilters } from '@/components/Contacts/EnhancedContactsFilters';
 import { ContactsCardsView } from '@/components/Contacts/ContactsCardsView';
-import { ContactsTableView } from '@/components/Contacts/ContactsTableView';
+import { SortableContactsTable } from '@/components/Contacts/SortableContactsTable';
 import { ContactDetailsDialog } from '@/components/Contacts/ContactDetailsDialog';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,11 +25,11 @@ import { NavigationStackItem, DeleteItem, ViewMode } from '@/types/contacts';
 const Kontakte = () => {
   const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
-  const [contactTypeFilter, setContactTypeFilter] = useState('all');
+  const [selectedTypes, setSelectedTypes] = useLocalStorage<string[]>('contact-filter-types', []);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<CustomerCompany | null>(null);
   const [selectedPerson, setSelectedPerson] = useState<ContactPerson | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>('cards');
+  const [viewMode, setViewMode] = useLocalStorage<ViewMode>('contact-view-mode', 'cards');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [itemType, setItemType] = useState<'company' | 'person'>('company');
@@ -94,59 +96,57 @@ const Kontakte = () => {
     },
   });
 
-  // Handle URL parameters for filtering (e.g., ?type=kunde)
-  useEffect(() => {
-    const typeParam = searchParams.get('type');
-    if (typeParam) {
-      const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
-      setContactTypeFilter(formattedType);
-    }
-  }, [searchParams]);
-
-  // Set default view mode based on device type
-  React.useEffect(() => {
-    if (!isMobile && viewMode === 'cards') {
-      setViewMode('table');
-    }
-  }, [isMobile]);
-
-  // Force cards view on mobile and tablet by default, desktop defaults to table
-  const effectiveViewMode = isMobile ? 'cards' : viewMode;
-
   // Available contact types for filters - unified system
   const availableContactTypes = useMemo(() => {
     return ['Unternehmen', 'Geschäftskunde', 'Privatkunde', 'Mitarbeiter', 'Person'];
   }, []);
 
-  // Optimized filtering with useMemo for performance - unified contacts
-  const filteredAllContacts = useMemo(() => {
-    if (!allContacts) return [];
-    
-    let filtered = allContacts;
-    
-    // Filter by contact type
-    if (contactTypeFilter !== 'all') {
-      const selectedTypes = contactTypeFilter.split(',');
-      filtered = filtered.filter(contact => 
-        selectedTypes.includes(contact.contact_type)
-      );
+  // Handle URL parameters for filtering (e.g., ?type=kunde)
+  useEffect(() => {
+    const typeParam = searchParams.get('type');
+    if (typeParam) {
+      const formattedType = typeParam.charAt(0).toUpperCase() + typeParam.slice(1).toLowerCase();
+      if (availableContactTypes.includes(formattedType)) {
+        setSelectedTypes([formattedType]);
+      }
     }
+  }, [searchParams, availableContactTypes, setSelectedTypes]);
+
+  // Calculate type counts from all contacts
+  const typeCounts = useMemo(() => {
+    if (!allContacts) return {};
     
-    // Filter by search term
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase().trim();
-      filtered = filtered.filter(contact =>
-        contact.name.toLowerCase().includes(term) ||
-        contact.email?.toLowerCase().includes(term) ||
-        contact.phone?.toLowerCase().includes(term) ||
-        contact.mobile?.toLowerCase().includes(term) ||
-        contact.address?.toLowerCase().includes(term) ||
-        contact.city?.toLowerCase().includes(term)
+    const counts: Record<string, number> = {};
+    allContacts.forEach((contact) => {
+      const type = contact.contact_type || 'Person';
+      counts[type] = (counts[type] || 0) + 1;
+    });
+    return counts;
+  }, [allContacts]);
+
+  // Fuzzy search implementation
+  const fuzzySearchResults = useFuzzySearch(
+    allContacts || [],
+    searchTerm,
+    {
+      keys: ['name', 'email', 'phone', 'mobile', 'address', 'city', 'contact_type'],
+      threshold: 0.3,
+    }
+  );
+
+  // Filter by selected types
+  const filteredAllContacts = useMemo(() => {
+    let filtered = searchTerm.trim() ? fuzzySearchResults : (allContacts || []);
+    
+    // Filter by selected types
+    if (selectedTypes.length > 0) {
+      filtered = filtered.filter(contact => 
+        selectedTypes.includes(contact.contact_type || 'Person')
       );
     }
     
     return filtered;
-  }, [allContacts, searchTerm, contactTypeFilter]);
+  }, [fuzzySearchResults, allContacts, selectedTypes, searchTerm]);
 
   // Separate contacts by type for display
   const filteredCompanies = useMemo(() => 
@@ -409,17 +409,18 @@ const Kontakte = () => {
   return (
     <div className="container mx-auto p-4 space-y-4">
       {/* Header and Filters */}
-      <ContactsFilters
+      <EnhancedContactsFilters
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onClearSearch={clearSearch}
-        contactTypeFilter={contactTypeFilter}
-        onContactTypeChange={setContactTypeFilter}
+        selectedTypes={selectedTypes}
+        onTypesChange={setSelectedTypes}
         viewMode={viewMode}
         onViewModeToggle={() => setViewMode(viewMode === 'table' ? 'cards' : 'table')}
         onAddClick={canManageContacts() ? handleAddClick : undefined}
         isMobile={isMobile}
         availableContactTypes={availableContactTypes}
+        typeCounts={typeCounts}
       />
 
       {/* Main Content */}
@@ -435,14 +436,25 @@ const Kontakte = () => {
             onCardClick={handleCardClick}
           />
         ) : (
-          <ContactsTableView
+          <SortableContactsTable
             companies={filteredCompanies}
             persons={filteredPersons}
-            showSections={true}
-            isSearching={isSearching}
-            hasNoResults={hasNoResults}
-            onClearSearch={clearSearch}
             onCardClick={handleCardClick}
+            onEdit={canManageContacts() ? (item, type) => {
+              setNavigationStack(prev => [...prev, { item: selectedItem, type: itemType }]);
+              if (type === 'company') {
+                setSelectedCompany(item);
+              } else {
+                setSelectedPerson(item);
+              }
+              setDetailsOpen(false);
+              setDeleteDialogOpen(false);
+              setIsFormOpen(true);
+            } : undefined}
+            onDelete={canManageContacts() ? (item, type) => {
+              setItemToDelete({ item, type });
+              setDeleteDialogOpen(true);
+            } : undefined}
             getStatusBadge={getStatusBadge}
           />
         )}
