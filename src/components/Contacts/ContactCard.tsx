@@ -45,48 +45,59 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
     );
   };
 
+  // Get status border color
+  const getStatusBorderColor = (status: string) => {
+    const statusColors: Record<string, string> = {
+      aktiv: 'border-l-success',
+      inaktiv: 'border-l-muted-foreground',
+      potentiell: 'border-l-primary',
+    };
+    return statusColors[status] || 'border-l-muted';
+  };
+
+  // Get primary badge (max 1)
+  const getPrimaryBadge = () => {
+    if (type === 'company') {
+      return item.contact_type ? (
+        <Badge 
+          variant="secondary" 
+          className={`${
+            item.contact_type.toLowerCase().includes('kunde') 
+              ? 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400' 
+              : 'bg-primary/10 text-primary border-primary/20'
+          } font-medium text-xs`}
+        >
+          {item.contact_type}
+        </Badge>
+      ) : null;
+    } else {
+      if (item.is_employee) {
+        return (
+          <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-xs">
+            Mitarbeiter
+          </Badge>
+        );
+      }
+      if (item.is_private_customer) {
+        return (
+          <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-xs">
+            Privatkunde
+          </Badge>
+        );
+      }
+    }
+    return null;
+  };
+
   return (
     <Card 
-      className="cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col relative"
+      className={`cursor-pointer hover:shadow-md transition-all duration-200 animate-fade-in hover:scale-[1.02] active:scale-[0.98] h-full flex flex-col relative border-l-4 ${getStatusBorderColor(item.status || 'aktiv')}`}
       onClick={() => onCardClick(item, type)}
     >
       <CardHeader className="pb-3 relative">
-        {/* Badges positioned at top-right */}
-        <div className="absolute top-3 right-3 flex items-start gap-1 flex-wrap justify-end max-w-[60%]">
-          {type === 'company' ? (
-            <>
-              {item.contact_type && (
-                <Badge 
-                  variant="secondary" 
-                  className={`${
-                    item.contact_type.toLowerCase().includes('kunde') 
-                      ? 'bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400' 
-                      : 'bg-primary/10 text-primary border-primary/20'
-                  } font-medium text-[10px] px-1.5 py-0.5`}
-                >
-                  {item.contact_type}
-                </Badge>
-              )}
-            </>
-          ) : (
-            <>
-              {item.is_employee && (
-                <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5">
-                  Mitarbeiter
-                </Badge>
-              )}
-              {item.is_private_customer && (
-                <Badge variant="secondary" className="bg-purple-500/10 text-purple-700 border-purple-500/20 dark:text-purple-400 font-medium text-[10px] px-1.5 py-0.5">
-                  Privatkunde
-                </Badge>
-              )}
-              {item.is_primary_contact && (
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 font-medium text-[10px] px-1.5 py-0.5">
-                  Primär
-                </Badge>
-              )}
-            </>
-          )}
+        {/* Single primary badge at top-right */}
+        <div className="absolute top-3 right-3">
+          {getPrimaryBadge()}
         </div>
 
         {/* Title and info below badges */}
@@ -118,14 +129,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
       <CardContent className="pt-0 flex-1 flex flex-col justify-end relative">
         {isMobile ? (
           <TooltipProvider>
-            <div className="flex gap-2 justify-start pt-2">
+            <div className="flex gap-3 justify-start pt-2">
               {(type === 'company' ? (item.street || item.city || item.postal_code) : item.customer_companies?.name) && (
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      className="min-h-[44px] min-w-[44px] h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
                       onClick={(e) => {
                         e.stopPropagation();
                         if (type === 'company' && (item.address || item.city)) {
@@ -141,7 +152,7 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                         }
                       }}
                     >
-                      <MapPin className="h-4 w-4" />
+                      <MapPin className="h-5 w-5" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>
@@ -155,14 +166,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      className="min-h-[44px] min-w-[44px] h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`mailto:${item.email}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Mail className="h-4 w-4" />
+                        <Mail className="h-5 w-5" />
                       </a>
                     </Button>
                   </TooltipTrigger>
@@ -177,14 +188,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      className="min-h-[44px] min-w-[44px] h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`tel:${item.phone}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Phone className="h-4 w-4" />
+                        <Phone className="h-5 w-5" />
                       </a>
                     </Button>
                   </TooltipTrigger>
@@ -199,14 +210,14 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
+                      className="min-h-[44px] min-w-[44px] h-11 w-11 rounded-full bg-muted hover:bg-muted/80"
                       asChild
                     >
                       <a
                         href={`tel:${item.mobile}`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <Smartphone className="h-4 w-4" />
+                        <Smartphone className="h-5 w-5" />
                       </a>
                     </Button>
                   </TooltipTrigger>
@@ -215,66 +226,20 @@ export function ContactCard({ item, type, onCardClick }: ContactCardProps) {
                   </TooltipContent>
                 </Tooltip>
               )}
-              {type === 'person' && item.mobile && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
-                      asChild
-                    >
-                      <a
-                        href={`https://wa.me/${item.mobile.replace(/[^0-9]/g, '')}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <WhatsAppIcon className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>WhatsApp senden</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-              {type === 'person' && item.mobile && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8 rounded-full bg-muted hover:bg-muted/80"
-                      asChild
-                    >
-                      <a
-                        href={`sms:${item.mobile}`}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <MessageSquare className="h-4 w-4" />
-                      </a>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>SMS senden</p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
             </div>
-            {/* Arrow button in mobile view aligned with badges */}
+            {/* Arrow button in mobile view - larger touch target */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute top-2 right-3 h-8 w-8"
+                  className="absolute top-2 right-3 min-h-[44px] min-w-[44px] h-11 w-11"
                   onClick={(e) => {
                     e.stopPropagation();
                     onCardClick(item, type);
                   }}
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-5 w-5" />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
