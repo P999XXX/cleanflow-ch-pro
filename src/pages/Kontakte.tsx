@@ -425,7 +425,7 @@ const Kontakte = () => {
 
       {/* Main Content */}
       <div className="mt-6">
-        {effectiveViewMode === 'cards' ? (
+        {viewMode === 'cards' ? (
           <ContactsCardsView
             companies={filteredCompanies}
             persons={filteredPersons}
