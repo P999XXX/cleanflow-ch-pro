@@ -54,6 +54,9 @@ export interface CustomerCompanyInput {
 export const useCompanies = () => {
   return useQuery({
     queryKey: ['customer-companies'],
+    staleTime: 5 * 60 * 1000, // 5 minutes aggressive caching
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('customer_companies')
@@ -106,19 +109,40 @@ export const useCompanyMutations = () => {
       if (error) throw error;
       return data;
     },
+    onMutate: async (newCompany) => {
+      await queryClient.cancelQueries({ queryKey: ['customer-companies'] });
+      await queryClient.cancelQueries({ queryKey: ['all-contacts'] });
+      
+      const previousCompanies = queryClient.getQueryData(['customer-companies']);
+      const previousAllContacts = queryClient.getQueryData(['all-contacts']);
+      
+      // Optimistically update
+      queryClient.setQueryData(['customer-companies'], (old: any) => {
+        if (!old) return old;
+        return [...old, { ...newCompany, id: 'temp-' + Date.now(), created_at: new Date().toISOString() }];
+      });
+      
+      return { previousCompanies, previousAllContacts };
+    },
+    onError: (err, newCompany, context: any) => {
+      if (context?.previousCompanies) {
+        queryClient.setQueryData(['customer-companies'], context.previousCompanies);
+      }
+      if (context?.previousAllContacts) {
+        queryClient.setQueryData(['all-contacts'], context.previousAllContacts);
+      }
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Erstellen des Unternehmens',
+        variant: 'destructive',
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer-companies'] });
       queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Unternehmen wurde erfolgreich erstellt',
-      });
-    },
-    onError: () => {
-      toast({
-        title: 'Fehler',
-        description: 'Fehler beim Erstellen des Unternehmens',
-        variant: 'destructive',
       });
     },
   });
@@ -135,19 +159,40 @@ export const useCompanyMutations = () => {
       if (error) throw error;
       return data;
     },
+    onMutate: async ({ id, company }) => {
+      await queryClient.cancelQueries({ queryKey: ['customer-companies'] });
+      await queryClient.cancelQueries({ queryKey: ['all-contacts'] });
+      
+      const previousCompanies = queryClient.getQueryData(['customer-companies']);
+      const previousAllContacts = queryClient.getQueryData(['all-contacts']);
+      
+      // Optimistic update
+      queryClient.setQueryData(['customer-companies'], (old: any) => {
+        if (!old) return old;
+        return old.map((c: any) => c.id === id ? { ...c, ...company } : c);
+      });
+      
+      return { previousCompanies, previousAllContacts };
+    },
+    onError: (err, variables, context: any) => {
+      if (context?.previousCompanies) {
+        queryClient.setQueryData(['customer-companies'], context.previousCompanies);
+      }
+      if (context?.previousAllContacts) {
+        queryClient.setQueryData(['all-contacts'], context.previousAllContacts);
+      }
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Aktualisieren des Unternehmens',
+        variant: 'destructive',
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['customer-companies'] });
       queryClient.invalidateQueries({ queryKey: ['all-contacts'] });
       toast({
         title: 'Erfolg',
         description: 'Unternehmen wurde erfolgreich aktualisiert',
-      });
-    },
-    onError: () => {
-      toast({
-        title: 'Fehler',
-        description: 'Fehler beim Aktualisieren des Unternehmens',
-        variant: 'destructive',
       });
     },
   });

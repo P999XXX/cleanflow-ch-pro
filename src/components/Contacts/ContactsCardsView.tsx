@@ -1,7 +1,9 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ContactCard } from "./ContactCard";
+import { VirtualizedContactsCards } from "./VirtualizedContactsCards";
 import { Search, Building2, Users } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ContactsCardsViewProps {
   companies: any[];
@@ -22,6 +24,11 @@ export function ContactsCardsView({
   onClearSearch,
   onCardClick,
 }: ContactsCardsViewProps) {
+  const isMobile = useIsMobile();
+  
+  // Use virtualization only for large lists (>20 items) and on desktop
+  const shouldVirtualize = !isMobile && (companies.length + persons.length) > 20;
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* No results message */}
@@ -48,16 +55,24 @@ export function ContactsCardsView({
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-            {companies.map((company) => (
-              <ContactCard 
-                key={`company-${company.id}`} 
-                item={company} 
-                type="company"
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
+          {shouldVirtualize ? (
+            <VirtualizedContactsCards
+              items={companies}
+              type="company"
+              onCardClick={onCardClick}
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+              {companies.map((company) => (
+                <ContactCard 
+                  key={`company-${company.id}`} 
+                  item={company} 
+                  type="company"
+                  onCardClick={onCardClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -73,16 +88,24 @@ export function ContactsCardsView({
               </Badge>
             </h3>
           )}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-            {persons.map((person) => (
-              <ContactCard 
-                key={`person-${person.id}`} 
-                item={person} 
-                type="person"
-                onCardClick={onCardClick}
-              />
-            ))}
-          </div>
+          {shouldVirtualize ? (
+            <VirtualizedContactsCards
+              items={persons}
+              type="person"
+              onCardClick={onCardClick}
+            />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+              {persons.map((person) => (
+                <ContactCard 
+                  key={`person-${person.id}`} 
+                  item={person} 
+                  type="person"
+                  onCardClick={onCardClick}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
